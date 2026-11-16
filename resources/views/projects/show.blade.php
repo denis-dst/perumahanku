@@ -377,18 +377,28 @@
                                    @mouseenter="hoveredUnit = {{ json_encode($unitPayload) }}"
                                    @mouseleave="hoveredUnit = null">
 
-                                    <!-- Sliced Unit Lot Box -->
-                                    <rect x="{{ $xPct }}"
-                                          y="{{ $yPct }}"
-                                          width="{{ $wPct }}"
-                                          height="{{ $hPct }}"
-                                          rx="0.5"
-                                          class="{{ match($unit->status) {
-                                              'available' => 'fill-emerald-500/40 stroke-emerald-400 hover:fill-emerald-500/75',
-                                              'booked' => 'fill-amber-500/40 stroke-amber-400 hover:fill-amber-500/75',
-                                              'sold' => 'fill-rose-500/40 stroke-rose-400 hover:fill-rose-500/75',
-                                              default => 'fill-slate-500/40 stroke-slate-400'
-                                          } }} stroke-[0.4] transition-all duration-200 hover:stroke-[0.8] hover:stroke-white" />
+                                    <!-- Sliced Unit Lot Shape (Polygon Lines or Rect) -->
+                                    @if(!empty($unit->polygon_coords))
+                                        <polygon points="{{ $unit->svg_polygon_points }}"
+                                                 class="{{ match($unit->status) {
+                                                     'available' => 'fill-emerald-500/40 stroke-emerald-400 hover:fill-emerald-500/75',
+                                                     'booked' => 'fill-amber-500/40 stroke-amber-400 hover:fill-amber-500/75',
+                                                     'sold' => 'fill-rose-500/40 stroke-rose-400 hover:fill-rose-500/75',
+                                                     default => 'fill-slate-500/40 stroke-slate-400'
+                                                 } }} stroke-[0.4] stroke-linejoin-round transition-all duration-200 hover:stroke-[0.8] hover:stroke-white" />
+                                    @else
+                                        <rect x="{{ $xPct }}"
+                                              y="{{ $yPct }}"
+                                              width="{{ $wPct }}"
+                                              height="{{ $hPct }}"
+                                              rx="0.5"
+                                              class="{{ match($unit->status) {
+                                                  'available' => 'fill-emerald-500/40 stroke-emerald-400 hover:fill-emerald-500/75',
+                                                  'booked' => 'fill-amber-500/40 stroke-amber-400 hover:fill-amber-500/75',
+                                                  'sold' => 'fill-rose-500/40 stroke-rose-400 hover:fill-rose-500/75',
+                                                  default => 'fill-slate-500/40 stroke-slate-400'
+                                              } }} stroke-[0.4] transition-all duration-200 hover:stroke-[0.8] hover:stroke-white" />
+                                    @endif
 
                                     <!-- Center Unit Number Tag -->
                                     <text x="{{ $unit->position_x }}"
