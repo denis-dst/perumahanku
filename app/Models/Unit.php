@@ -19,6 +19,10 @@ class Unit extends Model
         'pov_description',
         'position_x',
         'position_y',
+        'polygon_coords',
+        'slice_image',
+        'width_pct',
+        'height_pct',
     ];
 
     protected $casts = [
@@ -26,6 +30,9 @@ class Unit extends Model
         'land_area' => 'integer',
         'position_x' => 'float',
         'position_y' => 'float',
+        'width_pct' => 'float',
+        'height_pct' => 'float',
+        'polygon_coords' => 'array',
     ];
 
     public function project(): BelongsTo
@@ -72,5 +79,48 @@ class Unit extends Model
             'sold' => 'bg-rose-500 text-white',
             default => 'bg-slate-400 text-white'
         };
+    }
+
+    public function getSvgPolygonPointsAttribute(): ?string
+    {
+        if (empty($this->polygon_coords)) {
+            // Fallback: Generate rect points from position_x, position_y, width_pct, height_pct
+            $w = $this->width_pct ?: 5.0;
+            $h = $this->height_pct ?: 4.0;
+            $x1 = $this->position_x - ($w / 2);
+            $y1 = $this->position_y - ($h / 2);
+            $x2 = $x1 + $w;
+            $y2 = $y1;
+            $x3 = $x2;
+            $y3 = $y1 + $h;
+            $x4 = $x1;
+            $y4 = $y3;
+            return "{$x1},{$y1} {$x2},{$y2} {$x3},{$y3} {$x4},{$y4}";
+        }
+
+        if (is_array($this->polygon_coords)) {
+            $points = [];
+            foreach ($this->polygon_coords as $pt) {
+                if (is_array($pt) && count($pt) >= 2) {
+                    $points[] = "{$pt[0]},{$pt[1]}";
+                }
+            }
+            if (!empty($points)) {
+                return implode(' ', $points);
+            }
+        }
+
+        return is_string($this->polygon_coords) ? $this->polygon_coords : null;
+    }
+
+    public function getSliceImageUrlAttribute(): ?string
+    {
+        if (!$this->slice_image) {
+            return null;
+        }
+        if (str_starts_with($this->slice_image, 'http://') || str_starts_with($this->slice_image, 'https://')) {
+            return $this->slice_image;
+        }
+        return asset('storage/' . $this->slice_image);
     }
 }

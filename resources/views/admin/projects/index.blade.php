@@ -52,10 +52,15 @@
                                 </a>
                             </td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.projects.units.index', $p) }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-nature-50 text-nature-700 font-bold hover:bg-nature-100 transition">
-                                    <i class="fa-solid fa-map-location-dot"></i>
-                                    <span>{{ $p->units_count }} Kavling & POV</span>
-                                </a>
+                                <div class="flex flex-col gap-1 items-start">
+                                    <a href="{{ route('admin.projects.siteplan.index', $p) }}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-nature-600 text-white font-bold hover:bg-nature-700 shadow-xs transition">
+                                        <i class="fa-solid fa-map-location-dot"></i>
+                                        <span>Peta & Slicer Siteplan</span>
+                                    </a>
+                                    <a href="{{ route('admin.projects.units.index', $p) }}" class="text-[11px] text-slate-500 hover:text-brand-600 font-medium ml-1">
+                                        {{ $p->units_count }} Kavling terdaftar →
+                                    </a>
+                                </div>
                             </td>
                             <td class="px-6 py-4">
                                 <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase {{ $p->status === 'active' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-600' }}">

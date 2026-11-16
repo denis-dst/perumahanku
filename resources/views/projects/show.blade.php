@@ -291,18 +291,22 @@
                 </div>
 
                 <!-- 3. FEATURE KILLER: SITEPLAN INTERAKTIF + POV UNIT MODAL -->
-                <div id="siteplan" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md">
+                <div id="siteplan" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md"
+                     x-data="{
+                         selectedBlockFilter: 'all',
+                         hoveredUnit: null
+                     }">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-nature-100 text-nature-700 text-xs font-bold mb-1">
                                 <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                <span>Fitur Eksklusif</span>
+                                <span>Fitur Eksklusif Masterplan</span>
                             </div>
                             <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900">
                                 Peta Siteplan Interaktif & POV Unit
                             </h2>
                             <p class="text-xs text-slate-500 mt-1">
-                                <strong>Klik pin kavling</strong> pada peta siteplan di bawah untuk melihat foto <em>Point of View (POV)</em> pemandangan nyata dari posisi unit tersebut!
+                                <strong>Klik arsiran blok kavling</strong> di bawah untuk melihat foto potongan denah serta <em>Point of View (POV)</em> pemandangan nyata unit tersebut!
                             </p>
                         </div>
 
@@ -314,63 +318,103 @@
                         </div>
                     </div>
 
-                    <!-- Siteplan Canvas Container -->
-                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 border-2 border-slate-200 shadow-inner group aspect-[16/10]">
+                    <!-- Filter Block Pills -->
+                    <div class="flex flex-wrap items-center gap-2 mb-4">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Pilih Blok:</span>
+                        <button type="button" @click="selectedBlockFilter = 'all'"
+                                :class="selectedBlockFilter === 'all' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                                class="px-3 py-1 rounded-lg text-xs transition">
+                            Semua Blok ({{ $project->units->count() }})
+                        </button>
+                        @foreach($project->units->pluck('block')->filter()->unique()->sort() as $blk)
+                            <button type="button" @click="selectedBlockFilter = '{{ $blk }}'"
+                                    :class="selectedBlockFilter === '{{ $blk }}' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                                    class="px-3 py-1 rounded-lg text-xs transition">
+                                Blok {{ $blk }} ({{ $project->units->where('block', $blk)->count() }})
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <!-- Siteplan Canvas Container with SVG Lot Slices -->
+                    <div class="relative rounded-2xl overflow-hidden bg-slate-900 border-2 border-slate-200 shadow-inner group aspect-[16/11.37]">
                         <!-- Siteplan Background Map -->
-                        <img src="{{ $project->siteplan_image ?? 'https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1600&q=80' }}"
+                        <img src="{{ $project->siteplan_image ? asset($project->siteplan_image) : asset('storage/sample-siteplan.jpg') }}"
                              alt="Siteplan {{ $project->name }}"
                              class="w-full h-full object-cover">
 
-                        <!-- Interactive Unit Markers Pin -->
-                        @foreach($project->units as $unit)
-                            @php
-                                $posX = $unit->position_x ?? 50;
-                                $posY = $unit->position_y ?? 50;
-                                $pinBg = match($unit->status) {
-                                    'available' => 'bg-emerald-500 hover:bg-emerald-600',
-                                    'booked' => 'bg-amber-500 hover:bg-amber-600',
-                                    'sold' => 'bg-rose-500 opacity-60',
-                                    default => 'bg-slate-400'
-                                };
-                                $firstPov = $unit->povImages->first();
-                                $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80');
+                        <!-- SVG Overlay for Sliced Lot Polygons -->
+                        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                            @foreach($project->units as $unit)
+                                @php
+                                    $firstPov = $unit->povImages->first();
+                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80');
 
-                                // JSON payload to pass cleanly to Alpine.js
-                                $unitPayload = [
-                                    'id' => $unit->id,
-                                    'block' => $unit->block,
-                                    'number' => $unit->number,
-                                    'status' => $unit->status,
-                                    'status_label' => $unit->status_label,
-                                    'status_color' => $unit->status_color,
-                                    'facing' => $unit->facing ?? 'Bebas Hambatan',
-                                    'type_name' => $unit->houseType ? $unit->houseType->name : 'Standar',
-                                    'price_formatted' => $unit->formatted_price,
-                                    'land_area' => $unit->land_area ?? ($unit->houseType ? $unit->houseType->land_area : '-'),
-                                    'pov_description' => $unit->pov_description ?? 'Unit menghadap jalan cluster yang asri dan tenang.',
-                                    'pov_photo' => $povPhotoUrl,
-                                ];
-                            @endphp
+                                    $wPct = $unit->width_pct ?: 5.5;
+                                    $hPct = $unit->height_pct ?: 6.0;
+                                    $xPct = $unit->position_x - ($wPct / 2);
+                                    $yPct = $unit->position_y - ($hPct / 2);
 
-                            <button type="button"
-                                    style="left: {{ $posX }}%; top: {{ $posY }}%;"
-                                    @click="openPov({{ json_encode($unitPayload) }})"
-                                    title="Kavling {{ $unit->block }}-{{ $unit->number }} ({{ $unit->status_label }})"
-                                    class="absolute -translate-x-1/2 -translate-y-1/2 z-20 group/pin focus:outline-none transition-transform hover:scale-125">
-                                <div class="relative flex items-center justify-center">
-                                    @if($unit->status === 'available')
-                                        <span class="animate-ping absolute inline-flex h-7 w-7 rounded-full bg-emerald-400 opacity-75"></span>
-                                    @endif
-                                    <div class="w-8 h-8 rounded-full {{ $pinBg }} text-white text-[10px] font-black border-2 border-white shadow-lg flex items-center justify-center">
+                                    $unitPayload = [
+                                        'id' => $unit->id,
+                                        'block' => $unit->block,
+                                        'number' => $unit->number,
+                                        'status' => $unit->status,
+                                        'status_label' => $unit->status_label,
+                                        'status_color' => $unit->status_color,
+                                        'facing' => $unit->facing ?? 'Bebas Hambatan',
+                                        'type_name' => $unit->houseType ? $unit->houseType->name : 'Standar',
+                                        'price_formatted' => $unit->formatted_price,
+                                        'land_area' => $unit->land_area ?? ($unit->houseType ? $unit->houseType->land_area : '-'),
+                                        'slice_image' => $unit->slice_image_url,
+                                        'pov_description' => $unit->pov_description ?? 'Unit menghadap jalan cluster yang asri dan tenang.',
+                                        'pov_photo' => $povPhotoUrl,
+                                    ];
+                                @endphp
+
+                                <g class="cursor-pointer transition-all duration-200"
+                                   x-show="selectedBlockFilter === 'all' || selectedBlockFilter === '{{ $unit->block }}'"
+                                   @click="openPov({{ json_encode($unitPayload) }})"
+                                   @mouseenter="hoveredUnit = {{ json_encode($unitPayload) }}"
+                                   @mouseleave="hoveredUnit = null">
+
+                                    <!-- Sliced Unit Lot Box -->
+                                    <rect x="{{ $xPct }}"
+                                          y="{{ $yPct }}"
+                                          width="{{ $wPct }}"
+                                          height="{{ $hPct }}"
+                                          rx="0.5"
+                                          class="{{ match($unit->status) {
+                                              'available' => 'fill-emerald-500/40 stroke-emerald-400 hover:fill-emerald-500/75',
+                                              'booked' => 'fill-amber-500/40 stroke-amber-400 hover:fill-amber-500/75',
+                                              'sold' => 'fill-rose-500/40 stroke-rose-400 hover:fill-rose-500/75',
+                                              default => 'fill-slate-500/40 stroke-slate-400'
+                                          } }} stroke-[0.4] transition-all duration-200 hover:stroke-[0.8] hover:stroke-white" />
+
+                                    <!-- Center Unit Number Tag -->
+                                    <text x="{{ $unit->position_x }}"
+                                          y="{{ $unit->position_y + 0.7 }}"
+                                          text-anchor="middle"
+                                          font-size="1.8"
+                                          font-weight="900"
+                                          fill="#ffffff"
+                                          class="pointer-events-none select-none drop-shadow">
                                         {{ $unit->block }}{{ $unit->number }}
-                                    </div>
-                                </div>
-                            </button>
-                        @endforeach
+                                    </text>
+                                </g>
+                            @endforeach
+                        </svg>
 
-                        <!-- Instruction pill on the map -->
-                        <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur-xs text-white text-[11px] font-medium px-3 py-1.5 rounded-xl pointer-events-none">
-                            <i class="fa-solid fa-hand-pointer mr-1 text-emerald-400"></i> Klik salah satu nomor kavling untuk lihat POV
+                        <!-- Instruction & Hover Tooltip -->
+                        <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white text-[11px] font-medium px-3.5 py-1.5 rounded-xl pointer-events-none">
+                            <template x-if="!hoveredUnit">
+                                <span><i class="fa-solid fa-hand-pointer mr-1 text-emerald-400"></i> Klik salah satu arsiran unit kavling untuk melihat POV</span>
+                            </template>
+                            <template x-if="hoveredUnit">
+                                <span>
+                                    <strong x-text="'Kavling ' + hoveredUnit.block + '-' + hoveredUnit.number"></strong>:
+                                    <span x-text="hoveredUnit.type_name + ' • ' + hoveredUnit.price_formatted + ' (' + hoveredUnit.status_label + ')'"></span>
+                                </span>
+                            </template>
                         </div>
                     </div>
 
@@ -587,13 +631,32 @@
                             </div>
                         </div>
 
-                        <!-- POV Photo Showcase -->
-                        <div class="relative h-64 sm:h-80 bg-slate-900 overflow-hidden">
-                            <img :src="selectedUnit.pov_photo" :alt="'POV Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
-                            <!-- Overlay Badge POV -->
-                            <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
-                                <i class="fa-solid fa-street-view text-emerald-400 text-sm"></i>
-                                <span>Sudut Pandang (POV) Nyata dari Unit</span>
+                        <!-- Media Showcase: Real POV Photo + Sliced Lot Blueprint -->
+                        <div class="grid grid-cols-1 md:grid-cols-12 bg-slate-950">
+                            <!-- Left: Real Photo POV (8 cols) -->
+                            <div class="md:col-span-8 relative h-64 sm:h-80 bg-slate-900 overflow-hidden">
+                                <img :src="selectedUnit.pov_photo" :alt="'POV Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
+                                <!-- Overlay Badge POV -->
+                                <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur-xs text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-street-view text-emerald-400 text-sm"></i>
+                                    <span>Sudut Pandang (POV) Nyata dari Teras Kavling</span>
+                                </div>
+                            </div>
+
+                            <!-- Right: Sliced Lot Blueprint Cutout (4 cols) -->
+                            <div class="md:col-span-4 p-4 bg-slate-900 flex flex-col justify-center items-center text-center border-t md:border-t-0 md:border-l border-slate-800">
+                                <span class="text-[10px] uppercase font-bold text-brand-400 tracking-wider mb-2 block">
+                                    <i class="fa-solid fa-crop-simple mr-1"></i> Potongan Arsiran Siteplan
+                                </span>
+                                <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-inner flex items-center justify-center relative">
+                                    <template x-if="selectedUnit.slice_image">
+                                        <img :src="selectedUnit.slice_image" class="w-full h-full object-cover">
+                                    </template>
+                                    <template x-if="!selectedUnit.slice_image">
+                                        <div class="text-[10px] text-slate-500 font-bold p-2">Kavling <span x-text="selectedUnit.block + selectedUnit.number"></span></div>
+                                    </template>
+                                </div>
+                                <span class="text-[10px] text-slate-400 mt-2">Posisi tepat di masterplan</span>
                             </div>
                         </div>
 

@@ -66,6 +66,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Units / Kavlings per Project (dengan koordinat siteplan & POV)
     Route::resource('projects.units', AdminUnitController::class)->except(['show']);
 
+    // Siteplan Visual Mapper & Slicer Tool
+    Route::get('projects/{project}/siteplan-mapper', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'index'])->name('projects.siteplan.index');
+    Route::post('projects/{project}/siteplan-mapper/upload', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'uploadImage'])->name('projects.siteplan.upload');
+    Route::post('projects/{project}/siteplan-mapper/auto-slice', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'autoSlice'])->name('projects.siteplan.auto-slice');
+    Route::post('projects/{project}/siteplan-mapper/save', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'saveSlice'])->name('projects.siteplan.save');
+
     // Bookings / Survey Leads
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update', 'destroy']);
 
