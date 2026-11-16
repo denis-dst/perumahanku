@@ -501,7 +501,7 @@
                             <div>
                                 <label class="text-xs font-bold uppercase text-slate-600 block mb-1">Pilih Bank Rekanan</label>
                                 <select @change="kprRate = parseFloat($event.target.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
-                                    @foreach($banks as $b)
+                                    @foreach($banks ?? [] as $b)
                                         <option value="{{ $b->interest_rate }}">{{ $b->bank_name }} (Bunga {{ $b->interest_rate }}%)</option>
                                     @endforeach
                                 </select>
