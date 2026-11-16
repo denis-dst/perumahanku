@@ -81,6 +81,28 @@ class SiteplanMapperController extends Controller
     }
 
     /**
+     * Reset all sliced units & coordinates for this project
+     */
+    public function resetSlices(Project $project)
+    {
+        $units = $project->units()->with('povImages')->get();
+
+        foreach ($units as $unit) {
+            // Delete slice image file from storage if exists
+            if ($unit->slice_image) {
+                $cleaned = preg_replace('#^/?storage/#', '', $unit->slice_image);
+                Storage::disk('public')->delete($cleaned);
+            }
+            // Delete POV images associated with unit
+            $unit->images()->delete();
+            $unit->delete();
+        }
+
+        return redirect()->route('admin.projects.siteplan.index', $project)
+            ->with('success', 'Seluruh potongan arsiran kavling pada siteplan ini berhasil direset bersih. Anda dapat memetakan ulang dari awal.');
+    }
+
+    /**
      * Store or update lot sliced interactively from canvas/SVG
      */
     public function saveSlice(Request $request, Project $project)

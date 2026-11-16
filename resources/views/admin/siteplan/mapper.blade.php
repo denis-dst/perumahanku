@@ -64,6 +64,15 @@
                 </button>
             </form>
 
+            <!-- Reset Slices Action Form -->
+            <form action="{{ route('admin.projects.siteplan.reset', $project) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mereset seluruh potongan arsiran kavling pada siteplan ini? Tindakan ini akan menghapus semua kavling dan file potongan arsiran yang telah dibuat agar Anda bisa memulai dari awal.')">
+                @csrf
+                <button type="submit" class="px-4 py-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs shadow-xs transition flex items-center gap-1.5" title="Hapus semua potongan kavling dan mulai ulang">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                    <span>Reset Slice Map</span>
+                </button>
+            </form>
+
             <a href="{{ route('projects.show', $project->slug) }}#siteplan" target="_blank" class="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition" title="Preview Tampilan Pengunjung">
                 <i class="fa-solid fa-eye"></i>
             </a>

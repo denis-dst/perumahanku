@@ -46,6 +46,13 @@ class Project extends Model
         return $this->morphOne(Image::class, 'imageable')->where('is_primary', true);
     }
 
+    public function resolveRouteBinding($value, $field = null)
+    {
+        return $this->where('slug', $value)
+            ->orWhere('id', $value)
+            ->firstOrFail();
+    }
+
     public function getPriceRangeAttribute(): string
     {
         $min = $this->houseTypes()->min('price');
