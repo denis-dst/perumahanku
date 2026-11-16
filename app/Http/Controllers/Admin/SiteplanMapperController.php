@@ -122,12 +122,13 @@ class SiteplanMapperController extends Controller
             'pov_description' => 'nullable|string',
             'pov_photo_url' => 'nullable|string',
             'slice_data_base64' => 'nullable|string', // optional cropped base64 from client canvas
+            'polygon_points' => 'nullable|array',
         ]);
 
         $centerX = $validated['x_pct'] + ($validated['w_pct'] / 2);
         $centerY = $validated['y_pct'] + ($validated['h_pct'] / 2);
 
-        $polygon = [
+        $polygon = !empty($validated['polygon_points']) ? $validated['polygon_points'] : [
             [$validated['x_pct'], $validated['y_pct']],
             [$validated['x_pct'] + $validated['w_pct'], $validated['y_pct']],
             [$validated['x_pct'] + $validated['w_pct'], $validated['y_pct'] + $validated['h_pct']],

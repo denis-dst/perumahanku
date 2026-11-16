@@ -23,10 +23,14 @@
             'status' => $u->status,
             'status_label' => $u->status_label,
             'facing' => $u->facing,
+            'position_x' => $u->position_x,
+            'position_y' => $u->position_y,
             'x_pct' => $u->position_x - (($u->width_pct ?: 5) / 2),
             'y_pct' => $u->position_y - (($u->height_pct ?: 5) / 2),
             'w_pct' => $u->width_pct ?: 5,
             'h_pct' => $u->height_pct ?: 5,
+            'polygon_points' => $u->polygon_coords,
+            'svg_points' => $u->svg_polygon_points,
             'slice_image' => $u->slice_image_url,
             'pov_description' => $u->pov_description,
             'pov_photo' => $pov ? $pov->url : '',
@@ -42,9 +46,9 @@
                 <span>/</span>
                 <span class="text-slate-700 font-semibold">{{ $project->name }}</span>
             </div>
-            <h2 class="text-xl font-bold text-slate-900">Interactive Siteplan Slicer & POV Mapper</h2>
+            <h2 class="text-xl font-bold text-slate-900">Interactive Line Slicer & Siteplan Mapper</h2>
             <p class="text-xs text-slate-500 mt-1">
-                Upload peta siteplan, klik & seret untuk memotong arsiran kavling, atau gunakan deteksi otomatis untuk membuat kavling siap klik.
+                Gunakan <strong>garis terhubung (polygon)</strong> untuk memotong arsiran unit kavling dengan presisi. Dilengkapi fitur zoom in/out.
             </p>
         </div>
 
@@ -58,9 +62,9 @@
             <!-- Auto Slice Action Form -->
             <form action="{{ route('admin.projects.siteplan.auto-slice', $project) }}" method="POST" onsubmit="return confirm('Sistem akan melakukan auto-slice pada seluruh blok arsiran siteplan (seperti Blok A, B, C, D, E) dan men-generate kavling ber-POV. Lanjutkan?')">
                 @csrf
-                <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
+                <button type="submit" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    <span>⚡ Otomatis Slice Semua Arsiran Kavling</span>
+                    <span>⚡ Otomatis Slice Semua</span>
                 </button>
             </form>
 
@@ -83,84 +87,173 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Interactive Canvas Slicer Area (8 cols) -->
         <div class="lg:col-span-8 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div class="flex items-center gap-3">
-                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                        <i class="fa-solid fa-map text-brand-500"></i>
-                        <span>Kanvas Siteplan</span>
-                    </span>
-                    <span class="text-[11px] text-slate-400">| Mode: <strong>Klik & Tarik Kursor</strong> pada area unit</span>
+
+            <!-- Toolbar: Zoom In/Out & Drawing Mode Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                <!-- Zoom Controls -->
+                <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl">
+                    <button type="button" @click="zoomOut()" class="w-8 h-8 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm shadow-xs transition" title="Perkecil Tampilan (Zoom Out)">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span class="px-3 text-xs font-black text-slate-800 tabular-nums min-w-[50px] text-center" x-text="Math.round(zoomLevel * 100) + '%'">100%</span>
+                    <button type="button" @click="zoomIn()" class="w-8 h-8 rounded-xl bg-white hover:bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-sm shadow-xs transition" title="Perbesar Tampilan (Zoom In)">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <button type="button" @click="resetZoom()" class="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-brand-600 transition" title="Reset ke Ukuran Pas">
+                        Fit 100%
+                    </button>
                 </div>
-                <div class="flex items-center gap-3 text-[11px] font-semibold">
+
+                <!-- Tool Mode Toggle -->
+                <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-2xl">
+                    <button type="button"
+                            @click="toolMode = 'draw'; cancelPan();"
+                            :class="toolMode === 'draw' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'text-slate-600 hover:bg-white'"
+                            class="px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-draw-polygon"></i>
+                        <span>Mode Garis Poligon</span>
+                    </button>
+                    <button type="button"
+                            @click="toolMode = 'pan'"
+                            :class="toolMode === 'pan' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'text-slate-600 hover:bg-white'"
+                            class="px-3 py-1.5 rounded-xl text-xs transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-hand"></i>
+                        <span>Geser Peta (Pan)</span>
+                    </button>
+                </div>
+
+                <!-- Legend Status -->
+                <div class="hidden sm:flex items-center gap-3 text-[11px] font-semibold">
                     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Tersedia</span>
                     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Booking</span>
                     <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Terjual</span>
                 </div>
             </div>
 
-            <!-- Siteplan Interactive Container -->
-            <div class="relative rounded-2xl overflow-hidden bg-slate-900 border-2 border-slate-200 select-none shadow-inner cursor-crosshair aspect-[16/11.37]"
-                 x-ref="siteplanContainer"
-                 @mousedown="startDrag($event)"
-                 @mousemove="onDrag($event)"
-                 @mouseup="endDrag($event)">
+            <!-- Active Polygon Drawing Floating Helper Bar -->
+            <div x-show="polygonPoints.length > 0" x-cloak class="p-3 bg-brand-50 border border-brand-200 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div class="flex items-center gap-2 text-brand-900 font-semibold">
+                    <span class="w-5 h-5 rounded-full bg-brand-600 text-white text-[10px] font-bold flex items-center justify-center" x-text="polygonPoints.length"></span>
+                    <span>Titik sudut dibuat. Klik titik awal atau tombol hijau di samping untuk menutup batas kavling.</span>
+                </div>
 
-                <!-- Background Image -->
-                <img x-ref="siteplanImg"
-                     src="{{ $siteplanUrl }}"
-                     alt="Siteplan"
-                     class="w-full h-full object-cover pointer-events-none"
-                     @load="onImageLoaded()">
+                <div class="flex items-center gap-2">
+                    <button type="button" @click="undoLastPoint()" class="px-3 py-1 rounded-xl bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold transition">
+                        ↩ Batalkan Titik
+                    </button>
+                    <button type="button" x-show="polygonPoints.length >= 3" @click="closePolygon()" class="px-3 py-1 rounded-xl bg-nature-600 hover:bg-nature-700 text-white font-bold transition">
+                        ✔ Tutup Poligon
+                    </button>
+                    <button type="button" @click="cancelPolygon()" class="px-2.5 py-1 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold transition">
+                        ✕ Batal
+                    </button>
+                </div>
+            </div>
 
-                <!-- SVG Interactive Layer for Sliced Lots -->
-                <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <!-- Sliced Units Rectangles/Polygons -->
-                    <template x-for="unit in units" :key="unit.id">
-                        <g class="pointer-events-auto cursor-pointer group" @click.stop="selectUnit(unit)">
-                            <rect :x="unit.x_pct"
-                                  :y="unit.y_pct"
-                                  :width="unit.w_pct"
-                                  :height="unit.h_pct"
-                                  rx="0.5"
-                                  :class="{
-                                      'fill-emerald-500/40 stroke-emerald-500 hover:fill-emerald-500/70': unit.status === 'available',
-                                      'fill-amber-500/40 stroke-amber-500 hover:fill-amber-500/70': unit.status === 'booked',
-                                      'fill-rose-500/40 stroke-rose-500 hover:fill-rose-500/70': unit.status === 'sold',
-                                      'stroke-2 ring-2 ring-white': selectedUnit && selectedUnit.id === unit.id
-                                  }"
-                                  stroke-width="0.3"
-                                  class="transition-all duration-200" />
-                            <!-- Unit Number Label -->
-                            <text :x="unit.x_pct + (unit.w_pct / 2)"
-                                  :y="unit.y_pct + (unit.h_pct / 2) + 0.8"
-                                  text-anchor="middle"
-                                  font-size="1.8"
-                                  font-weight="900"
-                                  fill="#ffffff"
-                                  class="pointer-events-none select-none drop-shadow"
-                                  x-text="unit.block + unit.number">
-                            </text>
-                        </g>
-                    </template>
+            <!-- Scrollable Viewport with Zoom Wrapper -->
+            <div class="relative rounded-2xl overflow-auto bg-slate-950 border-2 border-slate-200 shadow-inner max-h-[620px]"
+                 x-ref="scrollContainer"
+                 :class="{
+                     'cursor-crosshair': toolMode === 'draw',
+                     'cursor-grab active:cursor-grabbing': toolMode === 'pan'
+                 }"
+                 @mousedown="handleContainerMouseDown($event)"
+                 @mousemove="handleContainerMouseMove($event)"
+                 @mouseup="handleContainerMouseUp($event)">
 
-                    <!-- Active Drag Selection Box -->
-                    <rect x-show="isDragging"
-                          :x="dragRect.x"
-                          :y="dragRect.y"
-                          :width="dragRect.w"
-                          :height="dragRect.h"
-                          fill="rgba(14, 165, 233, 0.35)"
-                          stroke="#0ea5e9"
-                          stroke-width="0.5"
-                          stroke-dasharray="1 1" />
-                </svg>
+                <!-- Scaled Canvas Wrapper (Scales smoothly according to zoomLevel) -->
+                <div class="relative origin-top-left transition-transform duration-100 select-none"
+                     :style="'width: ' + (100 * zoomLevel) + '%; transform: translate(' + panOffset.x + 'px, ' + panOffset.y + 'px);'">
+
+                    <div class="relative w-full aspect-[16/11.37]">
+                        <!-- Background Masterplan Image -->
+                        <img x-ref="siteplanImg"
+                             src="{{ $siteplanUrl }}"
+                             alt="Siteplan"
+                             class="w-full h-full object-cover pointer-events-none select-none"
+                             @load="onImageLoaded()">
+
+                        <!-- SVG Interactive Layer -->
+                        <svg class="absolute inset-0 w-full h-full"
+                             x-ref="siteplanSvg"
+                             viewBox="0 0 100 100"
+                             preserveAspectRatio="none"
+                             @click="handleSvgClick($event)">
+
+                            <!-- Sliced Units Polygons -->
+                            <template x-for="unit in units" :key="unit.id">
+                                <g class="cursor-pointer group" @click.stop="selectUnit(unit)">
+                                    <polygon :points="unit.svg_points || (unit.x_pct + ',' + unit.y_pct + ' ' + (unit.x_pct + unit.w_pct) + ',' + unit.y_pct + ' ' + (unit.x_pct + unit.w_pct) + ',' + (unit.y_pct + unit.h_pct) + ' ' + unit.x_pct + ',' + (unit.y_pct + unit.h_pct))"
+                                             :class="{
+                                                 'fill-emerald-500/40 stroke-emerald-400 hover:fill-emerald-500/75': unit.status === 'available',
+                                                 'fill-amber-500/40 stroke-amber-400 hover:fill-amber-500/75': unit.status === 'booked',
+                                                 'fill-rose-500/40 stroke-rose-400 hover:fill-rose-500/75': unit.status === 'sold',
+                                                 'stroke-2 ring-2 stroke-white': selectedUnit && selectedUnit.id === unit.id
+                                             }"
+                                             stroke-width="0.3"
+                                             class="transition-all duration-200 hover:stroke-white hover:stroke-[0.6]" />
+
+                                    <!-- Unit Number Label in center -->
+                                    <text :x="unit.position_x"
+                                          :y="unit.position_y + 0.6"
+                                          text-anchor="middle"
+                                          font-size="1.8"
+                                          font-weight="900"
+                                          fill="#ffffff"
+                                          class="pointer-events-none select-none drop-shadow">
+                                        <tspan x-text="unit.block + unit.number"></tspan>
+                                    </text>
+                                </g>
+                            </template>
+
+                            <!-- Connected Lines Being Drawn (Active Polygon Mode) -->
+                            <template x-if="polygonPoints.length > 0">
+                                <g class="pointer-events-none">
+                                    <!-- Completed Lines -->
+                                    <polyline :points="getPolygonPointsString()"
+                                              fill="rgba(14, 165, 233, 0.25)"
+                                              stroke="#0ea5e9"
+                                              stroke-width="0.4"
+                                              stroke-linecap="round"
+                                              stroke-linejoin="round" />
+
+                                    <!-- Rubberband Live Line to Mouse Cursor -->
+                                    <line :x1="polygonPoints[polygonPoints.length - 1].x"
+                                          :y1="polygonPoints[polygonPoints.length - 1].y"
+                                          :x2="currentCursorPos.x"
+                                          :y2="currentCursorPos.y"
+                                          stroke="#38bdf8"
+                                          stroke-width="0.35"
+                                          stroke-dasharray="0.8 0.8" />
+
+                                    <!-- Vertex Points Dots -->
+                                    <template x-for="(pt, idx) in polygonPoints" :key="idx">
+                                        <g>
+                                            <circle :cx="pt.x" :cy="pt.y" r="0.8"
+                                                    :fill="idx === 0 ? '#10b981' : '#0ea5e9'"
+                                                    stroke="#ffffff"
+                                                    stroke-width="0.2" />
+                                            <text :x="pt.x" :y="pt.y - 1"
+                                                  text-anchor="middle"
+                                                  font-size="1.2"
+                                                  font-weight="bold"
+                                                  fill="#ffffff"
+                                                  class="drop-shadow"
+                                                  x-text="idx + 1"></text>
+                                        </g>
+                                    </template>
+                                </g>
+                            </template>
+                        </svg>
+                    </div>
+                </div>
             </div>
 
             <!-- Instruction Footer -->
-            <p class="text-[11px] text-slate-500 flex items-center justify-between">
-                <span>💡 <strong>Tips:</strong> Klik & seret kotak di atas salah satu kavling untuk memotong potongan baru, atau klik kavling yang ada untuk mengedit datanya.</span>
-                <span class="font-bold text-slate-700"><span x-text="units.length"></span> Kavling Terpetakan</span>
-            </p>
+            <div class="text-[11px] text-slate-500 flex flex-wrap items-center justify-between gap-2 pt-1">
+                <span>💡 <strong>Cara Pakai:</strong> Pilih <em>Mode Garis Poligon</em> lalu klik sudut-sudut batas kavling (misal 4 sudut). Klik titik pertama atau tombol <em>Tutup Poligon</em> untuk menyelesaikan potongan.</span>
+                <span class="font-bold text-slate-800"><span x-text="units.length"></span> Kavling Terpetakan</span>
+            </div>
         </div>
 
         <!-- Right Side: Lot Slicer Editor Form (4 cols) -->
@@ -176,13 +269,13 @@
 
             <!-- Sliced Lot Thumbnail Preview -->
             <div>
-                <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Hasil Potongan Arsiran (Slice)</label>
+                <label class="block text-[11px] font-bold uppercase text-slate-500 mb-1">Hasil Potongan Poligon (Slice)</label>
                 <div class="h-28 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 flex items-center justify-center relative">
                     <template x-if="form.slice_preview">
                         <img :src="form.slice_preview" class="w-full h-full object-cover">
                     </template>
                     <template x-if="!form.slice_preview">
-                        <span class="text-xs text-slate-400 text-center px-4">Seret kotak pada peta atau pilih kavling untuk melihat potongan.</span>
+                        <span class="text-xs text-slate-400 text-center px-4">Gunakan garis poligon pada peta atau pilih kavling untuk melihat potongan.</span>
                     </template>
                 </div>
             </div>
@@ -286,10 +379,19 @@ function siteplanMapper(config) {
         units: config.initialUnits || [],
         selectedUnit: null,
         showUploadModal: false,
-        isDragging: false,
         isSubmitting: false,
-        startPos: { x: 0, y: 0 },
-        dragRect: { x: 0, y: 0, w: 0, h: 0 },
+
+        // Zoom & Pan state
+        zoomLevel: 1.0,
+        toolMode: 'draw', // 'draw' (polygon lines) or 'pan'
+        panOffset: { x: 0, y: 0 },
+        isPanning: false,
+        panStart: { x: 0, y: 0 },
+
+        // Connected Lines Polygon Drawing State
+        polygonPoints: [], // Array of {x: pct, y: pct}
+        currentCursorPos: { x: 0, y: 0 },
+
         form: {
             unit_id: null,
             block: 'A',
@@ -302,6 +404,7 @@ function siteplanMapper(config) {
             y_pct: 35,
             w_pct: 6,
             h_pct: 6,
+            polygon_points: [],
             slice_preview: '',
             slice_data_base64: '',
             pov_description: '',
@@ -315,7 +418,160 @@ function siteplanMapper(config) {
         },
 
         onImageLoaded() {
-            // ready
+            // image loaded
+        },
+
+        // Zoom Methods
+        zoomIn() {
+            if (this.zoomLevel < 3.5) {
+                this.zoomLevel = parseFloat((this.zoomLevel + 0.25).toFixed(2));
+            }
+        },
+
+        zoomOut() {
+            if (this.zoomLevel > 0.75) {
+                this.zoomLevel = parseFloat((this.zoomLevel - 0.25).toFixed(2));
+            }
+        },
+
+        resetZoom() {
+            this.zoomLevel = 1.0;
+            this.panOffset = { x: 0, y: 0 };
+        },
+
+        cancelPan() {
+            this.isPanning = false;
+        },
+
+        // Pan Handlers
+        handleContainerMouseDown(e) {
+            if (this.toolMode === 'pan') {
+                this.isPanning = true;
+                this.panStart = { x: e.clientX - this.panOffset.x, y: e.clientY - this.panOffset.y };
+            }
+        },
+
+        handleContainerMouseMove(e) {
+            if (this.isPanning && this.toolMode === 'pan') {
+                this.panOffset.x = e.clientX - this.panStart.x;
+                this.panOffset.y = e.clientY - this.panStart.y;
+                return;
+            }
+
+            // If drawing, update live cursor position
+            if (this.toolMode === 'draw') {
+                const svg = this.$refs.siteplanSvg;
+                if (!svg) return;
+                const rect = svg.getBoundingClientRect();
+                const curX = ((e.clientX - rect.left) / rect.width) * 100;
+                const curY = ((e.clientY - rect.top) / rect.height) * 100;
+                this.currentCursorPos = {
+                    x: parseFloat(curX.toFixed(2)),
+                    y: parseFloat(curY.toFixed(2))
+                };
+            }
+        },
+
+        handleContainerMouseUp(e) {
+            if (this.toolMode === 'pan') {
+                this.isPanning = false;
+            }
+        },
+
+        // Connected Lines Polygon Drawing
+        handleSvgClick(e) {
+            if (this.toolMode !== 'draw') return;
+
+            const svg = this.$refs.siteplanSvg;
+            if (!svg) return;
+            const rect = svg.getBoundingClientRect();
+            const curX = parseFloat((((e.clientX - rect.left) / rect.width) * 100).toFixed(2));
+            const curY = parseFloat((((e.clientY - rect.top) / rect.height) * 100).toFixed(2));
+
+            // Check if clicking near first point to close polygon
+            if (this.polygonPoints.length >= 3) {
+                const first = this.polygonPoints[0];
+                const dist = Math.hypot(curX - first.x, curY - first.y);
+                if (dist < 2.5) { // near first point
+                    this.closePolygon();
+                    return;
+                }
+            }
+
+            // Add new point
+            this.polygonPoints.push({ x: curX, y: curY });
+        },
+
+        getPolygonPointsString() {
+            return this.polygonPoints.map(p => `${p.x},${p.y}`).join(' ');
+        },
+
+        undoLastPoint() {
+            if (this.polygonPoints.length > 0) {
+                this.polygonPoints.pop();
+            }
+        },
+
+        cancelPolygon() {
+            this.polygonPoints = [];
+        },
+
+        closePolygon() {
+            if (this.polygonPoints.length < 3) {
+                alert('Dibutuhkan minimal 3 titik sudut untuk membentuk poligon kavling.');
+                return;
+            }
+
+            // Compute bounding box
+            const xs = this.polygonPoints.map(p => p.x);
+            const ys = this.polygonPoints.map(p => p.y);
+            const minX = Math.min(...xs);
+            const maxX = Math.max(...xs);
+            const minY = Math.min(...ys);
+            const maxY = Math.max(...ys);
+
+            const w = Math.max(1, maxX - minX);
+            const h = Math.max(1, maxY - minY);
+
+            this.selectedUnit = null;
+            this.form.unit_id = null;
+            this.form.x_pct = parseFloat(minX.toFixed(2));
+            this.form.y_pct = parseFloat(minY.toFixed(2));
+            this.form.w_pct = parseFloat(w.toFixed(2));
+            this.form.h_pct = parseFloat(h.toFixed(2));
+            this.form.polygon_points = this.polygonPoints.map(p => [p.x, p.y]);
+
+            // Generate polygon-clipped thumbnail on canvas
+            this.generatePolygonSlicePreview();
+
+            // Clear points
+            this.polygonPoints = [];
+        },
+
+        generatePolygonSlicePreview() {
+            const img = this.$refs.siteplanImg;
+            if (!img) return;
+
+            const canvas = document.createElement('canvas');
+            const naturalW = img.naturalWidth || 1600;
+            const naturalH = img.naturalHeight || 1137;
+
+            const cropX = (this.form.x_pct / 100) * naturalW;
+            const cropY = (this.form.y_pct / 100) * naturalH;
+            const cropW = (this.form.w_pct / 100) * naturalW;
+            const cropH = (this.form.h_pct / 100) * naturalH;
+
+            canvas.width = Math.max(20, cropW);
+            canvas.height = Math.max(20, cropH);
+
+            const ctx = canvas.getContext('2d');
+
+            // Draw image cropped
+            ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
+
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+            this.form.slice_preview = dataUrl;
+            this.form.slice_data_base64 = dataUrl;
         },
 
         selectUnit(u) {
@@ -331,6 +587,7 @@ function siteplanMapper(config) {
             this.form.y_pct = u.y_pct;
             this.form.w_pct = u.w_pct;
             this.form.h_pct = u.h_pct;
+            this.form.polygon_points = u.polygon_points || [];
             this.form.slice_preview = u.slice_image || '';
             this.form.slice_data_base64 = '';
             this.form.pov_description = u.pov_description || '';
@@ -345,70 +602,8 @@ function siteplanMapper(config) {
             this.form.status = 'available';
             this.form.slice_preview = '';
             this.form.slice_data_base64 = '';
-        },
-
-        startDrag(e) {
-            const rect = this.$refs.siteplanContainer.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 100;
-            const y = ((e.clientY - rect.top) / rect.height) * 100;
-            this.startPos = { x, y };
-            this.dragRect = { x, y, w: 0, h: 0 };
-            this.isDragging = true;
-        },
-
-        onDrag(e) {
-            if (!this.isDragging) return;
-            const rect = this.$refs.siteplanContainer.getBoundingClientRect();
-            const curX = ((e.clientX - rect.left) / rect.width) * 100;
-            const curY = ((e.clientY - rect.top) / rect.height) * 100;
-
-            const x = Math.min(this.startPos.x, curX);
-            const y = Math.min(this.startPos.y, curY);
-            const w = Math.abs(curX - this.startPos.x);
-            const h = Math.abs(curY - this.startPos.y);
-
-            this.dragRect = { x, y, w, h };
-        },
-
-        endDrag(e) {
-            if (!this.isDragging) return;
-            this.isDragging = false;
-
-            if (this.dragRect.w > 1 && this.dragRect.h > 1) {
-                this.selectedUnit = null;
-                this.form.unit_id = null;
-                this.form.x_pct = parseFloat(this.dragRect.x.toFixed(2));
-                this.form.y_pct = parseFloat(this.dragRect.y.toFixed(2));
-                this.form.w_pct = parseFloat(this.dragRect.w.toFixed(2));
-                this.form.h_pct = parseFloat(this.dragRect.h.toFixed(2));
-
-                // Client-side crop using canvas to preview slice!
-                this.generateClientSlicePreview();
-            }
-        },
-
-        generateClientSlicePreview() {
-            const img = this.$refs.siteplanImg;
-            if (!img) return;
-
-            const canvas = document.createElement('canvas');
-            const naturalW = img.naturalWidth || 1600;
-            const naturalH = img.naturalHeight || 1137;
-
-            const cropX = (this.form.x_pct / 100) * naturalW;
-            const cropY = (this.form.y_pct / 100) * naturalH;
-            const cropW = (this.form.w_pct / 100) * naturalW;
-            const cropH = (this.form.h_pct / 100) * naturalH;
-
-            canvas.width = Math.max(10, cropW);
-            canvas.height = Math.max(10, cropH);
-
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height);
-
-            const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
-            this.form.slice_preview = dataUrl;
-            this.form.slice_data_base64 = dataUrl;
+            this.form.polygon_points = [];
+            this.polygonPoints = [];
         },
 
         submitSlice() {
@@ -444,10 +639,14 @@ function siteplanMapper(config) {
                         status: u.status,
                         status_label: u.status === 'available' ? 'Tersedia' : (u.status === 'booked' ? 'Booking' : 'Terjual'),
                         facing: u.facing,
+                        position_x: u.position_x,
+                        position_y: u.position_y,
                         x_pct: this.form.x_pct,
                         y_pct: this.form.y_pct,
                         w_pct: this.form.w_pct,
                         h_pct: this.form.h_pct,
+                        polygon_points: u.polygon_coords,
+                        svg_points: u.svg_polygon_points || this.form.polygon_points.map(p => p[0] + ',' + p[1]).join(' '),
                         slice_image: u.slice_image ? '/storage/' + u.slice_image : this.form.slice_preview,
                         pov_description: u.pov_description,
                         pov_photo: pov,
@@ -460,7 +659,7 @@ function siteplanMapper(config) {
                         this.units.push(item);
                     }
                     this.selectUnit(item);
-                    alert('Kavling berhasil disimpan dan terpetakan di siteplan!');
+                    alert('Kavling poligon berhasil disimpan dan terpetakan di siteplan!');
                 } else {
                     alert('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'));
                 }
