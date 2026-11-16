@@ -1,0 +1,58 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class HouseType extends Model
+{
+    protected $fillable = [
+        'project_id',
+        'name',
+        'slug',
+        'building_area',
+        'land_area',
+        'bedrooms',
+        'bathrooms',
+        'floors',
+        'price',
+        'description',
+        'specifications',
+        'floor_plan_image',
+        'is_available',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'specifications' => 'array',
+        'is_available' => 'boolean',
+        'price' => 'decimal:0',
+        'building_area' => 'integer',
+        'land_area' => 'integer',
+        'bedrooms' => 'integer',
+        'bathrooms' => 'integer',
+        'floors' => 'integer',
+    ];
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class);
+    }
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(Unit::class);
+    }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable')->orderBy('sort_order');
+    }
+
+    public function getFormattedPriceAttribute(): string
+    {
+        return 'Rp ' . number_format($this->price, 0, ',', '.');
+    }
+}

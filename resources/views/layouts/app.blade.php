@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', \App\Models\Setting::get('site_name', 'Perumahanku') . ' - ' . \App\Models\Setting::get('site_tagline', 'Katalog Perumahan Baru'))</title>
+    <meta name="description" content="@yield('meta_description', \App\Models\Setting::get('hero_subtitle', 'Katalog perumahan baru terpercaya dengan skema cicilan KPR dan booking survei lokasi.'))">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Open Graph / Sosmed -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="@yield('title', \App\Models\Setting::get('site_name', 'Perumahanku'))">
+    <meta property="og:description" content="@yield('meta_description', \App\Models\Setting::get('hero_subtitle'))">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:image" content="@yield('meta_image', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80')">
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9', // Biru Langit Indah
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        nature: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            500: '#10b981', // Hijau Sejuk
+                            600: '#059669',
+                            700: '#047857',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.5/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col min-h-screen">
+
+    @php
+        $siteName = \App\Models\Setting::get('site_name', 'Perumahanku');
+        $siteTagline = \App\Models\Setting::get('site_tagline', 'Katalog Perumahan Baru');
+        $waNum = \App\Models\Setting::get('whatsapp_number', '6281234567890');
+        $waClean = preg_replace('/[^0-9]/', '', $waNum);
+        if (str_starts_with($waClean, '0')) $waClean = '62' . substr($waClean, 1);
+        $companyName = \App\Models\Setting::get('company_name', 'PT Perumahanku Graha Nusantara');
+        $companyPhone = \App\Models\Setting::get('company_phone', '021-88997766');
+        $companyEmail = \App\Models\Setting::get('company_email', 'info@perumahanku.id');
+        $companyAddress = \App\Models\Setting::get('company_address', 'Jl. Boulevard Hijau No. 128');
+    @endphp
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-nature-600 text-white text-xs py-2 px-4 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2">
+                <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase">Promo Perdana</span>
+                <span>DP 0% + Bebas Biaya KPR & Sertifikat SHM!</span>
+            </div>
+            <div class="flex items-center gap-4 text-white/90">
+                <a href="tel:{{ $companyPhone }}" class="hover:text-white flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-phone text-[11px]"></i> {{ $companyPhone }}
+                </a>
+                <span class="hidden sm:inline opacity-40">|</span>
+                <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi perumahan baru.') }}" target="_blank" class="hover:text-white flex items-center gap-1.5 transition">
+                    <i class="fa-brands fa-whatsapp text-emerald-300"></i> Hotline WA: {{ $waNum }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 transition-all duration-300" x-data="{ mobileMenuOpen: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-500 to-nature-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
+                        <i class="fa-solid fa-house-chimney text-xl"></i>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-nature-600 bg-clip-text text-transparent">
+                            {{ $siteName }}
+                        </div>
+                        <p class="text-[11px] font-medium text-slate-400 -mt-1 hidden sm:block">
+                            {{ $siteTagline }}
+                        </p>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex items-center gap-8">
+                    <a href="{{ route('home') }}" class="font-medium text-sm {{ request()->routeIs('home') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Beranda
+                    </a>
+                    <a href="{{ route('projects.index') }}" class="font-medium text-sm {{ request()->routeIs('projects.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Katalog Perumahan
+                    </a>
+                    <a href="{{ route('kpr.index') }}" class="font-medium text-sm {{ request()->routeIs('kpr.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Simulasi KPR
+                    </a>
+                    <a href="{{ route('blog.index') }}" class="font-medium text-sm {{ request()->routeIs('blog.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Tips & Artikel
+                    </a>
+                    <a href="{{ route('pages.about') }}" class="font-medium text-sm {{ request()->routeIs('pages.about') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Tentang Kami
+                    </a>
+                    <a href="{{ route('pages.contact') }}" class="font-medium text-sm {{ request()->routeIs('pages.contact') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                        Kontak
+                    </a>
+                </nav>
+
+                <!-- CTA Button -->
+                <div class="hidden lg:flex items-center gap-3">
+                    <a href="{{ route('projects.index') }}#booking-section" class="px-5 py-2.5 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-semibold text-sm shadow-sm hover:shadow-md hover:shadow-nature-500/20 transition-all flex items-center gap-2">
+                        <i class="fa-regular fa-calendar-check"></i>
+                        <span>Booking Survei</span>
+                    </a>
+                    <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi unit perumahan.') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-sm transition-all flex items-center gap-2">
+                        <i class="fa-brands fa-whatsapp text-nature-600 text-base"></i>
+                        <span>Chat Sales</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition">
+                        <i class="fa-solid text-xl" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lg">
+            <a href="{{ route('home') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-house w-6 text-brand-500"></i> Beranda
+            </a>
+            <a href="{{ route('projects.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('projects.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-city w-6 text-brand-500"></i> Katalog Perumahan
+            </a>
+            <a href="{{ route('kpr.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('kpr.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-calculator w-6 text-brand-500"></i> Simulasi KPR
+            </a>
+            <a href="{{ route('blog.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('blog.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-newspaper w-6 text-brand-500"></i> Tips & Artikel
+            </a>
+            <a href="{{ route('pages.about') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('pages.about') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-circle-info w-6 text-brand-500"></i> Tentang Kami
+            </a>
+            <a href="{{ route('pages.contact') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('pages.contact') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+                <i class="fa-solid fa-phone w-6 text-brand-500"></i> Kontak
+            </a>
+            <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
+                <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-nature-500 text-white font-semibold flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Chat WhatsApp
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        @yield('content')
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+                <!-- Col 1: Brand & Bio -->
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-lg">
+                            <i class="fa-solid fa-house-chimney"></i>
+                        </div>
+                        <span class="text-2xl font-bold text-white tracking-tight">{{ $siteName }}</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        Platform katalog perumahan baru terpercaya. Hadir membantu keluarga Indonesia menemukan hunian idaman dengan kemudahan survei lokasi online dan simulasi KPR transparan.
+                    </p>
+                    <p class="text-xs text-slate-500">
+                        Dipersembahkan oleh: <span class="text-slate-300 font-medium">{{ $companyName }}</span>
+                    </p>
+                    <div class="flex items-center gap-3 pt-2">
+                        <a href="{{ \App\Models\Setting::get('instagram_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="{{ \App\Models\Setting::get('facebook_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="{{ \App\Models\Setting::get('tiktok_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                            <i class="fa-brands fa-tiktok"></i>
+                        </a>
+                        <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-nature-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Navigasi Cepat -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Menu Populer</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="{{ route('home') }}" class="hover:text-brand-400 transition">Beranda</a></li>
+                        <li><a href="{{ route('projects.index') }}" class="hover:text-brand-400 transition">Semua Perumahan</a></li>
+                        <li><a href="{{ route('kpr.index') }}" class="hover:text-brand-400 transition">Kalkulator KPR Interaktif</a></li>
+                        <li><a href="{{ route('blog.index') }}" class="hover:text-brand-400 transition">Tips & Artikel Properti</a></li>
+                        <li><a href="{{ route('pages.about') }}" class="hover:text-brand-400 transition">Tentang Kami</a></li>
+                        <li><a href="{{ route('pages.contact') }}" class="hover:text-brand-400 transition">Hubungi Sales / Kantor</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Area Perumahan (SEO Landing) -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Cari Wilayah Terdekat</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="{{ route('projects.city', 'bogor') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bogor <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'tangerang-selatan') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Tangerang <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'bekasi') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bekasi / Cikarang <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'depok') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Depok <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'jakarta') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Jakarta <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Kantor & Kontak -->
+                <div class="space-y-3">
+                    <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Marketing Gallery</h4>
+                    <p class="text-xs text-slate-400 flex items-start gap-2.5">
+                        <i class="fa-solid fa-location-dot text-brand-400 mt-1"></i>
+                        <span>{{ $companyAddress }}</span>
+                    </p>
+                    <p class="text-xs text-slate-400 flex items-center gap-2.5">
+                        <i class="fa-solid fa-phone text-brand-400"></i>
+                        <span>{{ $companyPhone }}</span>
+                    </p>
+                    <p class="text-xs text-slate-400 flex items-center gap-2.5">
+                        <i class="fa-solid fa-envelope text-brand-400"></i>
+                        <span>{{ $companyEmail }}</span>
+                    </p>
+                    <p class="text-xs text-slate-400 flex items-center gap-2.5">
+                        <i class="fa-regular fa-clock text-nature-400"></i>
+                        <span>{{ \App\Models\Setting::get('office_hours', 'Buka Setiap Hari (08.30 - 17.30 WIB)') }}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 text-center sm:flex sm:justify-between sm:items-center text-xs text-slate-500">
+                <p>&copy; {{ date('Y') }} {{ $companyName }}. Seluruh hak cipta dilindungi undang-undang.</p>
+                <div class="mt-3 sm:mt-0 flex justify-center gap-4">
+                    <a href="{{ route('admin.login') }}" class="text-slate-500 hover:text-slate-400">Panel Internal Admin</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp CTA Button (Always reachable) -->
+    <aside aria-label="WhatsApp Contact" class="fixed bottom-6 right-6 z-50">
+        <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Sales ' . $siteName . ', saya sedang mencari informasi perumahan.') }}"
+           target="_blank"
+           class="group flex items-center gap-3 bg-nature-500 hover:bg-nature-600 text-white px-4 py-3.5 rounded-full shadow-xl shadow-nature-500/30 hover:scale-105 transition-all duration-300">
+            <i class="fa-brands fa-whatsapp text-2xl animate-pulse"></i>
+            <span class="font-bold text-sm hidden md:inline pr-1">Tanya via WhatsApp</span>
+        </a>
+    </aside>
+
+    @stack('scripts')
+</body>
+</html>
