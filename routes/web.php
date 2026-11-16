@@ -41,6 +41,7 @@ Route::get('/kontak', [PageController::class, 'contact'])->name('pages.contact')
 | Admin Authentication Routes
 |--------------------------------------------------------------------------
 */
+Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login');
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
