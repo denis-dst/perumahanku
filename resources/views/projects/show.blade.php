@@ -271,15 +271,51 @@
                                     </div>
                                 </div>
 
-                                <!-- Material Specification Table -->
+                                <!-- Modern & Friendly Material Specifications Grid -->
                                 @if(!empty($ht->specifications) && is_array($ht->specifications))
-                                    <div class="pt-4 border-t border-slate-100">
-                                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Spesifikasi Material Bangunan:</h4>
-                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                    <div class="pt-6 border-t border-slate-100">
+                                        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                                            <div class="flex items-center gap-2.5">
+                                                <div class="w-8 h-8 rounded-xl bg-nature-100 text-nature-700 flex items-center justify-center text-xs shadow-2xs">
+                                                    <i class="fa-solid fa-shield-halved"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight">Kualitas & Spesifikasi Teknis Material</h4>
+                                                    <p class="text-[11px] text-slate-400">Standar mutu bangunan kokoh, rapi, dan bergaransi resmi</p>
+                                                </div>
+                                            </div>
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full">
+                                                <i class="fa-solid fa-circle-check text-[10px] text-emerald-500"></i> Mutu SNI & Premium
+                                            </span>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             @foreach($ht->specifications as $item => $val)
-                                                <div class="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                                                    <span class="font-semibold text-slate-600">{{ $item }}</span>
-                                                    <span class="text-slate-800 font-medium">{{ $val }}</span>
+                                                @php
+                                                    $itemLower = strtolower($item);
+                                                    $iconConfig = match(true) {
+                                                        str_contains($itemLower, 'ponda') || str_contains($itemLower, 'struktur') => ['fa-cubes-stacked', 'bg-amber-50 text-amber-600 border-amber-200/70'],
+                                                        str_contains($itemLower, 'dinding') || str_contains($itemLower, 'bata') => ['fa-trowel-bricks', 'bg-rose-50 text-rose-600 border-rose-200/70'],
+                                                        str_contains($itemLower, 'lantai') || str_contains($itemLower, 'granit') || str_contains($itemLower, 'keramik') => ['fa-table-cells', 'bg-brand-50 text-brand-600 border-brand-200/70'],
+                                                        str_contains($itemLower, 'atap') || str_contains($itemLower, 'genteng') || str_contains($itemLower, 'rangka') => ['fa-house-chimney-window', 'bg-indigo-50 text-indigo-600 border-indigo-200/70'],
+                                                        str_contains($itemLower, 'kusen') || str_contains($itemLower, 'pintu') || str_contains($itemLower, 'jendela') => ['fa-door-open', 'bg-emerald-50 text-emerald-600 border-emerald-200/70'],
+                                                        str_contains($itemLower, 'sanit') || str_contains($itemLower, 'toilet') || str_contains($itemLower, 'kloset') || str_contains($itemLower, 'shower') => ['fa-shower', 'bg-sky-50 text-sky-600 border-sky-200/70'],
+                                                        str_contains($itemLower, 'listrik') || str_contains($itemLower, 'pln') || str_contains($itemLower, 'daya') => ['fa-bolt', 'bg-yellow-50 text-yellow-600 border-yellow-200'],
+                                                        str_contains($itemLower, 'air') || str_contains($itemLower, 'pdam') || str_contains($itemLower, 'sumur') => ['fa-droplet', 'bg-cyan-50 text-cyan-600 border-cyan-200/70'],
+                                                        str_contains($itemLower, 'cat') || str_contains($itemLower, 'finish') => ['fa-paint-roller', 'bg-violet-50 text-violet-600 border-violet-200/70'],
+                                                        str_contains($itemLower, 'plafon') => ['fa-maximize', 'bg-teal-50 text-teal-600 border-teal-200/70'],
+                                                        default => ['fa-circle-check', 'bg-slate-100 text-slate-600 border-slate-200'],
+                                                    };
+                                                @endphp
+
+                                                <div class="flex items-start gap-3 p-3 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:bg-white hover:border-brand-300 hover:shadow-xs transition-all duration-200 group">
+                                                    <div class="w-9 h-9 rounded-xl {{ $iconConfig[1] }} border flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 mt-0.5">
+                                                        <i class="fa-solid {{ $iconConfig[0] }} text-sm"></i>
+                                                    </div>
+                                                    <div class="min-w-0 flex-1">
+                                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ $item }}</span>
+                                                        <p class="text-xs font-bold text-slate-800 leading-snug mt-0.5 break-words">{{ $val }}</p>
+                                                    </div>
                                                 </div>
                                             @endforeach
                                         </div>
