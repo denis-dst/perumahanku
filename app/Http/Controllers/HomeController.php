@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\BlogPost;
 use App\Models\KprBank;
 use App\Models\Project;
-use App\Models\Setting;
-use Illuminate\Http\Request;
+use App\Models\Unit;
 
 class HomeController extends Controller
 {
@@ -24,8 +23,8 @@ class HomeController extends Controller
 
         $latestArticles = BlogPost::published()->take(3)->get();
 
-        $totalUnits = \App\Models\Unit::count();
-        $availableUnits = \App\Models\Unit::where('status', 'available')->count();
+        $totalUnits = Unit::count();
+        $availableUnits = Unit::where('status', 'available')->count();
         $totalProjects = Project::active()->count();
 
         return view('home', compact(

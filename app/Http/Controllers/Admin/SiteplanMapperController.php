@@ -38,11 +38,11 @@ class SiteplanMapperController extends Controller
         ]);
 
         $file = $request->file('siteplan_file');
-        $filename = 'siteplan_' . $project->slug . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $filename = 'siteplan_'.$project->slug.'_'.time().'.'.$file->getClientOriginalExtension();
         $path = $file->storeAs('siteplans', $filename, 'public');
 
         $project->update([
-            'siteplan_image' => 'storage/' . $path,
+            'siteplan_image' => 'storage/'.$path,
         ]);
 
         return redirect()->back()->with('success', 'Gambar siteplan berhasil diunggah! Silakan lakukan slice kavling.');
@@ -57,15 +57,15 @@ class SiteplanMapperController extends Controller
         $siteplanPath = null;
         if ($project->siteplan_image) {
             $cleaned = preg_replace('#^/?storage/#', '', $project->siteplan_image);
-            $local = storage_path('app/public/' . $cleaned);
+            $local = storage_path('app/public/'.$cleaned);
             if (file_exists($local)) {
                 $siteplanPath = $local;
-            } elseif (file_exists(public_path('storage/' . $cleaned))) {
-                $siteplanPath = public_path('storage/' . $cleaned);
+            } elseif (file_exists(public_path('storage/'.$cleaned))) {
+                $siteplanPath = public_path('storage/'.$cleaned);
             }
         }
 
-        if (!$siteplanPath || !file_exists($siteplanPath)) {
+        if (! $siteplanPath || ! file_exists($siteplanPath)) {
             // Fallback to sample-siteplan if exists
             $sample = storage_path('app/public/sample-siteplan.jpg');
             if (file_exists($sample)) {
@@ -128,7 +128,7 @@ class SiteplanMapperController extends Controller
         $centerX = $validated['x_pct'] + ($validated['w_pct'] / 2);
         $centerY = $validated['y_pct'] + ($validated['h_pct'] / 2);
 
-        $polygon = !empty($validated['polygon_points']) ? $validated['polygon_points'] : [
+        $polygon = ! empty($validated['polygon_points']) ? $validated['polygon_points'] : [
             [$validated['x_pct'], $validated['y_pct']],
             [$validated['x_pct'] + $validated['w_pct'], $validated['y_pct']],
             [$validated['x_pct'] + $validated['w_pct'], $validated['y_pct'] + $validated['h_pct']],
@@ -137,12 +137,12 @@ class SiteplanMapperController extends Controller
 
         // Save lot slice thumbnail if base64 provided
         $slicePath = null;
-        if (!empty($validated['slice_data_base64']) && str_starts_with($validated['slice_data_base64'], 'data:image')) {
+        if (! empty($validated['slice_data_base64']) && str_starts_with($validated['slice_data_base64'], 'data:image')) {
             $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $validated['slice_data_base64']);
             $decoded = base64_decode($base64);
-            $sliceName = 'slice_' . $project->slug . '_' . Str::slug($validated['block'] . '-' . $validated['number']) . '_' . time() . '.jpg';
-            Storage::disk('public')->put('slices/' . $sliceName, $decoded);
-            $slicePath = 'slices/' . $sliceName;
+            $sliceName = 'slice_'.$project->slug.'_'.Str::slug($validated['block'].'-'.$validated['number']).'_'.time().'.jpg';
+            Storage::disk('public')->put('slices/'.$sliceName, $decoded);
+            $slicePath = 'slices/'.$sliceName;
         }
 
         $unitData = [
@@ -165,7 +165,7 @@ class SiteplanMapperController extends Controller
             $unitData['slice_image'] = $slicePath;
         }
 
-        if (!empty($validated['unit_id'])) {
+        if (! empty($validated['unit_id'])) {
             $unit = Unit::findOrFail($validated['unit_id']);
             $unit->update($unitData);
         } else {
@@ -173,11 +173,11 @@ class SiteplanMapperController extends Controller
         }
 
         // Handle POV Photo
-        if (!empty($validated['pov_photo_url'])) {
+        if (! empty($validated['pov_photo_url'])) {
             $unit->images()->where('category', 'pov')->delete();
             $unit->images()->create([
                 'path' => $validated['pov_photo_url'],
-                'caption' => 'POV Nyata dari Kavling ' . $unit->block . '-' . $unit->number,
+                'caption' => 'POV Nyata dari Kavling '.$unit->block.'-'.$unit->number,
                 'is_primary' => true,
                 'category' => 'pov',
                 'sort_order' => 1,

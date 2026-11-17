@@ -13,6 +13,7 @@ class HouseTypeController extends Controller
     public function index(Project $project)
     {
         $houseTypes = $project->houseTypes()->withCount('units')->get();
+
         return view('admin.house_types.index', compact('project', 'houseTypes'));
     }
 
@@ -44,7 +45,7 @@ class HouseTypeController extends Controller
         if ($request->filled('specs_keys') && is_array($request->specs_keys)) {
             $specs = [];
             foreach ($request->specs_keys as $idx => $key) {
-                if (!empty($key) && isset($request->specs_values[$idx])) {
+                if (! empty($key) && isset($request->specs_values[$idx])) {
                     $specs[trim($key)] = trim($request->specs_values[$idx]);
                 }
             }
@@ -82,7 +83,7 @@ class HouseTypeController extends Controller
         if ($request->filled('specs_keys') && is_array($request->specs_keys)) {
             $specs = [];
             foreach ($request->specs_keys as $idx => $key) {
-                if (!empty($key) && isset($request->specs_values[$idx])) {
+                if (! empty($key) && isset($request->specs_values[$idx])) {
                     $specs[trim($key)] = trim($request->specs_values[$idx]);
                 }
             }
@@ -97,6 +98,7 @@ class HouseTypeController extends Controller
     public function destroy(Project $project, HouseType $houseType)
     {
         $houseType->delete();
+
         return redirect()->route('admin.projects.house-types.index', $project)->with('success', 'Tipe rumah berhasil dihapus.');
     }
 }

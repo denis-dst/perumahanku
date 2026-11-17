@@ -2,11 +2,17 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Project extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'name', 'slug', 'tagline', 'description', 'address',
         'city', 'district', 'province', 'latitude', 'longitude',
@@ -36,17 +42,17 @@ class Project extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function images()
+    public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable')->orderBy('sort_order');
     }
 
-    public function primaryImage()
+    public function primaryImage(): MorphOne
     {
         return $this->morphOne(Image::class, 'imageable')->where('is_primary', true);
     }
 
-    public function resolveRouteBinding($value, $field = null)
+    public function resolveRouteBinding($value, $field = null): ?Model
     {
         return $this->where('slug', $value)
             ->orWhere('id', $value)
@@ -58,9 +64,15 @@ class Project extends Model
         $min = $this->houseTypes()->min('price');
         $max = $this->houseTypes()->max('price');
 
-        if (!$min && !$max) return 'Hubungi Kami';
-        if ($min == $max) return 'Rp ' . number_format($min, 0, ',', '.');
-        return 'Rp ' . number_format($min, 0, ',', '.') . ' - ' . number_format($max, 0, ',', '.');
+        if (! $min && ! $max) {
+            return 'Hubungi Kami';
+        }
+
+        if ($min === $max) {
+            return 'Rp '.number_format($min, 0, ',', '.');
+        }
+
+        return 'Rp '.number_format($min, 0, ',', '.').' - '.number_format($max, 0, ',', '.');
     }
 
     public function getAvailableUnitsCountAttribute(): int
@@ -68,17 +80,17 @@ class Project extends Model
         return $this->units()->where('status', 'available')->count();
     }
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');
     }
 
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
-    public function scopeByCity($query, string $city)
+    public function scopeByCity(Builder $query, string $city): Builder
     {
         return $query->where('city', 'LIKE', "%{$city}%");
     }

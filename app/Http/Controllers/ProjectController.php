@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\KprBank;
 use App\Models\Project;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -66,10 +65,10 @@ class ProjectController extends Controller
             'units' => function ($q) {
                 $q->with(['houseType', 'images', 'povImages']);
             },
-            'images'
+            'images',
         ])
-        ->where('slug', $slug)
-        ->firstOrFail();
+            ->where('slug', $slug)
+            ->firstOrFail();
 
         $banks = KprBank::active()->get();
         $otherProjects = Project::active()
@@ -88,7 +87,7 @@ class ProjectController extends Controller
             ->active()
             ->where(function ($q) use ($cityFormatted, $city) {
                 $q->where('city', 'like', "%{$cityFormatted}%")
-                  ->orWhere('city', 'like', "%{$city}%");
+                    ->orWhere('city', 'like', "%{$city}%");
             })
             ->latest()
             ->paginate(9);

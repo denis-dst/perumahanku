@@ -11,6 +11,7 @@ class KprBankController extends Controller
     public function index()
     {
         $banks = KprBank::orderBy('sort_order')->get();
+
         return view('admin.banks.index', compact('banks'));
     }
 
@@ -51,6 +52,7 @@ class KprBankController extends Controller
     public function destroy(KprBank $bank)
     {
         $bank->delete();
+
         return redirect()->route('admin.banks.index')->with('success', 'Bank berhasil dihapus.');
     }
 }

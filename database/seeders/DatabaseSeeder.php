@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\BlogPost;
 use App\Models\Booking;
 use App\Models\HouseType;
-use App\Models\Image;
 use App\Models\KprBank;
 use App\Models\Project;
 use App\Models\Setting;
@@ -13,7 +12,6 @@ use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -119,7 +117,7 @@ class DatabaseSeeder extends Seeder
                     'Taman Bermain Anak & Gazebo Santai',
                     'Jogging Track & Lapangan Olahraga 3-on-3',
                     'Jaringan Listrik & Fiber Optic Bawah Tanah',
-                    'Row Jalan Lebar (8 - 10 Meter) Paving Block'
+                    'Row Jalan Lebar (8 - 10 Meter) Paving Block',
                 ],
                 'siteplan_image' => 'https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1600&q=80',
                 'status' => 'active',
@@ -161,7 +159,7 @@ class DatabaseSeeder extends Seeder
                     'Kusen & Pintu' => 'Alumunium Powder Coating & Solid Wood Panel',
                     'Sanitair' => 'Kloset Duduk Toto / setara + Shower',
                     'Listrik' => 'PLN 1.300 Watt Prabayar (Token)',
-                    'Air' => 'Sumur Bor + Pompa Otomatis & Toren Air 500L'
+                    'Air' => 'Sumur Bor + Pompa Otomatis & Toren Air 500L',
                 ],
                 'floor_plan_image' => 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
                 'is_available' => true,
@@ -187,7 +185,7 @@ class DatabaseSeeder extends Seeder
                     'Kusen & Pintu' => 'Aluminium Hitam Anodized + Smart Door Lock',
                     'Sanitair' => 'American Standard Toto Sanitary',
                     'Listrik' => 'PLN 2.200 Watt',
-                    'Air' => 'PDAM Mandiri + Filter Air Baku'
+                    'Air' => 'PDAM Mandiri + Filter Air Baku',
                 ],
                 'floor_plan_image' => 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
                 'is_available' => true,
@@ -212,7 +210,7 @@ class DatabaseSeeder extends Seeder
                     'Tangga' => 'Railing Kaca Tempered + Kayu Merbau',
                     'Pintu' => 'Solid Engineering Wood + Smart Digital Lockset (PIN/Fingerprint)',
                     'Listrik' => 'PLN 3.500 Watt Underground Cable',
-                    'Smart Home' => 'Smart Switch Lampu & CCTV Outdoor Terkoneksi Smartphone'
+                    'Smart Home' => 'Smart Switch Lampu & CCTV Outdoor Terkoneksi Smartphone',
                 ],
                 'floor_plan_image' => 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80',
                 'is_available' => true,
@@ -330,7 +328,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'project_id' => $ud['project_id'],
                     'block' => $ud['block'],
-                    'number' => $ud['number']
+                    'number' => $ud['number'],
                 ],
                 $ud
             );
@@ -339,10 +337,10 @@ class DatabaseSeeder extends Seeder
             $u->images()->firstOrCreate(
                 ['path' => $povPhoto],
                 [
-                    'caption' => 'Sudut Pandang (POV) Nyata dari Kavling ' . $u->block . '-' . $u->number,
+                    'caption' => 'Sudut Pandang (POV) Nyata dari Kavling '.$u->block.'-'.$u->number,
                     'is_primary' => true,
                     'category' => 'pov',
-                    'sort_order' => 1
+                    'sort_order' => 1,
                 ]
             );
         }
@@ -366,7 +364,7 @@ class DatabaseSeeder extends Seeder
                     'Underground Cable Drainage Bebas Banjir',
                     'Access Card One Gate & CCTV 24 Jam',
                     'Danau Komunal & Tepi Jogging Track',
-                    'Commercial Area & Minimarket 24 Jam'
+                    'Commercial Area & Minimarket 24 Jam',
                 ],
                 'siteplan_image' => 'https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1600&q=80',
                 'status' => 'active',
@@ -400,7 +398,7 @@ class DatabaseSeeder extends Seeder
                     'Pondasi' => 'Pancang Mini Pile + Sloof Beton Bertulang',
                     'Dinding' => 'Bata Merah Finishing Cat Dulux Weathershield',
                     'Kusen' => 'Alumunium YKK Standar Jepang',
-                    'Sanitair' => 'Grohe & Toto Flush System'
+                    'Sanitair' => 'Grohe & Toto Flush System',
                 ],
                 'is_available' => true,
                 'sort_order' => 1,
@@ -421,7 +419,7 @@ class DatabaseSeeder extends Seeder
                 'specifications' => [
                     'Struktur' => 'Beton Bertulang K-300 Siap Gempa',
                     'Smart Home' => 'Door Lock, IP Camera, Sensor Gerak, Smart Lighting',
-                    'Listrik' => 'PLN 4.400 Watt'
+                    'Listrik' => 'PLN 4.400 Watt',
                 ],
                 'is_available' => true,
                 'sort_order' => 2,
@@ -446,7 +444,7 @@ class DatabaseSeeder extends Seeder
                     'Angsuran Flat KPR Subsidi mulai 1 Jutaan/bulan',
                     'Jalan Lingkungan Cor Beton Tebal',
                     'Bebas Banjir dan Dataran Tinggi',
-                    'Dilalui Angkutan Umum 24 Jam'
+                    'Dilalui Angkutan Umum 24 Jam',
                 ],
                 'siteplan_image' => 'https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1600&q=80',
                 'status' => 'active',
@@ -480,7 +478,7 @@ class DatabaseSeeder extends Seeder
                     'Dinding' => 'Batako Press Plester & Cat',
                     'Rangka Atap' => 'Baja Ringan + Genteng Metal',
                     'Listrik' => 'PLN 900 / 1.300 Watt',
-                    'Air' => 'Sumur Pantek Bersih'
+                    'Air' => 'Sumur Pantek Bersih',
                 ],
                 'is_available' => true,
                 'sort_order' => 1,
@@ -537,7 +535,7 @@ class DatabaseSeeder extends Seeder
                 'title' => '5 Tips Jitu Memilih Rumah Pertama Bagi Pasangan Muda di 2026',
                 'slug' => '5-tips-jitu-memilih-rumah-pertama-pasangan-muda',
                 'category' => 'Panduan Beli Rumah',
-                'content' => "<p>Membeli rumah pertama merupakan salah satu keputusan finansial terbesar dalam hidup sebuah keluarga muda. Seringkali, godaan diskon atau desain cantik membuat calon pembeli lupa mempertimbangkan faktor jangka panjang seperti legalitas, biaya perawatan, dan kemudahan akses harian.</p><h3>1. Cek Kredibilitas Pengembang dan Sertifikat</h3><p>Pastikan sertifikat lahan sudah split per kavling (SHM / HGB murni) dan IMB/PBG sudah terbit. Jangan tergiur harga di bawah pasar jika legalitas masih mengambang.</p><h3>2. Hitung Kemampuan Cicilan Maksimal 30% dari Penghasilan</h3><p>Rasio aman angsuran KPR bulanan adalah sepertiga dari total take-home pay gabungan suami dan istri agar kebutuhan masa depan tetap terlindungi.</p><h3>3. Perhatikan Fasilitas dan Akses Transportasi</h3><p>Jarak bukan sekadar kilometer, tapi waktu tempuh. Rumah dekat stasiun KRL atau gerbang tol lingkar luar seringkali lebih menghemat energi dan biaya perjalanan dibanding yang terisolasi.</p>",
+                'content' => '<p>Membeli rumah pertama merupakan salah satu keputusan finansial terbesar dalam hidup sebuah keluarga muda. Seringkali, godaan diskon atau desain cantik membuat calon pembeli lupa mempertimbangkan faktor jangka panjang seperti legalitas, biaya perawatan, dan kemudahan akses harian.</p><h3>1. Cek Kredibilitas Pengembang dan Sertifikat</h3><p>Pastikan sertifikat lahan sudah split per kavling (SHM / HGB murni) dan IMB/PBG sudah terbit. Jangan tergiur harga di bawah pasar jika legalitas masih mengambang.</p><h3>2. Hitung Kemampuan Cicilan Maksimal 30% dari Penghasilan</h3><p>Rasio aman angsuran KPR bulanan adalah sepertiga dari total take-home pay gabungan suami dan istri agar kebutuhan masa depan tetap terlindungi.</p><h3>3. Perhatikan Fasilitas dan Akses Transportasi</h3><p>Jarak bukan sekadar kilometer, tapi waktu tempuh. Rumah dekat stasiun KRL atau gerbang tol lingkar luar seringkali lebih menghemat energi dan biaya perjalanan dibanding yang terisolasi.</p>',
                 'thumbnail' => 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80',
                 'seo_title' => '5 Tips Jitu Memilih Rumah Pertama Bagi Pasangan Muda - Perumahanku',
                 'seo_description' => 'Simak 5 tips penting membeli rumah pertama bagi keluarga muda: cara hitung KPR, cek legalitas developer, hingga memilih lokasi strategis.',
@@ -548,7 +546,7 @@ class DatabaseSeeder extends Seeder
                 'title' => 'Panduan Lengkap Syarat dan Cara Lolos Pengajuan KPR Bank',
                 'slug' => 'panduan-lengkap-syarat-dan-cara-lolos-kpr-bank',
                 'category' => 'Tips KPR',
-                'content' => "<p>Pengajuan Kredit Pemilikan Rumah (KPR) seringkali ditolak hanya karena masalah sepele dalam riwayat perbankan. Ketahui syarat administrasi dan tips agar skor SLIK OJK (BI Checking) Anda berstatus Kol 1 (lancar).</p><h3>Syarat Berkas Wajib:</h3><ul><li>Fotokopi KTP Pemohon & Pasangan</li><li>Kartu Keluarga & Surat Nikah</li><li>NPWP Pribadi</li><li>Slip Gaji 3 Bulan Terakhir & Surat Keterangan Kerja Asli</li><li>Rekening Koran 3-6 Bulan Terakhir</li></ul><p>Pastikan Anda tidak memiliki tunggakan pinjaman online (pinjol) atau kartu kredit sebelum mengajukan KPR ke bank rekanan.</p>",
+                'content' => '<p>Pengajuan Kredit Pemilikan Rumah (KPR) seringkali ditolak hanya karena masalah sepele dalam riwayat perbankan. Ketahui syarat administrasi dan tips agar skor SLIK OJK (BI Checking) Anda berstatus Kol 1 (lancar).</p><h3>Syarat Berkas Wajib:</h3><ul><li>Fotokopi KTP Pemohon & Pasangan</li><li>Kartu Keluarga & Surat Nikah</li><li>NPWP Pribadi</li><li>Slip Gaji 3 Bulan Terakhir & Surat Keterangan Kerja Asli</li><li>Rekening Koran 3-6 Bulan Terakhir</li></ul><p>Pastikan Anda tidak memiliki tunggakan pinjaman online (pinjol) atau kartu kredit sebelum mengajukan KPR ke bank rekanan.</p>',
                 'thumbnail' => 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80',
                 'seo_title' => 'Panduan Lengkap Syarat & Cara Lolos Pengajuan KPR 2026 - Perumahanku',
                 'seo_description' => 'Ketahui syarat dokumen KPR, tips lolos BI checking OJK, dan simulasi cicilan rumah paling akurat di sini.',
@@ -559,7 +557,7 @@ class DatabaseSeeder extends Seeder
                 'title' => 'Mengapa Kawasan Penyangga Seperti Bogor & Bekasi Jadi Incaran Milenial?',
                 'slug' => 'alasan-bogor-bekasi-jadi-incaran-rumah-milenial',
                 'category' => 'Analisis Properti',
-                'content' => "<p>Tingginya harga properti di pusat kota Jakarta membuat daerah penyangga seperti Bogor, Depok, Tangerang, dan Bekasi (Bodetabek) mengalami lonjakan peminat. Dengan pembangunan LRT Jabodebek dan jalan tol baru, mobilitas kini semakin singkat dan praktis.</p><p>Selain harga yang jauh lebih ramah di kantong, kawasan ini menawarkan lingkungan udara yang lebih segar dan ruang terbuka hijau yang ramah bagi tumbuh kembang anak.</p>",
+                'content' => '<p>Tingginya harga properti di pusat kota Jakarta membuat daerah penyangga seperti Bogor, Depok, Tangerang, dan Bekasi (Bodetabek) mengalami lonjakan peminat. Dengan pembangunan LRT Jabodebek dan jalan tol baru, mobilitas kini semakin singkat dan praktis.</p><p>Selain harga yang jauh lebih ramah di kantong, kawasan ini menawarkan lingkungan udara yang lebih segar dan ruang terbuka hijau yang ramah bagi tumbuh kembang anak.</p>',
                 'thumbnail' => 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80',
                 'seo_title' => 'Mengapa Bogor dan Bekasi Jadi Incaran Rumah Milenial - Perumahanku',
                 'seo_description' => 'Tren kepemilikan rumah di kawasan penyangga Jabodetabek dengan akses transportasi modern.',

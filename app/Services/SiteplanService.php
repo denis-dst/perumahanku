@@ -14,12 +14,12 @@ class SiteplanService
      */
     public function sliceArea(string $sourceImagePath, float $xPct, float $yPct, float $wPct, float $hPct, string $filename): ?string
     {
-        if (!file_exists($sourceImagePath)) {
+        if (! file_exists($sourceImagePath)) {
             return null;
         }
 
         $imageInfo = getimagesize($sourceImagePath);
-        if (!$imageInfo) {
+        if (! $imageInfo) {
             return null;
         }
 
@@ -27,14 +27,14 @@ class SiteplanService
         $origH = $imageInfo[1];
         $mime = $imageInfo['mime'];
 
-        $srcImg = match($mime) {
+        $srcImg = match ($mime) {
             'image/jpeg' => @imagecreatefromjpeg($sourceImagePath),
             'image/png' => @imagecreatefrompng($sourceImagePath),
             'image/webp' => @imagecreatefromwebp($sourceImagePath),
             default => null,
         };
 
-        if (!$srcImg) {
+        if (! $srcImg) {
             return null;
         }
 
@@ -53,20 +53,20 @@ class SiteplanService
 
         imagedestroy($srcImg);
 
-        if (!$slice) {
+        if (! $slice) {
             return null;
         }
 
         $dir = storage_path('app/public/slices');
-        if (!File::isDirectory($dir)) {
+        if (! File::isDirectory($dir)) {
             File::makeDirectory($dir, 0755, true);
         }
 
-        $targetPath = $dir . '/' . $filename;
+        $targetPath = $dir.'/'.$filename;
         imagejpeg($slice, $targetPath, 90);
         imagedestroy($slice);
 
-        return 'slices/' . $filename;
+        return 'slices/'.$filename;
     }
 
     /**
@@ -329,7 +329,7 @@ class SiteplanService
 
         $createdCount = 0;
         foreach ($lots as $lot) {
-            $sliceFile = 'slice_' . Str::slug($project->slug) . '_' . strtolower($lot['block']) . '_' . strtolower($lot['number']) . '.jpg';
+            $sliceFile = 'slice_'.Str::slug($project->slug).'_'.strtolower($lot['block']).'_'.strtolower($lot['number']).'.jpg';
             $slicePath = $this->sliceArea($imagePath, $lot['x'], $lot['y'], $lot['w'], $lot['h'], $sliceFile);
 
             // Center of lot
@@ -341,7 +341,7 @@ class SiteplanService
                 [$lot['x'], $lot['y']],
                 [$lot['x'] + $lot['w'], $lot['y']],
                 [$lot['x'] + $lot['w'], $lot['y'] + $lot['h']],
-                [$lot['x'], $lot['y'] + $lot['h']]
+                [$lot['x'], $lot['y'] + $lot['h']],
             ];
 
             $type = $project->houseTypes->find($lot['type_id']) ?: $types->first();
@@ -372,7 +372,7 @@ class SiteplanService
             $unit->images()->where('category', 'pov')->delete();
             $unit->images()->create([
                 'path' => $lot['pov_photo'],
-                'caption' => 'POV Nyata dari Kavling ' . $unit->block . '-' . $unit->number,
+                'caption' => 'POV Nyata dari Kavling '.$unit->block.'-'.$unit->number,
                 'is_primary' => true,
                 'category' => 'pov',
                 'sort_order' => 1,

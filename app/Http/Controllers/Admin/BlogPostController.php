@@ -12,6 +12,7 @@ class BlogPostController extends Controller
     public function index()
     {
         $posts = BlogPost::latest()->paginate(10);
+
         return view('admin.blog.index', compact('posts'));
     }
 
@@ -35,7 +36,7 @@ class BlogPostController extends Controller
         $validated['slug'] = Str::slug($validated['title']);
         $count = BlogPost::where('slug', 'like', "{$validated['slug']}%")->count();
         if ($count > 0) {
-            $validated['slug'] .= '-' . ($count + 1);
+            $validated['slug'] .= '-'.($count + 1);
         }
 
         $validated['is_published'] = $request->has('is_published');
@@ -66,7 +67,7 @@ class BlogPostController extends Controller
         ]);
 
         $validated['is_published'] = $request->has('is_published');
-        if ($validated['is_published'] && !$post->published_at) {
+        if ($validated['is_published'] && ! $post->published_at) {
             $validated['published_at'] = now();
         }
 
@@ -78,6 +79,7 @@ class BlogPostController extends Controller
     public function destroy(BlogPost $post)
     {
         $post->delete();
+
         return redirect()->route('admin.blog.index')->with('success', 'Artikel berhasil dihapus.');
     }
 }

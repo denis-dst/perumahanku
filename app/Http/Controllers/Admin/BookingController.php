@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
-use App\Models\Setting;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -22,7 +22,7 @@ class BookingController extends Controller
         }
 
         $bookings = $query->paginate(15)->withQueryString();
-        $projects = \App\Models\Project::all();
+        $projects = Project::all();
 
         return view('admin.bookings.index', compact('bookings', 'projects'));
     }
@@ -30,6 +30,7 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         $booking->load(['project', 'houseType']);
+
         return view('admin.bookings.show', compact('booking'));
     }
 
@@ -48,6 +49,7 @@ class BookingController extends Controller
     public function destroy(Booking $booking)
     {
         $booking->delete();
+
         return redirect()->route('admin.bookings.index')->with('success', 'Data booking survei berhasil dihapus.');
     }
 }

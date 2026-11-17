@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\HouseTypeController as AdminHouseTypeController;
 use App\Http\Controllers\Admin\KprBankController as AdminKprBankController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
+use App\Http\Controllers\Admin\SiteplanMapperController;
 use App\Http\Controllers\Admin\UnitController as AdminUnitController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
@@ -68,11 +69,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('projects.units', AdminUnitController::class)->except(['show']);
 
     // Siteplan Visual Mapper & Slicer Tool
-    Route::get('projects/{project}/siteplan-mapper', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'index'])->name('projects.siteplan.index');
-    Route::post('projects/{project}/siteplan-mapper/upload', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'uploadImage'])->name('projects.siteplan.upload');
-    Route::post('projects/{project}/siteplan-mapper/auto-slice', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'autoSlice'])->name('projects.siteplan.auto-slice');
-    Route::post('projects/{project}/siteplan-mapper/reset', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'resetSlices'])->name('projects.siteplan.reset');
-    Route::post('projects/{project}/siteplan-mapper/save', [\App\Http\Controllers\Admin\SiteplanMapperController::class, 'saveSlice'])->name('projects.siteplan.save');
+    Route::get('projects/{project}/siteplan-mapper', [SiteplanMapperController::class, 'index'])->name('projects.siteplan.index');
+    Route::post('projects/{project}/siteplan-mapper/upload', [SiteplanMapperController::class, 'uploadImage'])->name('projects.siteplan.upload');
+    Route::post('projects/{project}/siteplan-mapper/auto-slice', [SiteplanMapperController::class, 'autoSlice'])->name('projects.siteplan.auto-slice');
+    Route::post('projects/{project}/siteplan-mapper/reset', [SiteplanMapperController::class, 'resetSlices'])->name('projects.siteplan.reset');
+    Route::post('projects/{project}/siteplan-mapper/save', [SiteplanMapperController::class, 'saveSlice'])->name('projects.siteplan.save');
 
     // Bookings / Survey Leads
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update', 'destroy']);

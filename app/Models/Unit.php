@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Unit extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'project_id',
         'house_type_id',
@@ -45,12 +49,12 @@ class Unit extends Model
         return $this->belongsTo(HouseType::class);
     }
 
-    public function images()
+    public function images(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable')->orderBy('sort_order');
     }
 
-    public function povImages()
+    public function povImages(): MorphMany
     {
         return $this->morphMany(Image::class, 'imageable')->where('category', 'pov')->orderBy('sort_order');
     }
@@ -58,7 +62,8 @@ class Unit extends Model
     public function getFormattedPriceAttribute(): string
     {
         $amount = $this->price > 0 ? $this->price : ($this->houseType ? $this->houseType->price : 0);
-        return 'Rp ' . number_format($amount, 0, ',', '.');
+
+        return 'Rp '.number_format($amount, 0, ',', '.');
     }
 
     public function getStatusLabelAttribute(): string
@@ -67,7 +72,7 @@ class Unit extends Model
             'available' => 'Tersedia',
             'booked' => 'Booking',
             'sold' => 'Terjual',
-            default => 'Unknown'
+            default => 'Unknown',
         };
     }
 
@@ -77,7 +82,7 @@ class Unit extends Model
             'available' => 'bg-emerald-500 text-white',
             'booked' => 'bg-amber-500 text-white',
             'sold' => 'bg-rose-500 text-white',
-            default => 'bg-slate-400 text-white'
+            default => 'bg-slate-400 text-white',
         };
     }
 
@@ -95,6 +100,7 @@ class Unit extends Model
             $y3 = $y1 + $h;
             $x4 = $x1;
             $y4 = $y3;
+
             return "{$x1},{$y1} {$x2},{$y2} {$x3},{$y3} {$x4},{$y4}";
         }
 
@@ -105,7 +111,7 @@ class Unit extends Model
                     $points[] = "{$pt[0]},{$pt[1]}";
                 }
             }
-            if (!empty($points)) {
+            if (! empty($points)) {
                 return implode(' ', $points);
             }
         }
@@ -115,12 +121,13 @@ class Unit extends Model
 
     public function getSliceImageUrlAttribute(): ?string
     {
-        if (!$this->slice_image) {
+        if (! $this->slice_image) {
             return null;
         }
         if (str_starts_with($this->slice_image, 'http://') || str_starts_with($this->slice_image, 'https://')) {
             return $this->slice_image;
         }
-        return asset('storage/' . $this->slice_image);
+
+        return asset('storage/'.$this->slice_image);
     }
 }

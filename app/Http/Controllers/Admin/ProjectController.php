@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Image;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -46,11 +45,11 @@ class ProjectController extends Controller
         // Ensure unique slug
         $count = Project::where('slug', 'like', "{$validated['slug']}%")->count();
         if ($count > 0) {
-            $validated['slug'] .= '-' . ($count + 1);
+            $validated['slug'] .= '-'.($count + 1);
         }
 
         // Facilities parse from comma or newline separated
-        if (!empty($validated['facilities'])) {
+        if (! empty($validated['facilities'])) {
             $lines = preg_split('/[\r\n,]+/', $validated['facilities']);
             $validated['facilities'] = array_values(array_filter(array_map('trim', $lines)));
         } else {
@@ -65,7 +64,7 @@ class ProjectController extends Controller
         if ($request->filled('primary_photo_url')) {
             $project->images()->create([
                 'path' => $request->primary_photo_url,
-                'caption' => 'Foto Utama ' . $project->name,
+                'caption' => 'Foto Utama '.$project->name,
                 'is_primary' => true,
                 'category' => 'exterior',
                 'sort_order' => 1,
@@ -78,6 +77,7 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $project->load(['houseTypes', 'images']);
+
         return view('admin.projects.edit', compact('project'));
     }
 
@@ -99,7 +99,7 @@ class ProjectController extends Controller
             'is_featured' => 'boolean',
         ]);
 
-        if (!empty($validated['facilities'])) {
+        if (! empty($validated['facilities'])) {
             $lines = preg_split('/[\r\n,]+/', $validated['facilities']);
             $validated['facilities'] = array_values(array_filter(array_map('trim', $lines)));
         } else {
@@ -114,7 +114,7 @@ class ProjectController extends Controller
             $project->images()->where('is_primary', true)->delete();
             $project->images()->create([
                 'path' => $request->primary_photo_url,
-                'caption' => 'Foto Utama ' . $project->name,
+                'caption' => 'Foto Utama '.$project->name,
                 'is_primary' => true,
                 'category' => 'exterior',
                 'sort_order' => 1,
@@ -127,6 +127,7 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
+
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus.');
     }
 }

@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\HouseType;
-use App\Models\Image;
 use App\Models\Project;
 use App\Models\Unit;
 use Illuminate\Http\Request;
@@ -15,12 +13,14 @@ class UnitController extends Controller
     {
         $units = $project->units()->with(['houseType', 'povImages'])->latest()->paginate(15);
         $houseTypes = $project->houseTypes;
+
         return view('admin.units.index', compact('project', 'units', 'houseTypes'));
     }
 
     public function create(Project $project)
     {
         $houseTypes = $project->houseTypes;
+
         return view('admin.units.create', compact('project', 'houseTypes'));
     }
 
@@ -45,7 +45,7 @@ class UnitController extends Controller
         if ($request->filled('pov_photo_url')) {
             $unit->images()->create([
                 'path' => $request->pov_photo_url,
-                'caption' => 'POV dari Kavling ' . $unit->block . '-' . $unit->number,
+                'caption' => 'POV dari Kavling '.$unit->block.'-'.$unit->number,
                 'is_primary' => true,
                 'category' => 'pov',
                 'sort_order' => 1,
@@ -59,6 +59,7 @@ class UnitController extends Controller
     {
         $houseTypes = $project->houseTypes;
         $unit->load('povImages');
+
         return view('admin.units.edit', compact('project', 'unit', 'houseTypes'));
     }
 
@@ -83,7 +84,7 @@ class UnitController extends Controller
             $unit->images()->where('category', 'pov')->delete();
             $unit->images()->create([
                 'path' => $request->pov_photo_url,
-                'caption' => 'POV dari Kavling ' . $unit->block . '-' . $unit->number,
+                'caption' => 'POV dari Kavling '.$unit->block.'-'.$unit->number,
                 'is_primary' => true,
                 'category' => 'pov',
                 'sort_order' => 1,
@@ -96,6 +97,7 @@ class UnitController extends Controller
     public function destroy(Project $project, Unit $unit)
     {
         $unit->delete();
+
         return redirect()->route('admin.projects.units.index', $project)->with('success', 'Kavling berhasil dihapus.');
     }
 }

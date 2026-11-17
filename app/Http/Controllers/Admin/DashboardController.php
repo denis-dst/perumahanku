@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Project;
 use App\Models\Unit;
-use App\Models\User;
 
 class DashboardController extends Controller
 {
