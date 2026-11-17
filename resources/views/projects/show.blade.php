@@ -18,6 +18,83 @@
     povModalOpen: false,
     lightboxOpen: false,
     lightboxImg: '',
+    floorPlanModalOpen: false,
+    floorPlanTitle: '',
+    floorPlanSubtitle: '',
+    floorPlanSlides: [],
+    currentSlideIdx: 0,
+    zoomLevel: 1.0,
+    panOffset: { x: 0, y: 0 },
+    isPanning: false,
+    panStart: { x: 0, y: 0 },
+
+    openFloorPlanModal(title, subtitle, slides, initialIdx = 0) {
+        this.floorPlanTitle = title;
+        this.floorPlanSubtitle = subtitle;
+        this.floorPlanSlides = slides || [];
+        this.currentSlideIdx = initialIdx;
+        this.zoomLevel = 1.0;
+        this.panOffset = { x: 0, y: 0 };
+        this.floorPlanModalOpen = true;
+    },
+
+    nextSlide() {
+        if (this.floorPlanSlides.length > 0) {
+            this.currentSlideIdx = (this.currentSlideIdx + 1) % this.floorPlanSlides.length;
+            this.zoomLevel = 1.0;
+            this.panOffset = { x: 0, y: 0 };
+        }
+    },
+
+    prevSlide() {
+        if (this.floorPlanSlides.length > 0) {
+            this.currentSlideIdx = (this.currentSlideIdx - 1 + this.floorPlanSlides.length) % this.floorPlanSlides.length;
+            this.zoomLevel = 1.0;
+            this.panOffset = { x: 0, y: 0 };
+        }
+    },
+
+    goToSlide(idx) {
+        this.currentSlideIdx = idx;
+        this.zoomLevel = 1.0;
+        this.panOffset = { x: 0, y: 0 };
+    },
+
+    zoomIn() {
+        if (this.zoomLevel < 3.0) {
+            this.zoomLevel = parseFloat((this.zoomLevel + 0.25).toFixed(2));
+        }
+    },
+
+    zoomOut() {
+        if (this.zoomLevel > 0.75) {
+            this.zoomLevel = parseFloat((this.zoomLevel - 0.25).toFixed(2));
+        }
+    },
+
+    resetZoom() {
+        this.zoomLevel = 1.0;
+        this.panOffset = { x: 0, y: 0 };
+    },
+
+    startPan(e) {
+        if (this.zoomLevel > 1.0) {
+            this.isPanning = true;
+            this.panStart = { x: e.clientX - this.panOffset.x, y: e.clientY - this.panOffset.y };
+        }
+    },
+
+    onPan(e) {
+        if (this.isPanning && this.zoomLevel > 1.0) {
+            this.panOffset.x = e.clientX - this.panStart.x;
+            this.panOffset.y = e.clientY - this.panStart.y;
+        }
+    },
+
+    endPan() {
+        this.isPanning = false;
+    },
+
     kprPrice: {{ $project->houseTypes->first() ? $project->houseTypes->first()->price : 450000000 }},
     kprDp: 10,
     kprTenor: 20,
@@ -260,14 +337,90 @@
                                         </div>
                                     </div>
 
-                                    <!-- Floor Plan Denah Thumbnail -->
-                                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 text-center">
-                                        <p class="text-[11px] font-bold text-slate-700 uppercase mb-2">Denah Ruangan</p>
-                                        <div class="h-44 rounded-xl overflow-hidden bg-white cursor-pointer group"
-                                             @click="lightboxImg = '{{ $ht->floor_plan_image ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' }}'; lightboxOpen = true">
-                                            <img src="{{ $ht->floor_plan_image ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' }}" alt="Denah {{ $ht->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                    @php
+                                        $floorPlanSlides = [];
+
+                                        // Slide 1: Denah Tata Ruang 2D
+                                        $mainPlanImg = $ht->floor_plan_image ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80';
+                                        $floorPlanSlides[] = [
+                                            'title' => 'Denah Tata Ruang Arsitektur (2D)',
+                                            'caption' => 'Ukuran & dimensi kamar, pembagian ruang tamu, dapur, carport dan sirkulasi',
+                                            'badge' => 'Denah Utama',
+                                            'url' => $mainPlanImg,
+                                        ];
+
+                                        // Slide 2: Denah Lantai 2 / 3D Isometric View
+                                        if ($ht->floors > 1) {
+                                            $floorPlanSlides[] = [
+                                                'title' => 'Denah Ruang Lantai 2 (Area Privat)',
+                                                'caption' => 'Kamar tidur anak/tamu, kamar mandi atas, void tangga dan balkon',
+                                                'badge' => 'Lantai 2',
+                                                'url' => 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
+                                            ];
+                                        } else {
+                                            $floorPlanSlides[] = [
+                                                'title' => 'Visualisasi 3D Tata Letak Ruangan',
+                                                'caption' => 'Konsep penataan furniture, ventilasi silang & pencahayaan alami',
+                                                'badge' => '3D Layout',
+                                                'url' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+                                            ];
+                                        }
+
+                                        // Slide 3 & 4: Galeri Foto Interior / Fasad Unit
+                                        if ($ht->images && $ht->images->isNotEmpty()) {
+                                            foreach ($ht->images as $img) {
+                                                $floorPlanSlides[] = [
+                                                    'title' => $img->caption ?: 'Detail Interior ' . $ht->name,
+                                                    'caption' => 'Spesifikasi visual nyata ' . $ht->name,
+                                                    'badge' => 'Foto Unit',
+                                                    'url' => $img->url,
+                                                ];
+                                            }
+                                        } else {
+                                            $floorPlanSlides[] = [
+                                                'title' => 'Ruang Keluarga & Ruang Tamu Sejuk',
+                                                'caption' => 'Langit-langit tinggi menghadirkan kesan luas dan sirkulasi udara optimal',
+                                                'badge' => 'Interior',
+                                                'url' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+                                            ];
+                                            $floorPlanSlides[] = [
+                                                'title' => 'Kamar Tidur Utama Nyaman',
+                                                'caption' => 'Pencahayaan jendela maksimal menghadap taman cluster asri',
+                                                'badge' => 'Kamar Tidur',
+                                                'url' => 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+                                            ];
+                                        }
+                                    @endphp
+
+                                    <!-- Floor Plan Denah Thumbnail Card with Slide Counter & Interaction -->
+                                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center flex flex-col justify-between">
+                                        <div>
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-[11px] font-bold text-slate-700 uppercase">Denah & Ruangan</span>
+                                                <span class="text-[10px] text-brand-700 font-extrabold bg-brand-100/80 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+                                                    <i class="fa-solid fa-images text-[9px]"></i> {{ count($floorPlanSlides) }} Slide
+                                                </span>
+                                            </div>
+
+                                            <div class="h-44 rounded-xl overflow-hidden bg-white cursor-pointer group relative shadow-2xs border border-slate-100"
+                                                 @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, 0)">
+                                                <img src="{{ $mainPlanImg }}" alt="Denah {{ $ht->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-[2px]">
+                                                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-lg mb-1 shadow-lg group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-expand"></i>
+                                                    </div>
+                                                    <span class="text-xs font-bold drop-shadow">Klik untuk Zoom & Slide</span>
+                                                    <span class="text-[10px] text-white/80 mt-0.5 drop-shadow">Bisa di-slide detail ruangan</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <span class="text-[10px] text-slate-400 mt-1 block">Klik untuk zoom denah</span>
+
+                                        <button type="button"
+                                                @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, 0)"
+                                                class="mt-2.5 w-full py-2 px-3 rounded-xl bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-300 text-brand-600 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs group/btn">
+                                            <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover/btn:scale-110 transition-transform"></i>
+                                            <span>Buka & Slide Detail Denah</span>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -744,6 +897,128 @@
             <i class="fa-solid fa-xmark"></i>
         </button>
         <img :src="lightboxImg" alt="Enlarged photo" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain">
+    </div>
+
+    <!-- Dedicated Interactive Floor Plan & Room Detail Slider Modal -->
+    <div x-show="floorPlanModalOpen"
+         x-cloak
+         class="fixed inset-0 z-50 flex flex-col justify-between bg-slate-950/95 backdrop-blur-md text-white select-none transition-opacity duration-300"
+         @keydown.window.escape="floorPlanModalOpen = false"
+         @keydown.window.left="prevSlide()"
+         @keydown.window.right="nextSlide()"
+         role="dialog"
+         aria-modal="true">
+
+        <!-- Top Header Bar -->
+        <div class="px-4 sm:px-6 py-3 border-b border-slate-800 bg-slate-900/80 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 z-30">
+            <!-- Left Info: House Type & Slide Info -->
+            <div class="flex items-center gap-3 min-w-0">
+                <span class="px-2.5 py-1 rounded-lg bg-nature-600 text-white font-extrabold text-[11px] uppercase tracking-wider shrink-0"
+                      x-text="floorPlanSlides[currentSlideIdx]?.badge || 'Denah'"></span>
+                <div class="min-w-0">
+                    <h3 class="font-extrabold text-sm sm:text-base text-white truncate" x-text="floorPlanTitle + ' — ' + (floorPlanSlides[currentSlideIdx]?.title || 'Detail Ruangan')"></h3>
+                    <p class="text-[11px] text-slate-400 truncate hidden sm:block" x-text="floorPlanSlides[currentSlideIdx]?.caption || floorPlanSubtitle"></p>
+                </div>
+            </div>
+
+            <!-- Center/Right: Zoom Controls + Slide Counter + Close Button -->
+            <div class="flex items-center gap-2 sm:gap-3 shrink-0">
+                <!-- Zoom Toolbar -->
+                <div class="flex items-center bg-slate-800/90 rounded-xl p-1 border border-slate-700/80 text-xs">
+                    <button type="button" @click="zoomOut()" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom Out (-)">
+                        <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span class="px-2 text-[11px] font-bold text-brand-400 min-w-[42px] text-center" x-text="Math.round(zoomLevel * 100) + '%'"></span>
+                    <button type="button" @click="zoomIn()" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom In (+)">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <button type="button" @click="resetZoom()" class="ml-1 px-2 py-0.5 rounded-md hover:bg-slate-700 text-[10px] text-slate-400 hover:text-white transition" title="Reset Zoom">
+                        Reset
+                    </button>
+                </div>
+
+                <!-- Slide Index Indicator -->
+                <span class="text-xs font-bold text-slate-300 bg-slate-800/80 border border-slate-700/80 px-3 py-1.5 rounded-xl hidden sm:inline-block">
+                    <span x-text="(currentSlideIdx + 1)"></span> / <span x-text="floorPlanSlides.length"></span>
+                </span>
+
+                <!-- Close Button -->
+                <button type="button" @click="floorPlanModalOpen = false" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white transition flex items-center justify-center" title="Tutup (Esc)">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Slide Viewport (With Zoom & Drag/Pan) -->
+        <div class="relative flex-1 flex items-center justify-center overflow-hidden p-2 sm:p-6"
+             @mousedown="startPan($event)"
+             @mousemove="onPan($event)"
+             @mouseup="endPan()"
+             @mouseleave="endPan()"
+             @wheel.prevent="$event.deltaY < 0 ? zoomIn() : zoomOut()">
+
+            <!-- Previous Slide Button -->
+            <button type="button"
+                    @click.stop="prevSlide()"
+                    class="absolute left-3 sm:left-6 z-20 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-900/70 hover:bg-brand-600 border border-slate-700/80 hover:border-brand-500 text-white flex items-center justify-center text-lg sm:text-xl shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 group"
+                    title="Slide Sebelumnya (Panah Kiri)">
+                <i class="fa-solid fa-chevron-left group-hover:-translate-x-0.5 transition-transform"></i>
+            </button>
+
+            <!-- Image Canvas -->
+            <div class="w-full h-full flex items-center justify-center transition-transform"
+                 :style="'transform: scale(' + zoomLevel + ') translate(' + (panOffset.x / zoomLevel) + 'px, ' + (panOffset.y / zoomLevel) + 'px); ' + (isPanning ? 'transition: none;' : 'transition: transform 0.25s ease-out;') + ' cursor: ' + (zoomLevel > 1.0 ? (isPanning ? 'grabbing' : 'grab') : 'default');'">
+                <template x-if="floorPlanSlides.length > 0 && floorPlanSlides[currentSlideIdx]">
+                    <img :src="floorPlanSlides[currentSlideIdx].url"
+                         :alt="floorPlanSlides[currentSlideIdx].title"
+                         class="max-w-full max-h-[70vh] sm:max-h-[72vh] object-contain rounded-xl shadow-2xl pointer-events-none select-none">
+                </template>
+            </div>
+
+            <!-- Next Slide Button -->
+            <button type="button"
+                    @click.stop="nextSlide()"
+                    class="absolute right-3 sm:right-6 z-20 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-900/70 hover:bg-brand-600 border border-slate-700/80 hover:border-brand-500 text-white flex items-center justify-center text-lg sm:text-xl shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 group"
+                    title="Slide Berikutnya (Panah Kanan)">
+                <i class="fa-solid fa-chevron-right group-hover:translate-x-0.5 transition-transform"></i>
+            </button>
+
+            <!-- Bottom Floating Hint (if zoomed) -->
+            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-none bg-black/60 backdrop-blur-xs text-white/80 text-[11px] px-3 py-1 rounded-full border border-white/10 hidden sm:block">
+                <template x-if="zoomLevel > 1.0">
+                    <span><i class="fa-solid fa-hand text-brand-400 mr-1"></i> Klik & seret mouse untuk menggeser denah</span>
+                </template>
+                <template x-if="zoomLevel <= 1.0">
+                    <span><i class="fa-solid fa-arrow-left mr-1"></i> Gunakan tombol panah keyboard atau geser slide <i class="fa-solid fa-arrow-right ml-1"></i></span>
+                </template>
+            </div>
+        </div>
+
+        <!-- Bottom Thumbnail Strip & CTA Action Bar -->
+        <div class="px-4 sm:px-6 py-3 border-t border-slate-800 bg-slate-900/90 backdrop-blur-md flex flex-wrap items-center justify-between gap-4 z-30">
+            <!-- Thumbnail Strip -->
+            <div class="flex items-center gap-2 overflow-x-auto py-1 max-w-full sm:max-w-2xl">
+                <template x-for="(slide, idx) in floorPlanSlides" :key="idx">
+                    <button type="button"
+                            @click="goToSlide(idx)"
+                            class="relative rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-200 group w-16 h-12 sm:w-20 sm:h-14"
+                            :class="currentSlideIdx === idx ? 'border-brand-500 ring-2 ring-brand-500/50 scale-105 shadow-md' : 'border-slate-700/80 opacity-60 hover:opacity-100'">
+                        <img :src="slide.url" :alt="slide.title" class="w-full h-full object-cover">
+                        <span class="absolute bottom-0 inset-x-0 bg-black/70 text-[9px] text-white truncate px-1 text-center font-semibold" x-text="slide.badge"></span>
+                    </button>
+                </template>
+            </div>
+
+            <!-- WhatsApp Consult CTA -->
+            <div class="shrink-0 flex items-center gap-2">
+                <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya ingin konsultasi detail denah ruangan untuk ' + floorPlanTitle + ' di {{ $project->name }}.')"
+                   target="_blank"
+                   class="px-4 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>Tanya Denah Tipe Ini</span>
+                </a>
+            </div>
+        </div>
     </div>
 
 </div>
