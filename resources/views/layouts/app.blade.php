@@ -141,13 +141,13 @@
                     </a>
                 </nav>
 
-                <!-- CTA Action Buttons (Compact & Proportional) -->
+                <!-- CTA Action Buttons (Compact & Proportional, scale on hover) -->
                 <div class="hidden sm:flex items-center gap-2 shrink-0">
-                    <a href="{{ route('projects.index') }}#booking-section" class="px-3.5 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <a href="{{ route('projects.index') }}#booking-section" class="px-3.5 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap">
                         <i class="fa-regular fa-calendar-check text-xs"></i>
                         <span>Booking Survei</span>
                     </a>
-                    <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi unit perumahan.') }}" target="_blank" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 text-slate-700 hover:text-brand-700 font-semibold text-xs transition-all flex items-center gap-1.5 whitespace-nowrap">
+                    <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi unit perumahan.') }}" target="_blank" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 hover:scale-105 active:scale-95 text-slate-700 hover:text-brand-700 font-semibold text-xs transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap">
                         <i class="fa-brands fa-whatsapp text-nature-600 text-sm"></i>
                         <span>Chat Sales</span>
                     </a>
@@ -288,13 +288,16 @@
         </div>
     </footer>
 
-    <!-- Floating WhatsApp CTA Button (Always reachable) -->
-    <aside aria-label="WhatsApp Contact" class="fixed bottom-6 right-6 z-50">
+    <!-- Floating WhatsApp CTA Button (Compact by default, expands smoothly on hover) -->
+    <aside aria-label="WhatsApp Contact" class="fixed bottom-5 right-5 z-50">
         <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Sales ' . $siteName . ', saya sedang mencari informasi perumahan.') }}"
            target="_blank"
-           class="group flex items-center gap-3 bg-nature-500 hover:bg-nature-600 text-white px-4 py-3.5 rounded-full shadow-xl shadow-nature-500/30 hover:scale-105 transition-all duration-300">
-            <i class="fa-brands fa-whatsapp text-2xl animate-pulse"></i>
-            <span class="font-bold text-sm hidden md:inline pr-1">Tanya via WhatsApp</span>
+           class="group flex items-center bg-nature-500 hover:bg-nature-600 text-white p-3 rounded-full shadow-lg shadow-nature-500/30 hover:shadow-xl hover:shadow-nature-500/40 hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out cursor-pointer"
+           title="Tanya via WhatsApp">
+            <i class="fa-brands fa-whatsapp text-2xl shrink-0 group-hover:scale-110 transition-transform duration-200"></i>
+            <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-2.5 group-hover:mr-1.5 transition-all duration-300 ease-in-out font-bold text-xs tracking-wide">
+                Tanya via WhatsApp
+            </span>
         </a>
     </aside>
 
