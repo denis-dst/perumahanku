@@ -81,110 +81,113 @@
         $companyAddress = \App\Models\Setting::get('company_address', 'Jl. Boulevard Hijau No. 128');
     @endphp
 
-    <!-- Top Announcement Bar -->
-    <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-nature-600 text-white text-xs py-2 px-4 shadow-sm">
+    <!-- Top Announcement Bar (Slim & Elegant) -->
+    <div class="bg-gradient-to-r from-brand-600 via-brand-500 to-nature-600 text-white text-[11px] py-1 px-4 shadow-2xs">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center gap-2">
-                <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wider uppercase">Promo Perdana</span>
-                <span>DP 0% + Bebas Biaya KPR & Sertifikat SHM!</span>
+                <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase">Promo Perdana</span>
+                <span class="font-medium">DP 0% + Bebas Biaya KPR & Sertifikat SHM!</span>
             </div>
-            <div class="flex items-center gap-4 text-white/90">
-                <a href="tel:{{ $companyPhone }}" class="hover:text-white flex items-center gap-1.5 transition">
-                    <i class="fa-solid fa-phone text-[11px]"></i> {{ $companyPhone }}
+            <div class="flex items-center gap-3 text-white/90 text-[11px]">
+                <a href="tel:{{ $companyPhone }}" class="hover:text-white flex items-center gap-1 transition">
+                    <i class="fa-solid fa-phone text-[10px]"></i> {{ $companyPhone }}
                 </a>
                 <span class="hidden sm:inline opacity-40">|</span>
-                <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi perumahan baru.') }}" target="_blank" class="hover:text-white flex items-center gap-1.5 transition">
-                    <i class="fa-brands fa-whatsapp text-emerald-300"></i> Hotline WA: {{ $waNum }}
+                <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi perumahan baru.') }}" target="_blank" class="hover:text-white flex items-center gap-1 transition">
+                    <i class="fa-brands fa-whatsapp text-emerald-300"></i> WA: {{ $waNum }}
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 transition-all duration-300" x-data="{ mobileMenuOpen: false }">
+    <!-- Navigation Header (Sleek & Compact) -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/80 transition-all duration-200" x-data="{ mobileMenuOpen: false }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
+            <div class="flex justify-between items-center h-16 gap-4">
                 <!-- Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-500 to-nature-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform duration-300">
-                        <i class="fa-solid fa-house-chimney text-xl"></i>
+                <a href="{{ route('home') }}" class="flex items-center gap-2.5 group shrink-0">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-nature-500 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-200">
+                        <i class="fa-solid fa-house-chimney text-base"></i>
                     </div>
-                    <div>
-                        <div class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-brand-600 to-nature-600 bg-clip-text text-transparent">
+                    <div class="flex flex-col">
+                        <span class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 group-hover:text-brand-600 transition-colors leading-tight">
                             {{ $siteName }}
-                        </div>
-                        <p class="text-[11px] font-medium text-slate-400 -mt-1 hidden sm:block">
+                        </span>
+                        <span class="text-[10px] text-slate-400 font-medium -mt-0.5 hidden xl:block leading-tight">
                             {{ $siteTagline }}
-                        </p>
+                        </span>
                     </div>
                 </a>
 
-                <!-- Desktop Nav -->
-                <nav class="hidden md:flex items-center gap-8">
-                    <a href="{{ route('home') }}" class="font-medium text-sm {{ request()->routeIs('home') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                <!-- Desktop Nav (Clean, Single Line, No Wrapping) -->
+                <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5">
+                    <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Beranda
                     </a>
-                    <a href="{{ route('projects.index') }}" class="font-medium text-sm {{ request()->routeIs('projects.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                    <a href="{{ route('projects.index') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('projects.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Katalog Perumahan
                     </a>
-                    <a href="{{ route('kpr.index') }}" class="font-medium text-sm {{ request()->routeIs('kpr.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                    <a href="{{ route('kpr.index') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('kpr.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Simulasi KPR
                     </a>
-                    <a href="{{ route('blog.index') }}" class="font-medium text-sm {{ request()->routeIs('blog.*') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                    <a href="{{ route('blog.index') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('blog.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Tips & Artikel
                     </a>
-                    <a href="{{ route('pages.about') }}" class="font-medium text-sm {{ request()->routeIs('pages.about') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                    <a href="{{ route('pages.about') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('pages.about') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Tentang Kami
                     </a>
-                    <a href="{{ route('pages.contact') }}" class="font-medium text-sm {{ request()->routeIs('pages.contact') ? 'text-brand-600 font-semibold' : 'text-slate-600 hover:text-brand-600' }} transition">
+                    <a href="{{ route('pages.contact') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('pages.contact') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Kontak
                     </a>
                 </nav>
 
-                <!-- CTA Button -->
-                <div class="hidden lg:flex items-center gap-3">
-                    <a href="{{ route('projects.index') }}#booking-section" class="px-5 py-2.5 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-semibold text-sm shadow-sm hover:shadow-md hover:shadow-nature-500/20 transition-all flex items-center gap-2">
-                        <i class="fa-regular fa-calendar-check"></i>
+                <!-- CTA Action Buttons (Compact & Proportional) -->
+                <div class="hidden sm:flex items-center gap-2 shrink-0">
+                    <a href="{{ route('projects.index') }}#booking-section" class="px-3.5 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all flex items-center gap-1.5 whitespace-nowrap">
+                        <i class="fa-regular fa-calendar-check text-xs"></i>
                         <span>Booking Survei</span>
                     </a>
-                    <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi unit perumahan.') }}" target="_blank" class="px-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-700 font-semibold text-sm transition-all flex items-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-nature-600 text-base"></i>
+                    <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi unit perumahan.') }}" target="_blank" class="px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-brand-50 hover:border-brand-200 text-slate-700 hover:text-brand-700 font-semibold text-xs transition-all flex items-center gap-1.5 whitespace-nowrap">
+                        <i class="fa-brands fa-whatsapp text-nature-600 text-sm"></i>
                         <span>Chat Sales</span>
                     </a>
                 </div>
 
                 <!-- Mobile Menu Button -->
-                <div class="flex items-center md:hidden">
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition">
-                        <i class="fa-solid text-xl" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+                <div class="flex items-center lg:hidden">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition">
+                        <i class="fa-solid text-lg" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- Mobile Menu Dropdown -->
-        <div x-show="mobileMenuOpen" x-cloak class="md:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lg">
-            <a href="{{ route('home') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+        <div x-show="mobileMenuOpen" x-cloak class="lg:hidden border-b border-slate-200 bg-white px-4 pt-3 pb-6 space-y-2 shadow-lg">
+            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-house w-6 text-brand-500"></i> Beranda
             </a>
-            <a href="{{ route('projects.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('projects.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+            <a href="{{ route('projects.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('projects.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-city w-6 text-brand-500"></i> Katalog Perumahan
             </a>
-            <a href="{{ route('kpr.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('kpr.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+            <a href="{{ route('kpr.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('kpr.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-calculator w-6 text-brand-500"></i> Simulasi KPR
             </a>
-            <a href="{{ route('blog.index') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('blog.*') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+            <a href="{{ route('blog.index') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('blog.*') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-newspaper w-6 text-brand-500"></i> Tips & Artikel
             </a>
-            <a href="{{ route('pages.about') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('pages.about') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+            <a href="{{ route('pages.about') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pages.about') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-circle-info w-6 text-brand-500"></i> Tentang Kami
             </a>
-            <a href="{{ route('pages.contact') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium {{ request()->routeIs('pages.contact') ? 'bg-brand-50 text-brand-600 font-semibold' : 'text-slate-700 hover:bg-slate-50' }}">
+            <a href="{{ route('pages.contact') }}" class="block px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('pages.contact') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-700 hover:bg-slate-50' }}">
                 <i class="fa-solid fa-phone w-6 text-brand-500"></i> Kontak
             </a>
             <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-full text-center py-2.5 rounded-xl bg-nature-500 text-white font-semibold flex items-center justify-center gap-2">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Chat WhatsApp
+                <a href="{{ route('projects.index') }}#booking-section" class="w-full text-center py-2.5 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs flex items-center justify-center gap-2">
+                    <i class="fa-regular fa-calendar-check"></i> Booking Survei
+                </a>
+                <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-full text-center py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-nature-600 text-base"></i> Chat WhatsApp
                 </a>
             </div>
         </div>
