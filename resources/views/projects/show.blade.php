@@ -206,11 +206,14 @@
     <section class="bg-slate-900 py-6">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[380px] sm:h-[460px]">
-                <!-- Main Big Photo -->
+                <!-- Main Big Photo (LCP Optimized) -->
                 <div class="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
                      @click="lightboxImg = '{{ $project->primaryImage ? $project->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80' }}'; lightboxOpen = true">
                     <img src="{{ $project->primaryImage ? $project->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80' }}"
-                         alt="{{ $project->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                         alt="{{ $project->name }}"
+                         fetchpriority="high"
+                         decoding="async"
+                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-4">
                         <span class="text-white text-xs font-semibold px-3 py-1 rounded-lg bg-black/40 backdrop-blur-xs flex items-center gap-1.5">
                             <i class="fa-solid fa-expand"></i> Klik untuk memperbesar foto
@@ -218,11 +221,15 @@
                     </div>
                 </div>
 
-                <!-- Secondary Images -->
+                <!-- Secondary Images (Lazy Loaded) -->
                 @forelse($project->images->where('is_primary', false)->take(3) as $subImg)
                     <div class="relative rounded-2xl overflow-hidden cursor-pointer group h-full"
                          @click="lightboxImg = '{{ $subImg->url }}'; lightboxOpen = true">
-                        <img src="{{ $subImg->url }}" alt="{{ $subImg->caption ?? $project->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ $subImg->url }}"
+                             alt="{{ $subImg->caption ?? $project->name }}"
+                             loading="lazy"
+                             decoding="async"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         @if($subImg->caption)
                             <div class="absolute bottom-2 left-2 right-2 bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-md truncate backdrop-blur-xs">
                                 {{ $subImg->caption }}

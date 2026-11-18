@@ -91,9 +91,22 @@
                                 <!-- Image with Badge -->
                                 <div class="relative h-56 bg-slate-100 overflow-hidden">
                                     @php
-                                        $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
+                                        $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75&fm=webp';
+                                        if (str_contains($imgUrl, 'images.unsplash.com')) {
+                                            $imgUrl = preg_replace('/w=\d+/', 'w=600', $imgUrl);
+                                            $imgUrl = preg_replace('/q=\d+/', 'q=75', $imgUrl);
+                                            if (!str_contains($imgUrl, 'fm=webp')) {
+                                                $imgUrl .= '&fm=webp';
+                                            }
+                                        }
                                     @endphp
-                                    <img src="{{ $imgUrl }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                    <img src="{{ $imgUrl }}"
+                                         alt="{{ $p->name }}"
+                                         loading="lazy"
+                                         decoding="async"
+                                         width="600"
+                                         height="350"
+                                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                                     <div class="absolute top-3 left-3 flex flex-col gap-1 items-start">
                                         <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-700 shadow-sm backdrop-blur-xs flex items-center gap-1.5">

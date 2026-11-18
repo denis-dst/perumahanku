@@ -13,7 +13,7 @@
         <div class="text-center max-w-3xl mx-auto mb-10">
             <!-- Pill Tag -->
             <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100/80 border border-brand-200 text-brand-700 text-xs font-semibold mb-6">
-                <span class="w-2 h-2 rounded-full bg-nature-500 animate-ping"></span>
+                <span class="w-2 h-2 rounded-full bg-nature-500 animate-ping inline-block will-change-transform transform-gpu"></span>
                 <span>Katalog Resmi Primary Property Developer</span>
             </div>
 
@@ -133,9 +133,22 @@
                     <!-- Image Thumbnail -->
                     <div class="relative h-64 overflow-hidden bg-slate-100">
                         @php
-                            $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80';
+                            $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75&fm=webp';
+                            if (str_contains($imgUrl, 'images.unsplash.com')) {
+                                $imgUrl = preg_replace('/w=\d+/', 'w=600', $imgUrl);
+                                $imgUrl = preg_replace('/q=\d+/', 'q=75', $imgUrl);
+                                if (!str_contains($imgUrl, 'fm=webp')) {
+                                    $imgUrl .= '&fm=webp';
+                                }
+                            }
                         @endphp
-                        <img src="{{ $imgUrl }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <img src="{{ $imgUrl }}"
+                             alt="{{ $p->name }}"
+                             loading="lazy"
+                             decoding="async"
+                             width="600"
+                             height="384"
+                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                         <!-- Badges -->
                         <div class="absolute top-4 left-4 flex flex-col gap-1.5 items-start">
@@ -266,12 +279,18 @@
                 <div class="relative rounded-3xl bg-slate-800/80 border border-slate-700 p-4 shadow-2xl backdrop-blur-md">
                     <!-- Fake Siteplan with Pin and Tooltip -->
                     <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-950">
-                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1000&q=80" alt="Siteplan Preview" class="w-full h-full object-cover opacity-70">
+                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=75&fm=webp"
+                             alt="Siteplan Preview"
+                             loading="lazy"
+                             decoding="async"
+                             width="800"
+                             height="450"
+                             class="w-full h-full object-cover opacity-70">
 
                         <!-- Animated Kavling Pin -->
                         <div class="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2">
                             <div class="relative flex items-center justify-center">
-                                <span class="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-emerald-400 opacity-75 will-change-transform transform-gpu"></span>
                                 <div class="relative w-8 h-8 rounded-full bg-emerald-500 border-2 border-white shadow-lg flex items-center justify-center text-[10px] font-extrabold text-white">
                                     B-05
                                 </div>
@@ -280,7 +299,13 @@
 
                         <!-- Interactive POV Card Pop-up Simulation -->
                         <div class="absolute bottom-3 left-3 right-3 bg-white text-slate-800 rounded-2xl p-3.5 shadow-2xl flex items-center gap-3">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=200&q=80" alt="POV Kavling" class="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200">
+                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=150&q=75&fm=webp"
+                                 alt="POV Kavling"
+                                 loading="lazy"
+                                 decoding="async"
+                                 width="64"
+                                 height="64"
+                                 class="w-16 h-16 rounded-xl object-cover shrink-0 border border-slate-200">
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-center gap-2">
                                     <span class="text-xs font-bold text-slate-900">Kavling B-05 (Tipe 45)</span>
@@ -432,8 +457,24 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             @foreach($latestArticles as $article)
                 <article class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col">
+                    @php
+                        $thumbUrl = $article->thumbnail_url;
+                        if (str_contains($thumbUrl, 'images.unsplash.com')) {
+                            $thumbUrl = preg_replace('/w=\d+/', 'w=500', $thumbUrl);
+                            $thumbUrl = preg_replace('/q=\d+/', 'q=75', $thumbUrl);
+                            if (!str_contains($thumbUrl, 'fm=webp')) {
+                                $thumbUrl .= '&fm=webp';
+                            }
+                        }
+                    @endphp
                     <a href="{{ route('blog.show', $article->slug) }}" class="h-48 overflow-hidden bg-slate-100 block">
-                        <img src="{{ $article->thumbnail_url }}" alt="{{ $article->title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                        <img src="{{ $thumbUrl }}"
+                             alt="{{ $article->title }}"
+                             loading="lazy"
+                             decoding="async"
+                             width="400"
+                             height="225"
+                             class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                     </a>
                     <div class="p-6 flex-1 flex flex-col justify-between">
                         <div>

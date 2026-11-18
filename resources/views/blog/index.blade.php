@@ -31,8 +31,24 @@
             @forelse($posts as $post)
                 <article class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div>
+                        @php
+                            $thumbUrl = $post->thumbnail_url;
+                            if (str_contains($thumbUrl, 'images.unsplash.com')) {
+                                $thumbUrl = preg_replace('/w=\d+/', 'w=500', $thumbUrl);
+                                $thumbUrl = preg_replace('/q=\d+/', 'q=75', $thumbUrl);
+                                if (!str_contains($thumbUrl, 'fm=webp')) {
+                                    $thumbUrl .= '&fm=webp';
+                                }
+                            }
+                        @endphp
                         <a href="{{ route('blog.show', $post->slug) }}" class="h-48 overflow-hidden bg-slate-100 block">
-                            <img src="{{ $post->thumbnail_url }}" alt="{{ $post->title }}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $thumbUrl }}"
+                                 alt="{{ $post->title }}"
+                                 loading="lazy"
+                                 decoding="async"
+                                 width="400"
+                                 height="192"
+                                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
                         </a>
                         <div class="p-6">
                             <span class="text-[11px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">
