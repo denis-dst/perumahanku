@@ -15,7 +15,12 @@ class ProjectController extends Controller
 
         // Filter kota
         if ($request->filled('city')) {
-            $query->where('city', $request->city);
+            $cityVal = $request->city;
+            $cleanCity = trim(preg_replace('/^(kabupaten|kota)\s+/i', '', $cityVal));
+            $query->where(function ($sub) use ($cityVal, $cleanCity) {
+                $sub->where('city', $cityVal)
+                    ->orWhere('city', 'like', "%{$cleanCity}%");
+            });
         }
 
         // Filter keyword (nama atau deskripsi atau kecamatan)
@@ -53,7 +58,7 @@ class ProjectController extends Controller
         };
 
         $projects = $query->paginate(9)->withQueryString();
-        $cities = Project::active()->distinct()->pluck('city')->filter()->values();
+        $cities = Project::LAMPUNG_CITIES;
 
         return view('projects.index', compact('projects', 'cities'));
     }
@@ -82,17 +87,19 @@ class ProjectController extends Controller
     public function cityLanding(string $city)
     {
         $cityFormatted = ucwords(str_replace('-', ' ', $city));
+        $cleanCity = trim(preg_replace('/^(kabupaten|kota)\s+/i', '', $cityFormatted));
 
         $projects = Project::with(['primaryImage', 'houseTypes', 'units'])
             ->active()
-            ->where(function ($q) use ($cityFormatted, $city) {
+            ->where(function ($q) use ($cityFormatted, $city, $cleanCity) {
                 $q->where('city', 'like', "%{$cityFormatted}%")
+                    ->orWhere('city', 'like', "%{$cleanCity}%")
                     ->orWhere('city', 'like', "%{$city}%");
             })
             ->latest()
             ->paginate(9);
 
-        $cities = Project::active()->distinct()->pluck('city')->filter()->values();
+        $cities = Project::LAMPUNG_CITIES;
 
         return view('projects.city', compact('projects', 'cityFormatted', 'cities'));
     }

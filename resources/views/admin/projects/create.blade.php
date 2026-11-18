@@ -38,20 +38,25 @@
 
             <!-- Kota -->
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kota / Kabupaten *</label>
-                <input type="text" name="city" value="{{ old('city') }}" required placeholder="Contoh: Bogor" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kota / Kabupaten (Provinsi Lampung) *</label>
+                <select name="city" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">-- Pilih Kabupaten / Kota di Lampung --</option>
+                    @foreach(\App\Models\Project::LAMPUNG_CITIES as $c)
+                        <option value="{{ $c }}" {{ old('city') == $c ? 'selected' : '' }}>{{ $c }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <!-- Kecamatan -->
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kecamatan</label>
-                <input type="text" name="district" value="{{ old('district') }}" placeholder="Contoh: Bogor Timur" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input type="text" name="district" value="{{ old('district') }}" placeholder="Contoh: Rajabasa, Natar, Sukarame..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
             <!-- Provinsi -->
             <div>
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Provinsi</label>
-                <input type="text" name="province" value="{{ old('province', 'Jawa Barat') }}" placeholder="Contoh: Jawa Barat" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <input type="text" name="province" value="{{ old('province', 'Lampung') }}" placeholder="Contoh: Lampung" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
             <!-- Status Proyek -->

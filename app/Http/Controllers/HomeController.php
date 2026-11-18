@@ -17,7 +17,7 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        $cities = Project::active()->distinct()->pluck('city')->filter()->values();
+        $cities = Project::LAMPUNG_CITIES;
 
         $banks = KprBank::active()->take(4)->get();
 

@@ -270,15 +270,21 @@
                     </ul>
                 </div>
 
-                <!-- Col 3: Area Perumahan (SEO Landing) -->
+                <!-- Col 3: Area Perumahan (SEO Landing se-Provinsi Lampung) -->
                 <div>
-                    <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Cari Wilayah Terdekat</h4>
-                    <ul class="space-y-2.5 text-sm">
-                        <li><a href="{{ route('projects.city', 'bogor') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bogor <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'tangerang-selatan') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Tangerang <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'bekasi') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bekasi / Cikarang <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'depok') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Depok <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'jakarta') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Jakarta <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
+                    <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase flex items-center gap-1.5">
+                        <i class="fa-solid fa-location-dot text-brand-400 text-xs"></i>
+                        <span>Cari Wilayah Terdekat</span>
+                    </h4>
+                    <ul class="space-y-1.5 text-xs text-slate-400">
+                        @foreach(\App\Models\Project::LAMPUNG_CITIES as $cityItem)
+                            <li>
+                                <a href="{{ route('projects.city', \Illuminate\Support\Str::slug($cityItem)) }}" class="hover:text-brand-400 transition flex items-center justify-between py-0.5 group">
+                                    <span class="group-hover:translate-x-0.5 transition-transform truncate">Perumahan di {{ $cityItem }}</span>
+                                    <i class="fa-solid fa-arrow-right text-[9px] text-slate-600 group-hover:text-brand-400 shrink-0 ml-1"></i>
+                                </a>
+                            </li>
+                        @endforeach
                     </ul>
                 </div>
 

@@ -28,10 +28,13 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- City Pills -->
         <div class="flex flex-wrap items-center gap-2 mb-8">
-            <span class="text-xs text-slate-600 font-bold uppercase mr-2">Pilih Kota:</span>
+            <span class="text-xs text-slate-600 font-bold uppercase mr-2">Pilih Wilayah:</span>
             @foreach($cities as $c)
+                @php
+                    $isActive = Str::slug($c) === request()->route('city') || strtolower($c) === strtolower($cityFormatted) || str_contains(strtolower($cityFormatted), strtolower(str_replace(['kabupaten ', 'kota '], '', $c)));
+                @endphp
                 <a href="{{ route('projects.city', Str::slug($c)) }}"
-                   class="px-4 py-1.5 rounded-full text-xs font-semibold transition {{ strtolower($c) == strtolower($cityFormatted) ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
+                   class="px-4 py-1.5 rounded-full text-xs font-semibold transition {{ $isActive ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
                     {{ $c }}
                 </a>
             @endforeach

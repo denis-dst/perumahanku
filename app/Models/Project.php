@@ -13,6 +13,24 @@ class Project extends Model
 {
     use HasFactory;
 
+    public const LAMPUNG_CITIES = [
+        'Kota Bandar Lampung',
+        'Kota Metro',
+        'Kabupaten Lampung Selatan',
+        'Kabupaten Lampung Tengah',
+        'Kabupaten Lampung Utara',
+        'Kabupaten Lampung Barat',
+        'Kabupaten Lampung Timur',
+        'Kabupaten Way Kanan',
+        'Kabupaten Mesuji',
+        'Kabupaten Tulang Bawang',
+        'Kabupaten Tulang Bawang Barat',
+        'Kabupaten Pesisir Barat',
+        'Kabupaten Tanggamus',
+        'Kabupaten Pringsewu',
+        'Kabupaten Pesawaran',
+    ];
+
     protected $fillable = [
         'name', 'slug', 'tagline', 'description', 'address',
         'city', 'district', 'province', 'latitude', 'longitude',

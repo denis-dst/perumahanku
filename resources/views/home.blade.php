@@ -35,7 +35,7 @@
                         <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i> Lokasi Wilayah
                     </label>
                     <select id="home_city_select" name="city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
-                        <option value="">Semua Kota</option>
+                        <option value="">Semua Wilayah Lampung</option>
                         @foreach($cities as $city)
                             <option value="{{ $city }}">{{ $city }}</option>
                         @endforeach
@@ -77,7 +77,7 @@
             <!-- Quick City Tags -->
             <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
                 <span class="text-slate-600 font-semibold">Pencarian Populer:</span>
-                @foreach($cities as $c)
+                @foreach(array_slice($cities, 0, 5) as $c)
                     <a href="{{ route('projects.city', \Illuminate\Support\Str::slug($c)) }}" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-700 font-medium transition">
                         Rumah di {{ $c }}
                     </a>
