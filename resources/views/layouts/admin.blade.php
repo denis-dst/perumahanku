@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Admin Panel') - {{ \App\Models\Setting::get('site_name', 'Perumahanku') }}</title>
 
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -49,8 +55,8 @@
             <div>
                 <!-- Brand -->
                 <div class="h-20 flex items-center gap-3 px-6 border-b border-slate-800">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-nature-500 flex items-center justify-center text-white font-bold shadow-md">
-                        <i class="fa-solid fa-house-chimney"></i>
+                    <div class="w-10 h-10 rounded-xl bg-white border border-slate-700/60 shadow-xs flex items-center justify-center p-1 overflow-hidden shrink-0">
+                        <img src="{{ asset('images/logo-icon.png') }}" alt="{{ \App\Models\Setting::get('site_name', 'Perumahanku') }}" class="w-full h-full object-contain">
                     </div>
                     <div>
                         <span class="font-extrabold text-white text-lg tracking-tight block">{{ \App\Models\Setting::get('site_name', 'Perumahanku') }}</span>

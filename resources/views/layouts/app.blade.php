@@ -9,6 +9,12 @@
     <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ url('/sitemap.xml') }}">
     <meta name="google-site-verification" content="google188b18d98068125c">
 
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+
     <!-- Open Graph / Sosmed -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="@yield('title', \App\Models\Setting::get('site_name', 'Perumahanku'))">
@@ -133,8 +139,8 @@
             <div class="flex justify-between items-center h-16 gap-4">
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5 group shrink-0">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-nature-500 flex items-center justify-center text-white shadow-xs group-hover:scale-105 transition-transform duration-200">
-                        <i class="fa-solid fa-house-chimney text-base"></i>
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center p-1 group-hover:scale-105 transition-transform duration-200 overflow-hidden shrink-0">
+                        <img src="{{ asset('images/logo-icon.png') }}" alt="{{ $siteName }}" class="w-full h-full object-contain">
                     </div>
                     <div class="flex flex-col">
                         <span class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 group-hover:text-brand-600 transition-colors leading-tight">
@@ -232,8 +238,8 @@
                 <!-- Col 1: Brand & Bio -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center text-white font-bold text-lg">
-                            <i class="fa-solid fa-house-chimney"></i>
+                        <div class="w-10 h-10 rounded-xl bg-white border border-slate-700/60 shadow-xs flex items-center justify-center p-1 overflow-hidden shrink-0">
+                            <img src="{{ asset('images/logo-icon.png') }}" alt="{{ $siteName }}" class="w-full h-full object-contain">
                         </div>
                         <span class="text-2xl font-bold text-white tracking-tight">{{ $siteName }}</span>
                     </div>

@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Administrator - {{ \App\Models\Setting::get('site_name', 'Perumahanku') }}</title>
 
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon.png') }}">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -35,8 +41,8 @@
     <div class="w-full max-w-md bg-slate-800/90 rounded-3xl p-8 border border-slate-700 shadow-2xl backdrop-blur-md">
         <!-- Logo & Branding -->
         <div class="text-center mb-8">
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-nature-500 mx-auto flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-brand-500/20 mb-4">
-                <i class="fa-solid fa-house-chimney"></i>
+            <div class="w-16 h-16 rounded-2xl bg-white mx-auto flex items-center justify-center p-2 shadow-lg shadow-brand-500/20 mb-4 overflow-hidden border border-slate-700">
+                <img src="{{ asset('images/logo-icon.png') }}" alt="{{ \App\Models\Setting::get('site_name', 'Perumahanku') }}" class="w-full h-full object-contain">
             </div>
             <h1 class="text-2xl font-extrabold text-white tracking-tight">{{ \App\Models\Setting::get('site_name', 'Perumahanku') }}</h1>
             <p class="text-xs text-slate-400 mt-1">Portal Akses Administrator & Marketing Gallery</p>
