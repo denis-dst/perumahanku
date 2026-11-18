@@ -26,18 +26,70 @@
 <!-- Content -->
 <section class="py-12 bg-slate-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <!-- City Pills -->
-        <div class="flex flex-wrap items-center gap-2 mb-8">
-            <span class="text-xs text-slate-600 font-bold uppercase mr-2">Pilih Wilayah:</span>
-            @foreach($cities as $c)
-                @php
-                    $isActive = Str::slug($c) === request()->route('city') || strtolower($c) === strtolower($cityFormatted) || str_contains(strtolower($cityFormatted), strtolower(str_replace(['kabupaten ', 'kota '], '', $c)));
-                @endphp
-                <a href="{{ route('projects.city', Str::slug($c)) }}"
-                   class="px-4 py-1.5 rounded-full text-xs font-semibold transition {{ $isActive ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
-                    {{ $c }}
-                </a>
-            @endforeach
+        <!-- City Selector Toolbar (Clean, Responsive, No Clutter) -->
+        <div class="bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200/90 shadow-2xs mb-8"
+             x-data="{
+                 scrollLeft() { $refs.chipTrack.scrollBy({ left: -220, behavior: 'smooth' }) },
+                 scrollRight() { $refs.chipTrack.scrollBy({ left: 220, behavior: 'smooth' }) }
+             }"
+             x-init="$nextTick(() => {
+                 const activeChip = $refs.chipTrack.querySelector('[data-active=true]');
+                 if (activeChip) {
+                     activeChip.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                 }
+             })">
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Dropdown Quick Switcher -->
+                <div class="flex items-center gap-2 pl-2 pr-3 border-r border-slate-200 shrink-0">
+                    <span class="w-7 h-7 rounded-lg bg-brand-50 text-brand-600 flex items-center justify-center text-xs shrink-0">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                    </span>
+                    <span class="text-xs font-bold text-slate-800 hidden sm:inline whitespace-nowrap">Wilayah:</span>
+
+                    <div class="relative">
+                        <select onchange="if(this.value) window.location.href=this.value" aria-label="Pilih Kabupaten atau Kota di Provinsi Lampung" class="appearance-none bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-800 text-xs font-semibold py-1.5 pl-3 pr-7 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer transition">
+                            @foreach($cities as $c)
+                                @php
+                                    $isActive = Str::slug($c) === request()->route('city') || strtolower($c) === strtolower($cityFormatted) || str_contains(strtolower($cityFormatted), strtolower(str_replace(['kabupaten ', 'kota '], '', $c)));
+                                @endphp
+                                <option value="{{ route('projects.city', Str::slug($c)) }}" {{ $isActive ? 'selected' : '' }}>
+                                    {{ $c }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-slate-500 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <!-- Nav Button Left (Desktop) -->
+                <button type="button" @click="scrollLeft()" aria-label="Geser pilihan wilayah ke kiri" class="hidden md:flex w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-800 items-center justify-center text-xs shrink-0 transition">
+                    <i class="fa-solid fa-chevron-left text-[11px]"></i>
+                </button>
+
+                <!-- Horizontal Scrollable Chip Track (Single Neat Line, No Wrapping) -->
+                <div x-ref="chipTrack" class="flex-1 flex items-center gap-1.5 overflow-x-auto py-0.5" style="scrollbar-width: none; -ms-overflow-style: none;">
+                    @foreach($cities as $c)
+                        @php
+                            $isActive = Str::slug($c) === request()->route('city') || strtolower($c) === strtolower($cityFormatted) || str_contains(strtolower($cityFormatted), strtolower(str_replace(['kabupaten ', 'kota '], '', $c)));
+                            $shortName = str_replace(['Kabupaten ', 'Kota '], '', $c);
+                            $isKota = str_starts_with($c, 'Kota');
+                        @endphp
+                        <a href="{{ route('projects.city', Str::slug($c)) }}"
+                           data-active="{{ $isActive ? 'true' : 'false' }}"
+                           class="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 shrink-0 {{ $isActive ? 'bg-brand-600 text-white shadow-xs font-bold scale-[1.02]' : 'bg-slate-50 hover:bg-slate-100 text-slate-700 hover:text-slate-900 border border-slate-200/80' }}">
+                            <span class="text-[10px] {{ $isActive ? 'text-brand-100 font-medium' : 'text-slate-600 font-normal' }}">
+                                {{ $isKota ? 'Kota' : 'Kab.' }}
+                            </span>
+                            <span>{{ $shortName }}</span>
+                        </a>
+                    @endforeach
+                </div>
+
+                <!-- Nav Button Right (Desktop) -->
+                <button type="button" @click="scrollRight()" aria-label="Geser pilihan wilayah ke kanan" class="hidden md:flex w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-800 items-center justify-center text-xs shrink-0 transition">
+                    <i class="fa-solid fa-chevron-right text-[11px]"></i>
+                </button>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
