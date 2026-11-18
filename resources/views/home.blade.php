@@ -266,7 +266,7 @@
                 <div class="relative rounded-3xl bg-slate-800/80 border border-slate-700 p-4 shadow-2xl backdrop-blur-md">
                     <!-- Fake Siteplan with Pin and Tooltip -->
                     <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-950">
-                        <img src="https://images.unsplash.com/photo-1524813686514-a57563d77d66?auto=format&fit=crop&w=1000&q=80" alt="Siteplan Preview" class="w-full h-full object-cover opacity-70">
+                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1000&q=80" alt="Siteplan Preview" class="w-full h-full object-cover opacity-70">
 
                         <!-- Animated Kavling Pin -->
                         <div class="absolute top-[45%] left-[50%] -translate-x-1/2 -translate-y-1/2">
