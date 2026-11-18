@@ -47,17 +47,18 @@
       "description": "{{ \App\Models\Setting::get('hero_subtitle', 'Katalog perumahan baru terpercaya di Provinsi Lampung dengan skema KPR mudah.') }}",
       "telephone": "{{ \App\Models\Setting::get('company_phone', '0721-123456') }}",
       "email": "{{ \App\Models\Setting::get('company_email', 'info@perumahanku.id') }}",
+      "hasMap": "{{ \App\Models\Setting::get('google_maps_url', 'https://maps.app.goo.gl/NgnnxiPaY64W2LMR9') }}",
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "{{ \App\Models\Setting::get('company_address', 'Jl. Bandar Lampung') }}",
-        "addressLocality": "Bandar Lampung",
+        "streetAddress": "{{ \App\Models\Setting::get('company_address', 'Kantor Pemasaran Perumahan Alam Damai Residence, Lampung') }}",
+        "addressLocality": "Lampung",
         "addressRegion": "Lampung",
         "addressCountry": "ID"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": -5.39714,
-        "longitude": 105.26679
+        "latitude": -5.3805,
+        "longitude": 105.1130
       },
       "areaServed": [
         "Kota Bandar Lampung", "Kota Metro", "Kabupaten Lampung Selatan", "Kabupaten Pesawaran", "Kabupaten Pringsewu"
@@ -344,10 +345,10 @@
                 <!-- Col 4: Kantor & Kontak -->
                 <div class="space-y-3">
                     <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Marketing Gallery</h4>
-                    <p class="text-xs text-slate-400 flex items-start gap-2.5">
-                        <i class="fa-solid fa-location-dot text-brand-400 mt-1"></i>
-                        <span>{{ $companyAddress }}</span>
-                    </p>
+                    <a href="{{ \App\Models\Setting::get('google_maps_url', 'https://maps.app.goo.gl/NgnnxiPaY64W2LMR9') }}" target="_blank" rel="noopener noreferrer" class="text-xs text-slate-400 hover:text-white transition flex items-start gap-2.5 group">
+                        <i class="fa-solid fa-location-dot text-brand-400 group-hover:text-brand-300 mt-1 shrink-0"></i>
+                        <span>{{ $companyAddress }} <span class="text-[10px] text-brand-400 block mt-0.5 group-hover:underline"><i class="fa-solid fa-diamond-turn-right text-[9px] mr-1"></i>Buka Rute Google Maps</span></span>
+                    </a>
                     <p class="text-xs text-slate-400 flex items-center gap-2.5">
                         <i class="fa-solid fa-phone text-brand-400"></i>
                         <span>{{ $companyPhone }}</span>

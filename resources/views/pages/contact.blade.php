@@ -9,6 +9,8 @@
     $companyPhone = \App\Models\Setting::get('company_phone', '021-88997766');
     $companyEmail = \App\Models\Setting::get('company_email', 'info@perumahanku.id');
     $companyAddress = \App\Models\Setting::get('company_address', 'Jl. Boulevard Hijau No. 128');
+    $mapsUrl = \App\Models\Setting::get('google_maps_url', 'https://maps.app.goo.gl/NgnnxiPaY64W2LMR9');
+    $mapsEmbed = \App\Models\Setting::get('google_maps_embed', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127111.64558455754!2d105.11298312531257!3d-5.380499958849488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40db2025f8e163%3A0xa1f8aa0293849664!2sKantor%20Pemasaran%20Perumahan%20Alam%20Damai%20Residence!5e0!3m2!1sen!2sid!4v1795016553251!5m2!1sen!2sid');
     $waNum = \App\Models\Setting::get('whatsapp_number', '6281234567890');
     $waClean = preg_replace('/[^0-9]/', '', $waNum);
     if (str_starts_with($waClean, '0')) $waClean = '62' . substr($waClean, 1);
@@ -41,6 +43,10 @@
                             <div>
                                 <span class="font-bold text-slate-800 block text-xs uppercase tracking-wider">Alamat Marketing Gallery</span>
                                 <span class="text-xs text-slate-600 leading-relaxed block mt-0.5">{{ $companyAddress }}</span>
+                                <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs text-brand-600 font-bold hover:underline mt-1.5">
+                                    <i class="fa-solid fa-diamond-turn-right text-xs"></i>
+                                    <span>Buka di Google Maps & Petunjuk Arah</span>
+                                </a>
                             </div>
                         </div>
 
@@ -127,6 +133,27 @@
                         Kirim Pesan Sekarang
                     </button>
                 </form>
+            </div>
+        </div>
+
+        <!-- Interactive Google Maps Section -->
+        <div class="mt-12 bg-white p-4 sm:p-8 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+                        <i class="fa-solid fa-map-location-dot text-brand-600"></i>
+                        <span>Lokasi Marketing Gallery di Google Maps</span>
+                    </h2>
+                    <p class="text-xs text-slate-500 mt-0.5">Kantor Pemasaran Perumahan Alam Damai Residence siap menyambut kunjungan survei Anda.</p>
+                </div>
+                <a href="{{ $mapsUrl }}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-2 border border-brand-200/70 shrink-0 self-start sm:self-auto">
+                    <i class="fa-solid fa-diamond-turn-right text-brand-600"></i>
+                    <span>Buka Rute Navigasi Google Maps</span>
+                </a>
+            </div>
+
+            <div class="w-full h-80 sm:h-[420px] rounded-2xl overflow-hidden border border-slate-200 shadow-2xs">
+                <iframe src="{{ $mapsEmbed }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Lokasi Kantor Pemasaran Perumahan Alam Damai Residence"></iframe>
             </div>
         </div>
     </div>

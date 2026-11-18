@@ -309,12 +309,12 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         @foreach($items as $s)
-                            <div class="{{ in_array($s->key, ['hero_title', 'hero_subtitle', 'company_address']) ? 'sm:col-span-2' : '' }}">
+                            <div class="{{ in_array($s->key, ['hero_title', 'hero_subtitle', 'company_address', 'google_maps_embed', 'google_maps_url']) ? 'sm:col-span-2' : '' }}">
                                 <label for="setting_{{ $s->key }}" class="block text-xs font-bold uppercase text-slate-700 mb-1">
                                     {{ $s->label ?? $s->key }}
                                 </label>
 
-                                @if(in_array($s->key, ['hero_subtitle', 'company_address']))
+                                @if(in_array($s->key, ['hero_subtitle', 'company_address', 'google_maps_embed']))
                                     <textarea id="setting_{{ $s->key }}" name="{{ $s->key }}" rows="2" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">{{ $s->value }}</textarea>
                                 @else
                                     <input type="text" id="setting_{{ $s->key }}" name="{{ $s->key }}" value="{{ $s->value }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">

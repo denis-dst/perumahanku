@@ -506,13 +506,15 @@ insert  into `settings`(`id`,`key`,`value`,`group`,`type`,`label`,`created_at`,`
 (4,'company_phone','072-','company','text','Telepon Kantor','2026-11-16 12:58:41','2026-11-17 13:38:13'),
 (5,'whatsapp_number','6282182860707','company','text','Nomor WhatsApp Hotline','2026-11-16 12:58:41','2026-11-17 13:38:13'),
 (6,'company_email','info@alamdamaiproperty.com','company','text','Email Resmi','2026-11-16 12:58:41','2026-11-17 13:38:13'),
-(7,'company_address','Jl. Bandar Lampung, Lampung','company','text','Alamat Kantor','2026-11-16 12:58:41','2026-11-17 13:38:13'),
+(7,'company_address','Kantor Pemasaran Perumahan Alam Damai Residence, Lampung','company','text','Alamat Kantor','2026-11-16 12:58:41','2026-11-18 22:43:00'),
 (8,'hero_title','Temukan Hunian Nyaman & Strategis untuk Masa Depan','home','text','Judul Hero Banner','2026-11-16 12:58:41','2026-11-16 12:58:41'),
 (9,'hero_subtitle','Pilihan perumahan baru terbaik dengan legalitas aman, cicilan KPR terjangkau, siteplan interaktif, dan survei lokasi langsung dari genggaman Anda.','home','text','Subjudul Hero Banner','2026-11-16 12:58:41','2026-11-16 12:58:41'),
 (10,'instagram_url','https://instagram.com/property_murahlampungalamdamai/','social','text','Instagram URL','2026-11-16 12:58:41','2026-11-17 13:38:13'),
 (11,'facebook_url','https://facebook.com/property_murahlampungalamdamai/','social','text','Facebook URL','2026-11-16 12:58:41','2026-11-17 13:38:13'),
 (12,'tiktok_url','https://tiktok.com/@property_murahlampungalamdamai/','social','text','TikTok URL','2026-11-16 12:58:41','2026-11-17 13:38:13'),
-(13,'office_hours','Senin - Minggu: 08.30 - 17.30 WIB (Marketing Gallery Buka Setiap Hari)','company','text','Jam Operasional','2026-11-16 12:58:41','2026-11-16 12:58:41');
+(13,'office_hours','Senin - Minggu: 08.30 - 17.30 WIB (Marketing Gallery Buka Setiap Hari)','company','text','Jam Operasional','2026-11-16 12:58:41','2026-11-16 12:58:41'),
+(14,'google_maps_url','https://maps.app.goo.gl/NgnnxiPaY64W2LMR9','company','text','Tautan Google Maps Kantor','2026-11-18 22:43:00','2026-11-18 22:43:00'),
+(15,'google_maps_embed','https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127111.64558455754!2d105.11298312531257!3d-5.380499958849488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e40db2025f8e163%3A0xa1f8aa0293849664!2sKantor%20Pemasaran%20Perumahan%20Alam%20Damai%20Residence!5e0!3m2!1sen!2sid!4v1795016553251!5m2!1sen!2sid','company','text','Embed Google Maps URL (Iframe)','2026-11-18 22:43:00','2026-11-18 22:43:00');
 
 /*Table structure for table `units` */
 
