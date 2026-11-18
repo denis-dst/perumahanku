@@ -452,6 +452,7 @@ CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `avatar` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -463,8 +464,8 @@ CREATE TABLE `users` (
 
 /*Data for the table `users` */
 
-insert  into `users`(`id`,`name`,`email`,`email_verified_at`,`password`,`remember_token`,`created_at`,`updated_at`) values 
-(1,'Administrator Perumahanku','admin@perumahanku.id','2026-11-16 12:58:41','$2y$12$PFz7mTF9lsfl1Hm.lb1v7O8sqQwETzfkhmqU7iHkQBPdowzHBHu6i',NULL,'2026-11-16 12:58:41','2026-11-16 12:58:41');
+insert  into `users`(`id`,`name`,`email`,`avatar`,`email_verified_at`,`password`,`remember_token`,`created_at`,`updated_at`) values 
+(1,'Administrator Perumahanku','admin@perumahanku.id',NULL,'2026-11-16 12:58:41','$2y$12$PFz7mTF9lsfl1Hm.lb1v7O8sqQwETzfkhmqU7iHkQBPdowzHBHu6i',NULL,'2026-11-16 12:58:41','2026-11-16 12:58:41');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

@@ -79,9 +79,11 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     // Bookings / Survey Leads
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update', 'destroy']);
 
-    // Settings (Dapat disesuaikan kapan saja oleh admin)
+    // Settings & Profile Admin
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+    Route::post('/settings/profile', [AdminSettingController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/password', [AdminSettingController::class, 'updatePassword'])->name('settings.password');
 
     // KPR Banks & Suku Bunga
     Route::resource('banks', AdminKprBankController::class)->only(['index', 'store', 'update', 'destroy']);

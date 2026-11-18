@@ -95,24 +95,29 @@
 
                     <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {{ request()->routeIs('admin.settings.*') ? 'bg-brand-600 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                         <i class="fa-solid fa-sliders w-5 text-center"></i>
-                        <span>Pengaturan Web & PT</span>
+                        <span>Pengaturan & Profil</span>
                     </a>
                 </nav>
             </div>
 
             <!-- Footer User Section -->
             <div class="p-4 border-t border-slate-800">
-                <div class="flex items-center justify-between px-2 mb-3">
+                <a href="{{ route('admin.settings.index', ['tab' => 'profile']) }}" class="flex items-center justify-between p-2 mb-3 rounded-xl hover:bg-slate-800 transition group">
                     <div class="flex items-center gap-2.5 overflow-hidden">
-                        <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-xs">
-                            <i class="fa-solid fa-user"></i>
-                        </div>
+                        @if(auth()->user() && auth()->user()->avatar_url)
+                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover ring-2 ring-brand-500/50 shrink-0">
+                        @else
+                            <div class="w-8 h-8 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-brand-500/30 shrink-0">
+                                {{ auth()->user()->initials ?? 'AD' }}
+                            </div>
+                        @endif
                         <div class="truncate">
-                            <p class="text-xs font-semibold text-white truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
+                            <p class="text-xs font-semibold text-white group-hover:text-brand-300 transition truncate">{{ auth()->user()->name ?? 'Admin' }}</p>
                             <p class="text-[10px] text-slate-400 truncate">{{ auth()->user()->email ?? 'admin@perumahanku.id' }}</p>
                         </div>
                     </div>
-                </div>
+                    <i class="fa-solid fa-gear text-slate-500 group-hover:text-brand-400 text-xs transition"></i>
+                </a>
 
                 <div class="flex gap-2">
                     <a href="{{ route('home') }}" target="_blank" class="flex-1 py-2 text-center text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg transition">
@@ -142,7 +147,19 @@
                 <div class="flex items-center gap-3">
                     <a href="{{ route('home') }}" target="_blank" class="px-3.5 py-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-brand-600 hover:border-brand-300 text-xs font-semibold transition flex items-center gap-1.5">
                         <i class="fa-solid fa-globe"></i>
-                        <span>Lihat Website</span>
+                        <span class="hidden sm:inline">Lihat Website</span>
+                    </a>
+
+                    <!-- Profile Quick Pill -->
+                    <a href="{{ route('admin.settings.index', ['tab' => 'profile']) }}" class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full border border-slate-200 hover:border-brand-400 bg-slate-50/50 hover:bg-brand-50/50 transition">
+                        @if(auth()->user() && auth()->user()->avatar_url)
+                            <img src="{{ auth()->user()->avatar_url }}" alt="{{ auth()->user()->name }}" class="w-7 h-7 rounded-full object-cover">
+                        @else
+                            <div class="w-7 h-7 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-[11px]">
+                                {{ auth()->user()->initials ?? 'AD' }}
+                            </div>
+                        @endif
+                        <span class="text-xs font-medium text-slate-700 hidden sm:inline">{{ auth()->user()->name ?? 'Admin' }}</span>
                     </a>
                 </div>
             </header>
