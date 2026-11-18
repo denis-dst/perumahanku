@@ -48,6 +48,12 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.
 Route::get('/admin/captcha-refresh', [AdminAuthController::class, 'refreshCaptcha'])->name('admin.captcha.refresh');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
+// Google Search Console Verification
+Route::get('/google188b18d98068125c.html', function () {
+    return response('google-site-verification: google188b18d98068125c.html', 200)
+        ->header('Content-Type', 'text/html');
+});
+
 /*
 |--------------------------------------------------------------------------
 | Admin Panel Protected Routes
