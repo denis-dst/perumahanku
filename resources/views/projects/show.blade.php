@@ -4,6 +4,31 @@
 @section('meta_description', $project->seo_description ?? Str::limit($project->description, 160))
 @section('meta_image', $project->primaryImage ? $project->primaryImage->url : '')
 
+@section('structured_data')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SingleFamilyResidence",
+  "name": "{{ $project->name }}",
+  "description": "{{ $project->seo_description ?? Str::limit($project->description, 160) }}",
+  "url": "{{ url()->current() }}",
+  "image": "{{ $project->primaryImage ? $project->primaryImage->url : asset('images/logo.png') }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ $project->address }}",
+    "addressLocality": "{{ $project->district ?? $project->city }}",
+    "addressRegion": "{{ $project->province ?? 'Lampung' }}",
+    "addressCountry": "ID"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": {{ $project->latitude ?? -5.39714 }},
+    "longitude": {{ $project->longitude ?? 105.26679 }}
+  }
+}
+</script>
+@endsection
+
 @section('content')
 @php
     $siteName = \App\Models\Setting::get('site_name', 'Perumahanku');

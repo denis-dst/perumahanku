@@ -20,7 +20,52 @@
     <meta property="og:title" content="@yield('title', \App\Models\Setting::get('site_name', 'Perumahanku'))">
     <meta property="og:description" content="@yield('meta_description', \App\Models\Setting::get('hero_subtitle'))">
     <meta property="og:url" content="{{ url()->current() }}">
-    <meta property="og:image" content="@yield('meta_image', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80')">
+    <meta property="og:image" content="@yield('meta_image', asset('images/logo.png'))">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', \App\Models\Setting::get('site_name', 'Alam Damai Property'))">
+    <meta name="twitter:description" content="@yield('meta_description', \App\Models\Setting::get('hero_subtitle'))">
+    <meta name="twitter:image" content="@yield('meta_image', asset('images/logo.png'))">
+
+    <!-- Geo-Targeting Local SEO (Lampung) -->
+    <meta name="geo.region" content="ID-LA">
+    <meta name="geo.placename" content="Bandar Lampung, Lampung">
+    <meta name="geo.position" content="-5.39714;105.26679">
+    <meta name="ICBM" content="-5.39714, 105.26679">
+
+    <!-- JSON-LD Structured Data: RealEstateAgent & Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "{{ \App\Models\Setting::get('company_name', 'PT Alam Damai Property') }}",
+      "alternateName": "{{ \App\Models\Setting::get('site_name', 'Alam Damai Property') }}",
+      "url": "{{ url('/') }}",
+      "logo": "{{ asset('images/logo.png') }}",
+      "image": "{{ asset('images/logo.png') }}",
+      "description": "{{ \App\Models\Setting::get('hero_subtitle', 'Katalog perumahan baru terpercaya di Provinsi Lampung dengan skema KPR mudah.') }}",
+      "telephone": "{{ \App\Models\Setting::get('company_phone', '0721-123456') }}",
+      "email": "{{ \App\Models\Setting::get('company_email', 'info@perumahanku.id') }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ \App\Models\Setting::get('company_address', 'Jl. Bandar Lampung') }}",
+        "addressLocality": "Bandar Lampung",
+        "addressRegion": "Lampung",
+        "addressCountry": "ID"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -5.39714,
+        "longitude": 105.26679
+      },
+      "areaServed": [
+        "Kota Bandar Lampung", "Kota Metro", "Kabupaten Lampung Selatan", "Kabupaten Pesawaran", "Kabupaten Pringsewu"
+      ],
+      "priceRange": "Rp 150.000.000 - Rp 1.500.000.000"
+    }
+    </script>
+    @yield('structured_data')
 
     <!-- Preconnect Key Origins -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

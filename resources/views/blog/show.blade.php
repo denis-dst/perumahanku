@@ -4,6 +4,37 @@
 @section('meta_description', $post->seo_description ?? Str::limit(strip_tags($post->content), 160))
 @section('meta_image', $post->thumbnail_url)
 
+@section('structured_data')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ $post->title }}",
+  "description": "{{ $post->seo_description ?? Str::limit(strip_tags($post->content), 160) }}",
+  "image": "{{ $post->thumbnail_url }}",
+  "datePublished": "{{ $post->published_at?->toIso8601String() ?? now()->toIso8601String() }}",
+  "dateModified": "{{ $post->updated_at?->toIso8601String() ?? now()->toIso8601String() }}",
+  "author": {
+    "@type": "Organization",
+    "name": "{{ \App\Models\Setting::get('company_name', 'Alam Damai Property') }}",
+    "url": "{{ url('/') }}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ \App\Models\Setting::get('site_name', 'Alam Damai Property') }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ asset('images/logo.png') }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ url()->current() }}"
+  }
+}
+</script>
+@endsection
+
 @section('content')
 <article class="py-12 bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
