@@ -7,7 +7,7 @@
 @section('structured_data')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@@context": "https://schema.org",
   "@type": "SingleFamilyResidence",
   "name": "{{ $project->name }}",
   "description": "{{ $project->seo_description ?? Str::limit($project->description, 160) }}",

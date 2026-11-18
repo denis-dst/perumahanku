@@ -7,7 +7,7 @@
 @section('structured_data')
 <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
+  "@@context": "https://schema.org",
   "@type": "BlogPosting",
   "headline": "{{ $post->title }}",
   "description": "{{ $post->seo_description ?? Str::limit(strip_tags($post->content), 160) }}",

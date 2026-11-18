@@ -37,7 +37,7 @@
     <!-- JSON-LD Structured Data: RealEstateAgent & Organization -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
+      "@@context": "https://schema.org",
       "@type": "RealEstateAgent",
       "name": "{{ \App\Models\Setting::get('company_name', 'PT Alam Damai Property') }}",
       "alternateName": "{{ \App\Models\Setting::get('site_name', 'Alam Damai Property') }}",
