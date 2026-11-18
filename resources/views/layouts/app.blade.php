@@ -6,6 +6,7 @@
     <title>@yield('title', \App\Models\Setting::get('site_name', 'Perumahanku') . ' - ' . \App\Models\Setting::get('site_tagline', 'Katalog Perumahan Baru'))</title>
     <meta name="description" content="@yield('meta_description', \App\Models\Setting::get('hero_subtitle', 'Katalog perumahan baru terpercaya dengan skema cicilan KPR dan booking survei lokasi.'))">
     <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="{{ url('/sitemap.xml') }}">
     <meta name="google-site-verification" content="google188b18d98068125c">
 
     <!-- Open Graph / Sosmed -->
