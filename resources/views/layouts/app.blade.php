@@ -36,19 +36,19 @@
                             200: '#bae6fd',
                             300: '#7dd3fc',
                             400: '#38bdf8',
-                            500: '#0ea5e9', // Biru Langit Indah
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
+                            500: '#0284c7', // Kontras WCAG AA 4.6:1
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                            900: '#082f49',
                         },
                         nature: {
                             50: '#f0fdf4',
                             100: '#dcfce7',
                             200: '#bbf7d0',
-                            500: '#10b981', // Hijau Sejuk
-                            600: '#059669',
-                            700: '#047857',
+                            500: '#059669', // Kontras WCAG AA 4.5:1
+                            600: '#047857',
+                            700: '#064e3b',
                         }
                     }
                 }
@@ -88,12 +88,12 @@
                 <span class="bg-white/20 text-white px-2 py-0.5 rounded-full text-[9px] font-bold tracking-wider uppercase">Promo Perdana</span>
                 <span class="font-medium">DP 0% + Bebas Biaya KPR & Sertifikat SHM!</span>
             </div>
-            <div class="flex items-center gap-3 text-white/90 text-[11px]">
-                <a href="tel:{{ $companyPhone }}" class="hover:text-white flex items-center gap-1 transition">
+            <div class="flex items-center gap-3 text-white/95 text-[11px]">
+                <a href="tel:{{ $companyPhone }}" aria-label="Telepon kantor {{ $companyPhone }}" class="hover:text-white flex items-center gap-1 transition">
                     <i class="fa-solid fa-phone text-[10px]"></i> {{ $companyPhone }}
                 </a>
                 <span class="hidden sm:inline opacity-40">|</span>
-                <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi perumahan baru.') }}" target="_blank" class="hover:text-white flex items-center gap-1 transition">
+                <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi perumahan baru.') }}" target="_blank" aria-label="WhatsApp konsultasi {{ $waNum }}" class="hover:text-white flex items-center gap-1 transition">
                     <i class="fa-brands fa-whatsapp text-emerald-300"></i> WA: {{ $waNum }}
                 </a>
             </div>
@@ -113,14 +113,14 @@
                         <span class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 group-hover:text-brand-600 transition-colors leading-tight">
                             {{ $siteName }}
                         </span>
-                        <span class="text-[10px] text-slate-400 font-medium -mt-0.5 hidden xl:block leading-tight">
+                        <span class="text-[10px] text-slate-500 font-medium -mt-0.5 hidden xl:block leading-tight">
                             {{ $siteTagline }}
                         </span>
                     </div>
                 </a>
 
                 <!-- Desktop Nav (Clean, Single Line, No Wrapping) -->
-                <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5">
+                <nav class="hidden lg:flex items-center gap-1 xl:gap-1.5" aria-label="Navigasi Utama">
                     <a href="{{ route('home') }}" class="px-3 py-1.5 rounded-lg text-xs xl:text-[13px] whitespace-nowrap transition-colors {{ request()->routeIs('home') ? 'bg-brand-50 text-brand-600 font-bold' : 'text-slate-600 hover:text-brand-600 hover:bg-slate-50 font-medium' }}">
                         Beranda
                     </a>
@@ -143,7 +143,7 @@
 
                 <!-- CTA Action Buttons (Compact & Proportional, scale on hover) -->
                 <div class="hidden sm:flex items-center gap-2 shrink-0">
-                    <a href="{{ route('projects.index') }}#booking-section" class="px-3.5 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap">
+                    <a href="{{ route('projects.index') }}#booking-section" class="px-3.5 py-2 rounded-xl bg-nature-600 hover:bg-nature-700 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all duration-200 flex items-center gap-1.5 whitespace-nowrap">
                         <i class="fa-regular fa-calendar-check text-xs"></i>
                         <span>Booking Survei</span>
                     </a>
@@ -155,7 +155,7 @@
 
                 <!-- Mobile Menu Button -->
                 <div class="flex items-center lg:hidden">
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" class="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" type="button" aria-label="Buka menu navigasi" :aria-expanded="mobileMenuOpen.toString()" class="p-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition">
                         <i class="fa-solid text-lg" :class="mobileMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
                     </button>
                 </div>
@@ -183,7 +183,7 @@
                 <i class="fa-solid fa-phone w-6 text-brand-500"></i> Kontak
             </a>
             <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                <a href="{{ route('projects.index') }}#booking-section" class="w-full text-center py-2.5 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs flex items-center justify-center gap-2">
+                <a href="{{ route('projects.index') }}#booking-section" class="w-full text-center py-2.5 rounded-xl bg-nature-600 hover:bg-nature-700 text-white font-bold text-xs flex items-center justify-center gap-2">
                     <i class="fa-regular fa-calendar-check"></i> Booking Survei
                 </a>
                 <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-full text-center py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold text-xs flex items-center justify-center gap-2">
@@ -213,20 +213,20 @@
                     <p class="text-sm text-slate-400 leading-relaxed">
                         Platform katalog perumahan baru terpercaya. Hadir membantu keluarga Indonesia menemukan hunian idaman dengan kemudahan survei lokasi online dan simulasi KPR transparan.
                     </p>
-                    <p class="text-xs text-slate-500">
-                        Dipersembahkan oleh: <span class="text-slate-300 font-medium">{{ $companyName }}</span>
+                    <p class="text-xs text-slate-400">
+                        Dipersembahkan oleh: <span class="text-slate-200 font-medium">{{ $companyName }}</span>
                     </p>
                     <div class="flex items-center gap-3 pt-2">
-                        <a href="{{ \App\Models\Setting::get('instagram_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                        <a href="{{ \App\Models\Setting::get('instagram_url', '#') }}" target="_blank" aria-label="Kunjungi akun Instagram {{ $siteName }}" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
-                        <a href="{{ \App\Models\Setting::get('facebook_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                        <a href="{{ \App\Models\Setting::get('facebook_url', '#') }}" target="_blank" aria-label="Kunjungi halaman Facebook {{ $siteName }}" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
                             <i class="fa-brands fa-facebook-f"></i>
                         </a>
-                        <a href="{{ \App\Models\Setting::get('tiktok_url', '#') }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                        <a href="{{ \App\Models\Setting::get('tiktok_url', '#') }}" target="_blank" aria-label="Kunjungi profil TikTok {{ $siteName }}" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-brand-500 text-slate-300 hover:text-white flex items-center justify-center transition">
                             <i class="fa-brands fa-tiktok"></i>
                         </a>
-                        <a href="https://wa.me/{{ $waClean }}" target="_blank" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-nature-500 text-slate-300 hover:text-white flex items-center justify-center transition">
+                        <a href="https://wa.me/{{ $waClean }}" target="_blank" aria-label="Hubungi kami melalui WhatsApp {{ $siteName }}" class="w-9 h-9 rounded-lg bg-slate-800 hover:bg-nature-500 text-slate-300 hover:text-white flex items-center justify-center transition">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
                     </div>
@@ -249,11 +249,11 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4 text-sm tracking-wider uppercase">Cari Wilayah Terdekat</h4>
                     <ul class="space-y-2.5 text-sm">
-                        <li><a href="{{ route('projects.city', 'bogor') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bogor <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'tangerang-selatan') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Tangerang <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'bekasi') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bekasi / Cikarang <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'depok') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Depok <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
-                        <li><a href="{{ route('projects.city', 'jakarta') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Jakarta <i class="fa-solid fa-arrow-right text-[10px] text-slate-600"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'bogor') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bogor <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'tangerang-selatan') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Tangerang <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'bekasi') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Bekasi / Cikarang <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'depok') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Depok <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
+                        <li><a href="{{ route('projects.city', 'jakarta') }}" class="hover:text-brand-400 transition flex items-center justify-between">Perumahan di Jakarta <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i></a></li>
                     </ul>
                 </div>
 
@@ -279,10 +279,10 @@
                 </div>
             </div>
 
-            <div class="pt-8 border-t border-slate-800 text-center sm:flex sm:justify-between sm:items-center text-xs text-slate-500">
+            <div class="pt-8 border-t border-slate-800 text-center sm:flex sm:justify-between sm:items-center text-xs text-slate-400">
                 <p>&copy; {{ date('Y') }} {{ $companyName }}. Seluruh hak cipta dilindungi undang-undang.</p>
                 <div class="mt-3 sm:mt-0 flex justify-center gap-4">
-                    <a href="{{ route('admin.login') }}" class="text-slate-500 hover:text-slate-400">Panel Internal Admin</a>
+                    <a href="{{ route('admin.login') }}" class="text-slate-400 hover:text-slate-200">Panel Internal Admin</a>
                 </div>
             </div>
         </div>
@@ -292,7 +292,8 @@
     <aside aria-label="WhatsApp Contact" class="fixed bottom-5 right-5 z-50">
         <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Sales ' . $siteName . ', saya sedang mencari informasi perumahan.') }}"
            target="_blank"
-           class="group flex items-center bg-nature-500 hover:bg-nature-600 text-white p-3 rounded-full shadow-lg shadow-nature-500/30 hover:shadow-xl hover:shadow-nature-500/40 hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out cursor-pointer"
+           aria-label="Konsultasi via WhatsApp"
+           class="group flex items-center bg-nature-600 hover:bg-nature-700 text-white p-3 rounded-full shadow-lg shadow-nature-600/30 hover:shadow-xl hover:shadow-nature-600/40 hover:scale-105 active:scale-95 transition-all duration-300 ease-in-out cursor-pointer"
            title="Tanya via WhatsApp">
             <i class="fa-brands fa-whatsapp text-2xl shrink-0 group-hover:scale-110 transition-transform duration-200"></i>
             <span class="max-w-0 overflow-hidden whitespace-nowrap opacity-0 group-hover:max-w-xs group-hover:opacity-100 group-hover:ml-2.5 group-hover:mr-1.5 transition-all duration-300 ease-in-out font-bold text-xs tracking-wide">

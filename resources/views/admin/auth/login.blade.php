@@ -73,41 +73,44 @@
 
             <!-- Email (No Auto-Fill) -->
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Email Administrator</label>
+                <label for="admin_email" class="block text-xs font-bold uppercase text-slate-300 mb-1.5">Email Administrator</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-sm pointer-events-none">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm pointer-events-none">
                         <i class="fa-solid fa-envelope"></i>
                     </span>
                     <input type="email"
+                           id="admin_email"
                            name="email"
                            value="{{ old('email') }}"
                            required
                            autocomplete="off"
                            placeholder="nama@email.com"
-                           class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                           class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                 </div>
             </div>
 
             <!-- Password with Show/Hide Toggle (No Auto-Fill) -->
             <div>
-                <label class="block text-xs font-bold uppercase text-slate-400 mb-1.5">Kata Sandi</label>
+                <label for="admin_password" class="block text-xs font-bold uppercase text-slate-300 mb-1.5">Kata Sandi</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-sm pointer-events-none">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 text-sm pointer-events-none">
                         <i class="fa-solid fa-lock"></i>
                     </span>
                     <input :type="showPassword ? 'text' : 'password'"
+                           id="admin_password"
                            name="password"
                            value=""
                            required
                            autocomplete="new-password"
                            placeholder="Masukkan kata sandi"
-                           class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-11 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                           class="w-full bg-slate-900/80 border border-slate-700 rounded-xl pl-10 pr-11 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                     
                     <!-- View Password Toggle Button -->
                     <button type="button"
                             @click="showPassword = !showPassword"
                             tabindex="-1"
-                            class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-white transition focus:outline-none"
+                            class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-300 hover:text-white transition focus:outline-none"
+                            :aria-label="showPassword ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'"
                             :title="showPassword ? 'Sembunyikan Kata Sandi' : 'Tampilkan Kata Sandi'">
                         <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash text-brand-400' : 'fa-eye'"></i>
                     </button>
@@ -117,12 +120,13 @@
             <!-- Math Captcha Security Verification -->
             <div class="pt-1">
                 <div class="flex items-center justify-between mb-1.5">
-                    <label class="block text-xs font-bold uppercase text-slate-400 flex items-center gap-1.5">
+                    <label for="admin_captcha" class="block text-xs font-bold uppercase text-slate-300 flex items-center gap-1.5">
                         <i class="fa-solid fa-shield-halved text-brand-400 text-xs"></i>
                         <span>Verifikasi Keamanan</span>
                     </label>
                     <button type="button"
                             @click="refreshCaptcha()"
+                            aria-label="Ganti soal captcha"
                             class="text-[11px] text-brand-400 hover:text-brand-300 font-semibold flex items-center gap-1 transition focus:outline-none">
                         <i class="fa-solid fa-arrows-rotate text-[10px]" :class="isRefreshingCaptcha ? 'animate-spin' : ''"></i>
                         <span>Ganti Soal</span>
@@ -132,30 +136,32 @@
                 <div class="flex items-center gap-3">
                     <!-- Captcha Math Challenge Pill -->
                     <div class="flex items-center justify-center px-4 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl font-black text-sm tracking-wider text-emerald-400 shrink-0 select-none shadow-inner">
-                        <i class="fa-solid fa-calculator text-xs text-slate-500 mr-2"></i>
+                        <i class="fa-solid fa-calculator text-xs text-slate-400 mr-2"></i>
                         <span x-text="captchaQuestion + ' = ?'"></span>
                     </div>
 
                     <!-- Captcha Input Field -->
                     <div class="relative flex-1">
                         <input type="number"
+                               id="admin_captcha"
                                name="captcha"
+                               aria-label="Hasil perhitungan verifikasi keamanan"
                                required
                                autocomplete="off"
                                placeholder="Hasilnya..."
-                               class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 transition font-bold">
+                               class="w-full bg-slate-900/80 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition font-bold">
                     </div>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
-                <label class="flex items-center gap-2 cursor-pointer select-none">
-                    <input type="checkbox" name="remember" class="rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
+            <div class="flex items-center justify-between text-xs text-slate-300 pt-1">
+                <label for="admin_remember" class="flex items-center gap-2 cursor-pointer select-none">
+                    <input type="checkbox" id="admin_remember" name="remember" class="rounded bg-slate-900 border-slate-700 text-brand-500 focus:ring-0">
                     <span>Ingat Saya</span>
                 </label>
             </div>
 
-            <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-500 hover:to-nature-500 text-white font-bold text-sm shadow-lg transition duration-200 mt-2 flex items-center justify-center gap-2">
+            <button type="submit" aria-label="Masuk ke Panel Admin" class="w-full py-3 rounded-xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-500 hover:to-nature-500 text-white font-bold text-sm shadow-lg transition duration-200 mt-2 flex items-center justify-center gap-2">
                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 <span>Masuk ke Panel Admin</span>
             </button>

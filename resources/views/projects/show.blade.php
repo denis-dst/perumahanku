@@ -180,7 +180,7 @@
                 <!-- Price Box & Fast Action -->
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="text-left lg:text-right">
-                        <span class="text-xs text-slate-400 font-medium block">Range Harga Perumahan</span>
+                        <span class="text-xs text-slate-500 font-semibold block">Range Harga Perumahan</span>
                         <span class="text-2xl sm:text-3xl font-extrabold text-nature-600 block">
                             {{ $project->price_range }}
                         </span>
@@ -192,7 +192,7 @@
                             <span>Booking Survei</span>
                         </a>
 
-                        <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin tanya unit di perumahan ' . $project->name) }}" target="_blank" class="px-4 py-3 rounded-2xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
+                        <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin tanya unit di perumahan ' . $project->name) }}" target="_blank" class="px-4 py-3 rounded-2xl bg-nature-600 hover:bg-nature-700 text-white font-bold text-sm shadow-md transition flex items-center gap-2">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                             <span class="hidden sm:inline">Tanya Sales</span>
                         </a>
@@ -291,7 +291,9 @@
                     <!-- Tab Buttons -->
                     <div class="flex flex-wrap gap-2 pb-4 border-b border-slate-100">
                         @foreach($project->houseTypes as $idx => $ht)
-                            <button @click="activeTab = 'tipe-{{ $idx }}'; kprPrice = {{ $ht->price }}"
+                            <button type="button"
+                                    @click="activeTab = 'tipe-{{ $idx }}'; kprPrice = {{ $ht->price }}"
+                                    :aria-label="'Pilih tipe rumah ' + '{{ $ht->name }}'"
                                     :class="activeTab === 'tipe-{{ $idx }}' ? 'bg-brand-600 text-white font-bold shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium'"
                                     class="px-4 py-2.5 rounded-xl text-xs transition duration-200">
                                 {{ $ht->name }}
@@ -317,22 +319,22 @@
                                             <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
                                                 <i class="fa-solid fa-bed text-brand-500 text-lg mb-1 block"></i>
                                                 <span class="text-xs font-bold text-slate-800">{{ $ht->bedrooms }} Kamar</span>
-                                                <span class="text-[10px] text-slate-400 block">Tidur</span>
+                                                <span class="text-[10px] text-slate-500 font-medium block">Tidur</span>
                                             </div>
                                             <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
                                                 <i class="fa-solid fa-bath text-brand-500 text-lg mb-1 block"></i>
                                                 <span class="text-xs font-bold text-slate-800">{{ $ht->bathrooms }} Kamar</span>
-                                                <span class="text-[10px] text-slate-400 block">Mandi</span>
+                                                <span class="text-[10px] text-slate-500 font-medium block">Mandi</span>
                                             </div>
                                             <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
                                                 <i class="fa-solid fa-ruler-combined text-brand-500 text-lg mb-1 block"></i>
                                                 <span class="text-xs font-bold text-slate-800">{{ $ht->building_area }} m² / {{ $ht->land_area }} m²</span>
-                                                <span class="text-[10px] text-slate-400 block">LB / LT</span>
+                                                <span class="text-[10px] text-slate-500 font-medium block">LB / LT</span>
                                             </div>
                                             <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
                                                 <i class="fa-solid fa-layer-group text-brand-500 text-lg mb-1 block"></i>
                                                 <span class="text-xs font-bold text-slate-800">{{ $ht->floors }} Lantai</span>
-                                                <span class="text-[10px] text-slate-400 block">Tingkat</span>
+                                                <span class="text-[10px] text-slate-500 font-medium block">Tingkat</span>
                                             </div>
                                         </div>
                                     </div>
@@ -417,6 +419,7 @@
 
                                         <button type="button"
                                                 @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, 0)"
+                                                aria-label="Buka denah dan detail ruangan tipe {{ $ht->name }}"
                                                 class="mt-2.5 w-full py-2 px-3 rounded-xl bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-300 text-brand-600 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs group/btn">
                                             <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover/btn:scale-110 transition-transform"></i>
                                             <span>Buka & Slide Detail Denah</span>
@@ -434,7 +437,7 @@
                                                 </div>
                                                 <div>
                                                     <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 tracking-tight">Kualitas & Spesifikasi Teknis Material</h4>
-                                                    <p class="text-[11px] text-slate-400">Standar mutu bangunan kokoh, rapi, dan bergaransi resmi</p>
+                                                    <p class="text-[11px] text-slate-500 font-medium">Standar mutu bangunan kokoh, rapi, dan bergaransi resmi</p>
                                                 </div>
                                             </div>
                                             <span class="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2.5 py-1 rounded-full">
@@ -466,7 +469,7 @@
                                                         <i class="fa-solid {{ $iconConfig[0] }} text-sm"></i>
                                                     </div>
                                                     <div class="min-w-0 flex-1">
-                                                        <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ $item }}</span>
+                                                        <span class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">{{ $item }}</span>
                                                         <p class="text-xs font-bold text-slate-800 leading-snug mt-0.5 break-words">{{ $val }}</p>
                                                     </div>
                                                 </div>
@@ -509,14 +512,16 @@
 
                     <!-- Filter Block Pills -->
                     <div class="flex flex-wrap items-center gap-2 mb-4">
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mr-1">Pilih Blok:</span>
+                        <span class="text-xs font-bold text-slate-600 uppercase tracking-wider mr-1">Pilih Blok:</span>
                         <button type="button" @click="selectedBlockFilter = 'all'"
+                                aria-label="Tampilkan seluruh blok kavling"
                                 :class="selectedBlockFilter === 'all' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                                 class="px-3 py-1 rounded-lg text-xs transition">
                             Semua Blok ({{ $project->units->count() }})
                         </button>
                         @foreach($project->units->pluck('block')->filter()->unique()->sort() as $blk)
                             <button type="button" @click="selectedBlockFilter = '{{ $blk }}'"
+                                    :aria-label="'Filter blok ' + '{{ $blk }}'"
                                     :class="selectedBlockFilter === '{{ $blk }}' ? 'bg-brand-600 text-white font-bold shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                                     class="px-3 py-1 rounded-lg text-xs transition">
                                 Blok {{ $blk }} ({{ $project->units->where('block', $blk)->count() }})
@@ -644,7 +649,7 @@
                                      class="p-2.5 rounded-xl border border-slate-200 hover:border-brand-500 hover:bg-brand-50/50 cursor-pointer transition text-left flex items-center justify-between">
                                     <div>
                                         <span class="text-xs font-extrabold text-slate-900 block">Kav. {{ $u->block }}-{{ $u->number }}</span>
-                                        <span class="text-[10px] text-slate-400 block">{{ $u->houseType ? $u->houseType->name : '' }}</span>
+                                        <span class="text-[10px] text-slate-500 font-medium block">{{ $u->houseType ? $u->houseType->name : '' }}</span>
                                     </div>
                                     <span class="text-[9px] font-bold px-2 py-0.5 rounded-full {{ $u->status_color }}">
                                         {{ $u->status_label }}
@@ -667,29 +672,29 @@
                         <!-- Inputs -->
                         <div class="space-y-4">
                             <div>
-                                <label class="text-xs font-bold uppercase text-slate-600">Plafon Harga Rumah</label>
+                                <label class="text-xs font-bold uppercase text-slate-700">Plafon Harga Rumah</label>
                                 <div class="text-lg font-black text-brand-600 mt-1" x-text="formatRupiah(kprPrice)"></div>
                             </div>
 
                             <div>
-                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-                                    <span>Uang Muka (DP: <span x-text="kprDp"></span>%)</span>
-                                    <span class="text-slate-800" x-text="formatRupiah(kprDpAmount)"></span>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <label for="detail_kpr_dp">Uang Muka (DP: <span x-text="kprDp"></span>%)</label>
+                                    <span class="text-slate-900" x-text="formatRupiah(kprDpAmount)"></span>
                                 </div>
-                                <input type="range" min="0" max="50" step="5" x-model.number="kprDp" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-500">
+                                <input type="range" id="detail_kpr_dp" aria-label="Persentase Uang Muka DP KPR" min="0" max="50" step="5" x-model.number="kprDp" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-600">
                             </div>
 
                             <div>
-                                <div class="flex justify-between text-xs font-bold text-slate-600 mb-1">
-                                    <span>Tenor Pinjaman</span>
-                                    <span class="text-slate-800"><span x-text="kprTenor"></span> Tahun</span>
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <label for="detail_kpr_tenor">Tenor Pinjaman</label>
+                                    <span class="text-slate-900"><span x-text="kprTenor"></span> Tahun</span>
                                 </div>
-                                <input type="range" min="5" max="30" step="5" x-model.number="kprTenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                                <input type="range" id="detail_kpr_tenor" aria-label="Jangka Waktu Tenor Pinjaman KPR" min="5" max="30" step="5" x-model.number="kprTenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
                             </div>
 
                             <div>
-                                <label class="text-xs font-bold uppercase text-slate-600 block mb-1">Pilih Bank Rekanan</label>
-                                <select @change="kprRate = parseFloat($event.target.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
+                                <label for="detail_bank_select" class="text-xs font-bold uppercase text-slate-700 block mb-1">Pilih Bank Rekanan</label>
+                                <select id="detail_bank_select" aria-label="Pilih Bank Rekanan" @change="kprRate = parseFloat($event.target.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700">
                                     @foreach($banks ?? [] as $b)
                                         <option value="{{ $b->interest_rate }}">{{ $b->bank_name }} (Bunga {{ $b->interest_rate }}%)</option>
                                     @endforeach
@@ -699,15 +704,17 @@
 
                         <!-- Result -->
                         <div class="text-center p-6 rounded-2xl bg-brand-50/70 border border-brand-100 flex flex-col justify-center">
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Estimasi Cicilan</span>
+                            <span class="text-xs font-bold text-slate-600 uppercase tracking-wider">Estimasi Cicilan</span>
                             <div class="text-3xl font-black text-brand-700 my-2" x-text="formatRupiah(kprMonthly)">Rp 0</div>
                             <span class="text-xs text-slate-500 mb-4">per bulan selama <span x-text="kprTenor"></span> tahun</span>
 
                             <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya ingin konsultasi KPR untuk {{ $project->name }} dengan simulasi harga ' + formatRupiah(kprPrice) + ' DP ' + kprDp + '% tenor ' + kprTenor + ' tahun.')"
                                target="_blank"
-                               class="py-2.5 px-4 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                               class="py-2.5 px-4 rounded-xl bg-nature-600 hover:bg-nature-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-whatsapp text-base"></i>
                                 <span>Konsultasi Syarat KPR via WA</span>
+                            </a>
+                        </div>
                             </a>
                         </div>
                     </div>
@@ -735,8 +742,8 @@
 
                         <!-- Tipe Rumah -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipe Rumah Diminati</label>
-                            <select name="house_type_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="booking_house_type" class="block text-xs font-bold uppercase text-slate-700 mb-1">Tipe Rumah Diminati</label>
+                            <select id="booking_house_type" name="house_type_id" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                                 <option value="">Semua Tipe / Belum Tahu</option>
                                 @foreach($project->houseTypes as $ht)
                                     <option value="{{ $ht->id }}">{{ $ht->name }} - {{ $ht->formatted_price }}</option>
@@ -746,25 +753,25 @@
 
                         <!-- Nama Lengkap -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Lengkap *</label>
-                            <input type="text" name="name" required placeholder="Contoh: Budi Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="booking_name" class="block text-xs font-bold uppercase text-slate-700 mb-1">Nama Lengkap *</label>
+                            <input id="booking_name" type="text" name="name" required placeholder="Contoh: Budi Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
 
                         <!-- No WhatsApp -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nomor WhatsApp Aktif *</label>
-                            <input type="tel" name="phone" required placeholder="Contoh: 08123456789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="booking_phone" class="block text-xs font-bold uppercase text-slate-700 mb-1">Nomor WhatsApp Aktif *</label>
+                            <input id="booking_phone" type="tel" name="phone" required placeholder="Contoh: 08123456789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
 
                         <!-- Rencana Tanggal & Waktu -->
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal *</label>
-                                <input type="date" name="preferred_date" min="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <label for="booking_preferred_date" class="block text-xs font-bold uppercase text-slate-700 mb-1">Tanggal *</label>
+                                <input id="booking_preferred_date" type="date" name="preferred_date" min="{{ date('Y-m-d') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Waktu *</label>
-                                <select name="preferred_time" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                <label for="booking_preferred_time" class="block text-xs font-bold uppercase text-slate-700 mb-1">Waktu *</label>
+                                <select id="booking_preferred_time" name="preferred_time" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-2 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                                     <option value="10:00 WIB (Pagi)">10:00 (Pagi)</option>
                                     <option value="13:00 WIB (Siang)">13:00 (Siang)</option>
                                     <option value="15:30 WIB (Sore)">15:30 (Sore)</option>
@@ -774,11 +781,11 @@
 
                         <!-- Catatan -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Catatan Tambahan</label>
-                            <textarea name="message" rows="2" placeholder="Contoh: Mau sekalian konsultasi berkas KPR BTN..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                            <label for="booking_message" class="block text-xs font-bold uppercase text-slate-700 mb-1">Catatan Tambahan</label>
+                            <textarea id="booking_message" name="message" rows="2" placeholder="Contoh: Mau sekalian konsultasi berkas KPR BTN..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                         </div>
 
-                        <button type="submit" class="w-full py-3 rounded-2xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                        <button type="submit" aria-label="Kirim formulir jadwal survei" class="w-full py-3 rounded-2xl bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold text-sm shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
                             <i class="fa-regular fa-paper-plane"></i>
                             <span>Kirim Jadwal Survei</span>
                         </button>
@@ -786,9 +793,10 @@
 
                     <!-- Fast Contact Card -->
                     <div class="pt-4 border-t border-slate-100 space-y-3">
-                        <p class="text-xs text-slate-400 text-center">Butuh respon cepat tanpa mengisi form?</p>
+                        <p class="text-xs text-slate-600 text-center font-medium">Butuh respon cepat tanpa mengisi form?</p>
                         <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Sales ' . $siteName . ', saya ingin konsultasi langsung untuk proyek ' . $project->name) }}"
                            target="_blank"
+                           aria-label="Konsultasi langsung via WhatsApp"
                            class="w-full py-2.5 rounded-xl border border-nature-300 bg-nature-50 hover:bg-nature-100 text-nature-800 font-bold text-xs transition flex items-center justify-center gap-2">
                             <i class="fa-brands fa-whatsapp text-nature-600 text-lg"></i>
                             <span>Chat Langsung via WhatsApp</span>
@@ -818,13 +826,13 @@
                                 </span>
                                 <div>
                                     <h3 class="font-extrabold text-slate-900 text-base" x-text="'Kavling ' + selectedUnit.block + '-' + selectedUnit.number"></h3>
-                                    <p class="text-xs text-slate-400" x-text="selectedUnit.type_name + ' • Luas Tanah: ' + selectedUnit.land_area + ' m²'"></p>
+                                    <p class="text-xs text-slate-500 font-medium" x-text="selectedUnit.type_name + ' • Luas Tanah: ' + selectedUnit.land_area + ' m²'"></p>
                                 </div>
                             </div>
 
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-bold px-3 py-1 rounded-full" :class="selectedUnit.status_color" x-text="selectedUnit.status_label"></span>
-                                <button @click="povModalOpen = false" class="text-slate-400 hover:text-slate-600 p-1">
+                                <button @click="povModalOpen = false" aria-label="Tutup modal sudut pandang kavling" class="text-slate-500 hover:text-slate-700 p-1">
                                     <i class="fa-solid fa-xmark text-lg"></i>
                                 </button>
                             </div>
@@ -855,7 +863,7 @@
                                         <div class="text-[10px] text-slate-500 font-bold p-2">Kavling <span x-text="selectedUnit.block + selectedUnit.number"></span></div>
                                     </template>
                                 </div>
-                                <span class="text-[10px] text-slate-400 mt-2">Posisi tepat di masterplan</span>
+                                <span class="text-[10px] text-slate-300 mt-2">Posisi tepat di masterplan</span>
                             </div>
                         </div>
 
@@ -871,7 +879,7 @@
 
                             <div class="flex items-center justify-between pt-2">
                                 <div>
-                                    <span class="text-[11px] text-slate-400 uppercase font-semibold block">Harga Unit Kavling</span>
+                                    <span class="text-[11px] text-slate-500 uppercase font-semibold block">Harga Unit Kavling</span>
                                     <span class="text-xl font-extrabold text-nature-600" x-text="selectedUnit.price_formatted"></span>
                                 </div>
 
@@ -893,7 +901,7 @@
 
     <!-- Lightbox Zoom Modal for Images -->
     <div x-show="lightboxOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md" @click.self="lightboxOpen = false">
-        <button @click="lightboxOpen = false" class="absolute top-6 right-6 text-white text-2xl hover:text-slate-300">
+        <button @click="lightboxOpen = false" aria-label="Tutup pratinjau foto perbesar" class="absolute top-6 right-6 text-white text-2xl hover:text-slate-300">
             <i class="fa-solid fa-xmark"></i>
         </button>
         <img :src="lightboxImg" alt="Enlarged photo" class="max-w-full max-h-[90vh] rounded-2xl shadow-2xl object-contain">
@@ -917,7 +925,7 @@
                       x-text="floorPlanSlides[currentSlideIdx]?.badge || 'Denah'"></span>
                 <div class="min-w-0">
                     <h3 class="font-extrabold text-sm sm:text-base text-white truncate" x-text="floorPlanTitle + ' — ' + (floorPlanSlides[currentSlideIdx]?.title || 'Detail Ruangan')"></h3>
-                    <p class="text-[11px] text-slate-400 truncate hidden sm:block" x-text="floorPlanSlides[currentSlideIdx]?.caption || floorPlanSubtitle"></p>
+                    <p class="text-[11px] text-slate-300 truncate hidden sm:block" x-text="floorPlanSlides[currentSlideIdx]?.caption || floorPlanSubtitle"></p>
                 </div>
             </div>
 
@@ -925,14 +933,14 @@
             <div class="flex items-center gap-2 sm:gap-3 shrink-0">
                 <!-- Zoom Toolbar -->
                 <div class="flex items-center bg-slate-800/90 rounded-xl p-1 border border-slate-700/80 text-xs">
-                    <button type="button" @click="zoomOut()" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom Out (-)">
+                    <button type="button" @click="zoomOut()" aria-label="Perkecil zoom denah" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom Out (-)">
                         <i class="fa-solid fa-minus"></i>
                     </button>
                     <span class="px-2 text-[11px] font-bold text-brand-400 min-w-[42px] text-center" x-text="Math.round(zoomLevel * 100) + '%'"></span>
-                    <button type="button" @click="zoomIn()" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom In (+)">
+                    <button type="button" @click="zoomIn()" aria-label="Perbesar zoom denah" class="w-7 h-7 rounded-lg hover:bg-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition" title="Zoom In (+)">
                         <i class="fa-solid fa-plus"></i>
                     </button>
-                    <button type="button" @click="resetZoom()" class="ml-1 px-2 py-0.5 rounded-md hover:bg-slate-700 text-[10px] text-slate-400 hover:text-white transition" title="Reset Zoom">
+                    <button type="button" @click="resetZoom()" aria-label="Reset zoom denah normal" class="ml-1 px-2 py-0.5 rounded-md hover:bg-slate-700 text-[10px] text-slate-300 hover:text-white transition" title="Reset Zoom">
                         Reset
                     </button>
                 </div>
@@ -943,7 +951,7 @@
                 </span>
 
                 <!-- Close Button -->
-                <button type="button" @click="floorPlanModalOpen = false" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white transition flex items-center justify-center" title="Tutup (Esc)">
+                <button type="button" @click="floorPlanModalOpen = false" aria-label="Tutup modal denah ruangan" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white transition flex items-center justify-center" title="Tutup (Esc)">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -960,6 +968,7 @@
             <!-- Previous Slide Button -->
             <button type="button"
                     @click.stop="prevSlide()"
+                    aria-label="Slide denah sebelumnya"
                     class="absolute left-3 sm:left-6 z-20 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-900/70 hover:bg-brand-600 border border-slate-700/80 hover:border-brand-500 text-white flex items-center justify-center text-lg sm:text-xl shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 group"
                     title="Slide Sebelumnya (Panah Kiri)">
                 <i class="fa-solid fa-chevron-left group-hover:-translate-x-0.5 transition-transform"></i>
@@ -978,6 +987,7 @@
             <!-- Next Slide Button -->
             <button type="button"
                     @click.stop="nextSlide()"
+                    aria-label="Slide denah berikutnya"
                     class="absolute right-3 sm:right-6 z-20 w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-900/70 hover:bg-brand-600 border border-slate-700/80 hover:border-brand-500 text-white flex items-center justify-center text-lg sm:text-xl shadow-2xl backdrop-blur-md transition-all duration-200 hover:scale-105 active:scale-95 group"
                     title="Slide Berikutnya (Panah Kanan)">
                 <i class="fa-solid fa-chevron-right group-hover:translate-x-0.5 transition-transform"></i>
@@ -1001,6 +1011,7 @@
                 <template x-for="(slide, idx) in floorPlanSlides" :key="idx">
                     <button type="button"
                             @click="goToSlide(idx)"
+                            :aria-label="'Pilih slide ' + (idx + 1) + ': ' + (slide.title || 'Denah')"
                             class="relative rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-200 group w-16 h-12 sm:w-20 sm:h-14"
                             :class="currentSlideIdx === idx ? 'border-brand-500 ring-2 ring-brand-500/50 scale-105 shadow-md' : 'border-slate-700/80 opacity-60 hover:opacity-100'">
                         <img :src="slide.url" :alt="slide.title" class="w-full h-full object-cover">
@@ -1013,7 +1024,7 @@
             <div class="shrink-0 flex items-center gap-2">
                 <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya ingin konsultasi detail denah ruangan untuk ' + floorPlanTitle + ' di {{ $project->name }}.')"
                    target="_blank"
-                   class="px-4 py-2 rounded-xl bg-nature-500 hover:bg-nature-600 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2">
+                   class="px-4 py-2 rounded-xl bg-nature-600 hover:bg-nature-700 hover:scale-105 active:scale-95 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2">
                     <i class="fa-brands fa-whatsapp text-base"></i>
                     <span>Tanya Denah Tipe Ini</span>
                 </a>

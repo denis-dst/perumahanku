@@ -31,10 +31,10 @@
             <form action="{{ route('projects.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Wilayah / Kota -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                        <i class="fa-solid fa-location-dot text-brand-500 mr-1"></i> Lokasi Wilayah
+                    <label for="home_city_select" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-location-dot text-brand-600 mr-1"></i> Lokasi Wilayah
                     </label>
-                    <select name="city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                    <select id="home_city_select" name="city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                         <option value="">Semua Kota</option>
                         @foreach($cities as $city)
                             <option value="{{ $city }}">{{ $city }}</option>
@@ -44,10 +44,10 @@
 
                 <!-- Range Budget -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                        <i class="fa-solid fa-wallet text-nature-500 mr-1"></i> Budget Maksimal
+                    <label for="home_max_price_select" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-wallet text-nature-600 mr-1"></i> Budget Maksimal
                     </label>
-                    <select name="max_price" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                    <select id="home_max_price_select" name="max_price" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                         <option value="">Semua Harga</option>
                         <option value="200000000">< Rp 200 Juta (Subsidi)</option>
                         <option value="400000000">< Rp 400 Juta</option>
@@ -59,15 +59,15 @@
 
                 <!-- Keyword / Cluster -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1.5">
-                        <i class="fa-solid fa-magnifying-glass text-brand-500 mr-1"></i> Nama Cluster / Jalan
+                    <label for="home_search_query" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+                        <i class="fa-solid fa-magnifying-glass text-brand-600 mr-1"></i> Nama Cluster / Jalan
                     </label>
-                    <input type="text" name="q" placeholder="Contoh: Harmony, Tajur..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+                    <input id="home_search_query" type="text" name="q" placeholder="Contoh: Harmony, Tajur..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
                 </div>
 
                 <!-- Search Button -->
                 <div class="flex items-end">
-                    <button type="submit" class="w-full bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                    <button type="submit" aria-label="Cari Perumahan" class="w-full bg-gradient-to-r from-brand-600 to-nature-600 hover:from-brand-700 hover:to-nature-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span>Cari Rumah</span>
                     </button>
@@ -76,9 +76,9 @@
 
             <!-- Quick City Tags -->
             <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
-                <span class="text-slate-400 font-medium">Pencarian Populer:</span>
+                <span class="text-slate-600 font-semibold">Pencarian Populer:</span>
                 @foreach($cities as $c)
-                    <a href="{{ route('projects.city', \Illuminate\Support\Str::slug($c)) }}" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 font-medium transition">
+                    <a href="{{ route('projects.city', \Illuminate\Support\Str::slug($c)) }}" class="px-3 py-1 rounded-full bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-700 font-medium transition">
                         Rumah di {{ $c }}
                     </a>
                 @endforeach
@@ -143,7 +143,7 @@
                                 <i class="fa-solid fa-location-dot text-brand-500"></i> {{ $p->city }}
                             </span>
                             @if($p->is_featured)
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-nature-500 text-white shadow-xs">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wide bg-nature-600 text-white shadow-xs">
                                     ★ Rekomendasi
                                 </span>
                             @endif
@@ -166,7 +166,7 @@
                                 </a>
                             </h3>
                             <p class="text-xs text-slate-500 line-clamp-1 mt-1">
-                                <i class="fa-solid fa-map-pin text-slate-400 mr-1"></i> {{ $p->district ? $p->district . ', ' : '' }}{{ $p->city }}
+                                <i class="fa-solid fa-map-pin text-slate-500 mr-1"></i> {{ $p->district ? $p->district . ', ' : '' }}{{ $p->city }}
                             </p>
 
                             <p class="text-sm text-slate-600 mt-3 line-clamp-2 leading-relaxed">
@@ -177,7 +177,7 @@
                             @if(!empty($p->facilities) && is_array($p->facilities))
                                 <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-1.5">
                                     @foreach(array_slice($p->facilities, 0, 3) as $fac)
-                                        <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-medium">
+                                        <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-medium">
                                             ✓ {{ Str::limit($fac, 22) }}
                                         </span>
                                     @endforeach
@@ -188,7 +188,7 @@
                         <!-- Card Footer -->
                         <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                             <div>
-                                <span class="text-[11px] text-slate-400 font-medium block">Harga Mulai</span>
+                                <span class="text-[11px] text-slate-500 font-semibold block">Harga Mulai</span>
                                 <span class="text-base font-extrabold text-nature-600">
                                     {{ $p->price_range }}
                                 </span>
@@ -202,7 +202,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-3 text-center py-12 text-slate-400">
+                <div class="col-span-3 text-center py-12 text-slate-500">
                     <p>Belum ada perumahan yang dipublikasikan.</p>
                 </div>
             @endforelse
@@ -339,11 +339,11 @@
                     <!-- Harga Properti -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-bold uppercase text-slate-600">Harga Properti</label>
+                            <label for="home_kpr_price" class="text-xs font-bold uppercase text-slate-700">Harga Properti</label>
                             <span class="text-sm font-extrabold text-brand-600" x-text="formatRupiah(price)"></span>
                         </div>
-                        <input type="range" min="150000000" max="2000000000" step="25000000" x-model.number="price" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
-                        <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                        <input type="range" id="home_kpr_price" aria-label="Harga Properti" min="150000000" max="2000000000" step="25000000" x-model.number="price" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                        <div class="flex justify-between text-[10px] text-slate-500 mt-1 font-medium">
                             <span>150 Jt</span>
                             <span>1 M</span>
                             <span>2 M</span>
@@ -353,28 +353,28 @@
                     <!-- Uang Muka (DP) -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-bold uppercase text-slate-600">Uang Muka (DP: <span x-text="dpPercent"></span>%)</label>
+                            <label for="home_kpr_dp" class="text-xs font-bold uppercase text-slate-700">Uang Muka (DP: <span x-text="dpPercent"></span>%)</label>
                             <span class="text-sm font-bold text-slate-700" x-text="formatRupiah(dpAmount)"></span>
                         </div>
-                        <input type="range" min="0" max="50" step="5" x-model.number="dpPercent" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-500">
+                        <input type="range" id="home_kpr_dp" aria-label="Persentase Uang Muka DP" min="0" max="50" step="5" x-model.number="dpPercent" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-600">
                     </div>
 
                     <!-- Jangka Waktu / Tenor -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-bold uppercase text-slate-600">Jangka Waktu (Tenor)</label>
+                            <label for="home_kpr_tenor" class="text-xs font-bold uppercase text-slate-700">Jangka Waktu (Tenor)</label>
                             <span class="text-sm font-bold text-slate-700"><span x-text="tenor"></span> Tahun</span>
                         </div>
-                        <input type="range" min="5" max="30" step="5" x-model.number="tenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                        <input type="range" id="home_kpr_tenor" aria-label="Jangka Waktu Tenor" min="5" max="30" step="5" x-model.number="tenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
                     </div>
 
                     <!-- Bunga Bank -->
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="text-xs font-bold uppercase text-slate-600">Estimasi Suku Bunga</label>
+                            <label for="home_kpr_rate" class="text-xs font-bold uppercase text-slate-700">Estimasi Suku Bunga</label>
                             <span class="text-sm font-bold text-slate-700"><span x-text="rate"></span>% eff. p.a.</span>
                         </div>
-                        <input type="range" min="3" max="12" step="0.25" x-model.number="rate" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                        <input type="range" id="home_kpr_rate" aria-label="Estimasi Suku Bunga" min="3" max="12" step="0.25" x-model.number="rate" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
                     </div>
                 </div>
 
@@ -449,7 +449,7 @@
                                 {{ strip_tags($article->content) }}
                             </p>
                         </div>
-                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
+                        <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 font-medium">
                             <span>{{ $article->published_at ? $article->published_at->format('d M Y') : '' }}</span>
                             <a href="{{ route('blog.show', $article->slug) }}" class="text-brand-600 font-semibold hover:underline">
                                 Baca Selengkapnya →

@@ -28,7 +28,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- City Pills -->
         <div class="flex flex-wrap items-center gap-2 mb-8">
-            <span class="text-xs text-slate-400 font-bold uppercase mr-2">Pilih Kota:</span>
+            <span class="text-xs text-slate-600 font-bold uppercase mr-2">Pilih Kota:</span>
             @foreach($cities as $c)
                 <a href="{{ route('projects.city', Str::slug($c)) }}"
                    class="px-4 py-1.5 rounded-full text-xs font-semibold transition {{ strtolower($c) == strtolower($cityFormatted) ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200' }}">
@@ -54,7 +54,7 @@
                             <h3 class="text-lg font-bold text-slate-900 group-hover:text-brand-600 transition">
                                 <a href="{{ route('projects.show', $p->slug) }}">{{ $p->name }}</a>
                             </h3>
-                            <p class="text-xs text-slate-400 mt-1">{{ $p->address }}</p>
+                            <p class="text-xs text-slate-500 mt-1">{{ $p->address }}</p>
                             <p class="text-xs text-slate-600 mt-3 line-clamp-2 leading-relaxed">
                                 {{ $p->tagline ?? Str::limit($p->description, 110) }}
                             </p>
@@ -63,7 +63,7 @@
 
                     <div class="p-6 pt-0 border-t border-slate-100 flex items-center justify-between">
                         <div>
-                            <span class="text-[10px] text-slate-400 uppercase font-semibold block">Harga Mulai</span>
+                            <span class="text-[10px] text-slate-500 uppercase font-semibold block">Harga Mulai</span>
                             <span class="text-sm font-extrabold text-nature-600">{{ $p->price_range }}</span>
                         </div>
                         <a href="{{ route('projects.show', $p->slug) }}" class="px-4 py-2 rounded-xl bg-brand-50 group-hover:bg-brand-600 text-brand-700 group-hover:text-white font-semibold text-xs transition">

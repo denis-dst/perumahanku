@@ -86,7 +86,7 @@
                     </div>
 
                     <div class="pt-2">
-                        <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi langsung.') }}" target="_blank" class="w-full py-3 rounded-2xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                        <a href="https://wa.me/{{ $waClean }}?text={{ rawurlencode('Halo Admin ' . $siteName . ', saya ingin konsultasi langsung.') }}" target="_blank" class="w-full py-3 rounded-2xl bg-nature-600 hover:bg-nature-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
                             <i class="fa-brands fa-whatsapp text-lg"></i>
                             <span>Buka Chat WhatsApp Sekarang</span>
                         </a>
@@ -104,26 +104,26 @@
                 <form onsubmit="event.preventDefault(); alert('Terima kasih! Pesan Anda telah kami terima, tim kami akan segera menghubungi Anda.');" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Lengkap *</label>
-                            <input type="text" required placeholder="Nama Anda" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="contact_name" class="block text-xs font-bold uppercase text-slate-700 mb-1">Nama Lengkap *</label>
+                            <input id="contact_name" type="text" required placeholder="Nama Anda" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nomor WhatsApp *</label>
-                            <input type="tel" required placeholder="Contoh: 08123456789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="contact_phone" class="block text-xs font-bold uppercase text-slate-700 mb-1">Nomor WhatsApp *</label>
+                            <input id="contact_phone" type="tel" required placeholder="Contoh: 08123456789" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Email</label>
-                        <input type="email" placeholder="email@contoh.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <label for="contact_email" class="block text-xs font-bold uppercase text-slate-700 mb-1">Email</label>
+                        <input id="contact_email" type="email" placeholder="email@contoh.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                     </div>
 
                     <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Pesan Anda *</label>
-                        <textarea rows="4" required placeholder="Tuliskan pertanyaan Anda mengenai perumahan, harga, atau jadwal survei..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+                        <label for="contact_message" class="block text-xs font-bold uppercase text-slate-700 mb-1">Pesan Anda *</label>
+                        <textarea id="contact_message" rows="4" required placeholder="Tuliskan pertanyaan Anda mengenai perumahan, harga, atau jadwal survei..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                     </div>
 
-                    <button type="submit" class="px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition">
+                    <button type="submit" aria-label="Kirim Pesan Sekarang" class="px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-md transition">
                         Kirim Pesan Sekarang
                     </button>
                 </form>

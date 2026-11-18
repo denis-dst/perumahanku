@@ -56,11 +56,11 @@
                 <!-- Harga Rumah -->
                 <div>
                     <div class="flex justify-between items-baseline mb-2">
-                        <label class="text-xs font-bold uppercase text-slate-600">Harga Properti</label>
+                        <label for="kpr_page_price" class="text-xs font-bold uppercase text-slate-700">Harga Properti</label>
                         <span class="text-base font-extrabold text-brand-600" x-text="formatRupiah(price)"></span>
                     </div>
-                    <input type="range" min="100000000" max="2500000000" step="25000000" x-model.number="price" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                    <input type="range" id="kpr_page_price" aria-label="Harga Properti" min="100000000" max="2500000000" step="25000000" x-model.number="price" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                    <div class="flex justify-between text-[10px] text-slate-500 font-medium mt-1">
                         <span>100 Jt</span>
                         <span>1 M</span>
                         <span>2.5 M</span>
@@ -70,11 +70,11 @@
                 <!-- Uang Muka (DP) -->
                 <div>
                     <div class="flex justify-between items-baseline mb-2">
-                        <label class="text-xs font-bold uppercase text-slate-600">Uang Muka (DP)</label>
+                        <label for="kpr_page_dp" class="text-xs font-bold uppercase text-slate-700">Uang Muka (DP)</label>
                         <span class="text-sm font-bold text-slate-800"><span x-text="dpPercent"></span>% (<span x-text="formatRupiah(dpAmount)"></span>)</span>
                     </div>
-                    <input type="range" min="0" max="50" step="5" x-model.number="dpPercent" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-500">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                    <input type="range" id="kpr_page_dp" aria-label="Persentase Uang Muka DP KPR" min="0" max="50" step="5" x-model.number="dpPercent" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-nature-600">
+                    <div class="flex justify-between text-[10px] text-slate-500 font-medium mt-1">
                         <span>0% (Promo)</span>
                         <span>10%</span>
                         <span>50%</span>
@@ -84,11 +84,11 @@
                 <!-- Jangka Waktu (Tenor) -->
                 <div>
                     <div class="flex justify-between items-baseline mb-2">
-                        <label class="text-xs font-bold uppercase text-slate-600">Jangka Waktu (Tenor)</label>
+                        <label for="kpr_page_tenor" class="text-xs font-bold uppercase text-slate-700">Jangka Waktu (Tenor)</label>
                         <span class="text-sm font-bold text-slate-800"><span x-text="tenor"></span> Tahun (<span x-text="tenor * 12"></span> Bulan)</span>
                     </div>
-                    <input type="range" min="5" max="30" step="5" x-model.number="tenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
-                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                    <input type="range" id="kpr_page_tenor" aria-label="Jangka Waktu Tenor KPR" min="5" max="30" step="5" x-model.number="tenor" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                    <div class="flex justify-between text-[10px] text-slate-500 font-medium mt-1">
                         <span>5 Th</span>
                         <span>15 Th</span>
                         <span>30 Th</span>
@@ -115,7 +115,7 @@
                 <div class="pt-2">
                     <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya ingin konsultasi pengajuan KPR untuk rumah harga ' + formatRupiah(price) + ' dengan DP ' + dpPercent + '% tenor ' + tenor + ' tahun.')"
                        target="_blank"
-                       class="w-full py-3 rounded-2xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
+                       class="w-full py-3 rounded-2xl bg-nature-600 hover:bg-nature-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2">
                         <i class="fa-brands fa-whatsapp text-lg"></i>
                         <span>Konsultasi Syarat KPR via WA</span>
                     </a>
@@ -149,11 +149,11 @@
                             </div>
 
                             <div class="text-left sm:text-right pt-2 sm:pt-0 border-t sm:border-0 border-slate-100">
-                                <span class="text-[10px] text-slate-400 uppercase font-semibold block">Estimasi Angsuran</span>
+                                <span class="text-[10px] text-slate-500 uppercase font-semibold block">Estimasi Angsuran</span>
                                 <span class="text-xl font-extrabold text-nature-600 block"
                                       x-text="formatRupiah(calculateInstallment({{ $bank->interest_rate }}))">
                                 </span>
-                                <span class="text-[10px] text-slate-400">/ bulan</span>
+                                <span class="text-[10px] text-slate-500 font-medium">/ bulan</span>
                             </div>
                         </div>
                     @endforeach

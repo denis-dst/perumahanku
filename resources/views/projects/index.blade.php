@@ -32,14 +32,14 @@
                     <form action="{{ route('projects.index') }}" method="GET" class="space-y-5">
                         <!-- Keyword -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Kata Kunci</label>
-                            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama perumahan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="filter_q" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Kata Kunci</label>
+                            <input id="filter_q" type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama perumahan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                         </div>
 
                         <!-- Kota / Lokasi -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Kota / Wilayah</label>
-                            <select name="city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="filter_city" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Kota / Wilayah</label>
+                            <select id="filter_city" name="city" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                                 <option value="">Semua Wilayah</option>
                                 @foreach($cities as $c)
                                     <option value="{{ $c }}" {{ request('city') == $c ? 'selected' : '' }}>{{ $c }}</option>
@@ -49,8 +49,8 @@
 
                         <!-- Range Harga Maksimal -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Budget Maksimal</label>
-                            <select name="max_price" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="filter_max_price" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Budget Maksimal</label>
+                            <select id="filter_max_price" name="max_price" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                                 <option value="">Semua Harga</option>
                                 <option value="200000000" {{ request('max_price') == '200000000' ? 'selected' : '' }}>Hingga Rp 200 Juta</option>
                                 <option value="400000000" {{ request('max_price') == '400000000' ? 'selected' : '' }}>Hingga Rp 400 Juta</option>
@@ -62,14 +62,14 @@
 
                         <!-- Urutan -->
                         <div>
-                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1.5">Urutkan</label>
-                            <select name="sort" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                            <label for="filter_sort" class="block text-xs font-bold uppercase text-slate-600 mb-1.5">Urutkan</label>
+                            <select id="filter_sort" name="sort" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500">
                                 <option value="terbaru" {{ request('sort') == 'terbaru' ? 'selected' : '' }}>Terbaru Diluncurkan</option>
                                 <option value="terpopuler" {{ request('sort') == 'terpopuler' ? 'selected' : '' }}>Paling Direkomendasikan</option>
                             </select>
                         </div>
 
-                        <button type="submit" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
+                        <button type="submit" aria-label="Terapkan Filter Pencarian" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm shadow-md transition">
                             Terapkan Filter
                         </button>
                     </form>
@@ -115,7 +115,7 @@
                                             {{ $p->name }}
                                         </a>
                                     </h3>
-                                    <p class="text-xs text-slate-400 mt-1 flex items-center gap-1">
+                                    <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
                                         <i class="fa-solid fa-map-pin"></i> {{ $p->district ? $p->district . ', ' : '' }}{{ $p->city }}
                                     </p>
 
@@ -126,7 +126,7 @@
                                     <!-- Types Badges -->
                                     <div class="mt-4 pt-4 border-t border-slate-100 flex flex-wrap gap-1.5">
                                         @foreach($p->houseTypes as $ht)
-                                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[11px] font-medium">
+                                            <span class="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[11px] font-medium">
                                                 {{ $ht->name }}
                                             </span>
                                         @endforeach
@@ -137,7 +137,7 @@
                             <!-- Footer Price & CTA -->
                             <div class="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
                                 <div>
-                                    <span class="text-[10px] text-slate-400 uppercase font-semibold block">Harga Mulai</span>
+                                    <span class="text-[10px] text-slate-500 uppercase font-semibold block">Harga Mulai</span>
                                     <span class="text-sm font-extrabold text-nature-600">
                                         {{ $p->price_range }}
                                     </span>
