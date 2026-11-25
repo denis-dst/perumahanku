@@ -540,7 +540,7 @@
                                 Peta Siteplan Interaktif & POV Unit
                             </h2>
                             <p class="text-xs text-slate-500 mt-1">
-                                <strong>Klik arsiran blok kavling</strong> di bawah untuk melihat foto potongan denah serta <em>Point of View (POV)</em> pemandangan nyata unit tersebut!
+                                <strong>Klik arsiran blok kavling</strong> di bawah untuk melihat foto rumah/fasad, <em>Point of View (POV)</em> lingkungan, serta denah ruangan unit tersebut!
                             </p>
                         </div>
 
@@ -913,7 +913,7 @@
                             </button>
                         </div>
 
-                        <!-- Media Display Tabs (Foto Rumah / Hasil Slice / POV Lingkungan / Denah) -->
+                        <!-- Media Display Tabs (Foto Rumah / POV Lingkungan / Denah) -->
                         <div class="bg-slate-900 px-4 pt-3 pb-2 border-b border-slate-800">
                             <div class="flex items-center gap-2 overflow-x-auto text-xs font-bold scrollbar-none">
                                 <button type="button"
@@ -922,13 +922,6 @@
                                         class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
                                     <i class="fa-solid fa-house"></i>
                                     <span>Foto Rumah / Fasad</span>
-                                </button>
-                                <button type="button"
-                                        @click="unitModalTab = 'slice'"
-                                        :class="unitModalTab === 'slice' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
-                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
-                                    <i class="fa-solid fa-crop-simple"></i>
-                                    <span>Hasil Potongan Siteplan (Slice)</span>
                                 </button>
                                 <button type="button"
                                         @click="unitModalTab = 'pov'"
@@ -958,24 +951,7 @@
                                 </div>
                             </div>
 
-                            <!-- View 2: Hasil Potongan Siteplan (Slice) -->
-                            <div x-show="unitModalTab === 'slice'" class="w-full h-full relative flex items-center justify-center bg-slate-950">
-                                <template x-if="selectedUnit.slice_image">
-                                    <img :src="selectedUnit.slice_image" :alt="'Potongan Siteplan Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-contain p-2">
-                                </template>
-                                <template x-if="!selectedUnit.slice_image">
-                                    <div class="text-center p-6 text-slate-400">
-                                        <i class="fa-solid fa-crop-simple text-4xl mb-2 text-slate-600"></i>
-                                        <p class="text-xs font-semibold">Potongan siteplan belum tersedia untuk kavling ini</p>
-                                    </div>
-                                </template>
-                                <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
-                                    <i class="fa-solid fa-crop-simple text-emerald-400"></i>
-                                    <span>Potongan Arsiran Masterplan Kavling <span x-text="selectedUnit.block + '-' + selectedUnit.number"></span></span>
-                                </div>
-                            </div>
-
-                            <!-- View 3: POV Lingkungan Nyata -->
+                            <!-- View 2: POV Lingkungan Nyata -->
                             <div x-show="unitModalTab === 'pov'" class="w-full h-full relative">
                                 <img :src="selectedUnit.pov_photo" :alt="'POV Nyata Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
                                 <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
@@ -984,7 +960,7 @@
                                 </div>
                             </div>
 
-                            <!-- View 4: Denah Layout Ruangan -->
+                            <!-- View 3: Denah Layout Ruangan -->
                             <div x-show="unitModalTab === 'denah'" class="w-full h-full relative flex items-center justify-center bg-slate-950">
                                 <img :src="selectedUnit.floor_plan" :alt="'Denah Layout ' + selectedUnit.type_name" class="w-full h-full object-contain p-2">
                                 <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
@@ -995,7 +971,7 @@
 
                             <!-- Floating Magnify Button (Opens Lightbox) -->
                             <button type="button"
-                                    @click="lightboxImg = (unitModalTab === 'foto' ? selectedUnit.house_photo : (unitModalTab === 'slice' ? selectedUnit.slice_image : (unitModalTab === 'pov' ? selectedUnit.pov_photo : selectedUnit.floor_plan))); lightboxOpen = true"
+                                    @click="lightboxImg = (unitModalTab === 'foto' ? selectedUnit.house_photo : (unitModalTab === 'pov' ? selectedUnit.pov_photo : selectedUnit.floor_plan)); lightboxOpen = true"
                                     title="Perbesar Foto"
                                     class="absolute top-3 right-3 w-9 h-9 rounded-xl bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition text-sm">
                                 <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
