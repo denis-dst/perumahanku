@@ -95,7 +95,7 @@ class SiteplanService
                 'facing' => 'Barat Laut (Taman Entrance)',
                 'status' => 'available',
                 'pov_desc' => 'POV dari Teras Kavling A-01: Menghadap taman entrance gerbang utama dan pavilion cluster. Posisi paling dekat ke security.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
             [
                 'block' => 'A',
@@ -105,7 +105,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling A-02: View langsung ke arah jogging track dan aliran danau buatan mini.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
             [
                 'block' => 'A',
@@ -115,7 +115,7 @@ class SiteplanService
                 'facing' => 'Timur (Matahari Pagi)',
                 'status' => 'booked',
                 'pov_desc' => 'POV Kavling A-03 (Hook Spesial): Menghadap matahari terbit dengan view taman boulevard utama dan mini amphitheatre.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
             [
                 'block' => 'A',
@@ -125,7 +125,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling A-04: View pepohonan rindang cluster A.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a04.jpg',
             ],
 
             // BLOCK B (Bottom Left)
@@ -137,7 +137,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling B-01: Posisi menghadap area jalan taman pedestrian yang bebas lalu lalang kendaraan besar.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
             [
                 'block' => 'B',
@@ -147,7 +147,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling B-02: Menghadap taman komunal tengah dan jalur pedestrian asri.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
             [
                 'block' => 'B',
@@ -157,7 +157,7 @@ class SiteplanService
                 'facing' => 'Selatan (Dekat Playground)',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling B-03: Sangat cocok untuk keluarga dengan anak kecil, langsung berhadapan dengan Children Playground dan Seating Area.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
             [
                 'block' => 'B',
@@ -167,7 +167,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'sold',
                 'pov_desc' => 'POV Kavling B-04 (Terjual): View area seating area santai.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a04.jpg',
             ],
 
             // BLOCK C (Bottom Center)
@@ -179,7 +179,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling C-01: Menghadap langsung ke jembatan lengkung dan danau tematik buatan.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
             [
                 'block' => 'C',
@@ -189,7 +189,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling C-02: View terbuka ke arah sungai mini alami dan taman hijau.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
             [
                 'block' => 'C',
@@ -199,7 +199,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling C-03: View jalan cluster bebas banjir dengan penghijauan tepi jalan.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
             [
                 'block' => 'C',
@@ -209,7 +209,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'booked',
                 'pov_desc' => 'POV Kavling C-04: View menghadap taman gazebo bundar.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a04.jpg',
             ],
             [
                 'block' => 'C',
@@ -219,7 +219,7 @@ class SiteplanService
                 'facing' => 'Timur & Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling Hook C-05: Kavling hook istimewa 2 lantai dengan pemandangan 180 derajat danau tematik dan jembatan kayu.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
 
             // BLOCK D (Bottom Right)
@@ -231,7 +231,7 @@ class SiteplanService
                 'facing' => 'Utara & Barat',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling Hook D-01: Posisi hook menghadap bundaran taman dan gazebo danau.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
             [
                 'block' => 'D',
@@ -241,7 +241,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling D-02: Menghadap pepohonan asri dan dekat fitness corner.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
             [
                 'block' => 'D',
@@ -251,7 +251,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'sold',
                 'pov_desc' => 'POV Kavling D-03: View area olahraga.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a04.jpg',
             ],
             [
                 'block' => 'D',
@@ -261,7 +261,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling D-04: Menghadap danau air jernih dan taman santai tepi air.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
             [
                 'block' => 'D',
@@ -271,7 +271,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling D-05: Rumah 2 lantai dengan balkon kamar utama langsung menghadap pantulan danau cluster.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
 
             // BLOCK E (Center)
@@ -283,7 +283,7 @@ class SiteplanService
                 'facing' => 'Utara (Rooftop Garden)',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling E-01: Pemandangan langsung ke Community Rooftop Garden yang hijau dan megah.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
             [
                 'block' => 'E',
@@ -293,7 +293,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling E-02: View taman komunal terpusat.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a04.jpg',
             ],
             [
                 'block' => 'E',
@@ -303,7 +303,7 @@ class SiteplanService
                 'facing' => 'Utara',
                 'status' => 'booked',
                 'pov_desc' => 'POV Kavling E-03: Dekat dengan lapangan badminton & basketball 3 on 3.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a01.jpg',
             ],
             [
                 'block' => 'E',
@@ -313,7 +313,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling E-04: Menghadap bundaran jalan utama dan taman hijau.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a02.jpg',
             ],
             [
                 'block' => 'E',
@@ -323,7 +323,7 @@ class SiteplanService
                 'facing' => 'Selatan',
                 'status' => 'available',
                 'pov_desc' => 'POV Kavling E-05: Dekat ke area BBQ taman dan amphitheatre.',
-                'pov_photo' => 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1000&q=80',
+                'pov_photo' => 'uploads/units/pov-kavling-a03.jpg',
             ],
         ];
 
@@ -384,3 +384,4 @@ class SiteplanService
         return $createdCount;
     }
 }
+

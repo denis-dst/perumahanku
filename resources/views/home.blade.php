@@ -133,14 +133,7 @@
                     <!-- Image Thumbnail -->
                     <div class="relative h-64 overflow-hidden bg-slate-100">
                         @php
-                            $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75&fm=webp';
-                            if (str_contains($imgUrl, 'images.unsplash.com')) {
-                                $imgUrl = preg_replace('/w=\d+/', 'w=600', $imgUrl);
-                                $imgUrl = preg_replace('/q=\d+/', 'q=75', $imgUrl);
-                                if (!str_contains($imgUrl, 'fm=webp')) {
-                                    $imgUrl .= '&fm=webp';
-                                }
-                            }
+                            $imgUrl = $p->primaryImage ? $p->primaryImage->url : asset('images/default-project.jpg');
                         @endphp
                         <img src="{{ $imgUrl }}"
                              alt="{{ $p->name }}"
@@ -279,7 +272,7 @@
                 <div class="relative rounded-3xl bg-slate-800/80 border border-slate-700 p-4 shadow-2xl backdrop-blur-md">
                     <!-- Fake Siteplan with Pin and Tooltip -->
                     <div class="relative rounded-2xl overflow-hidden aspect-video bg-slate-950">
-                        <img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=75&fm=webp"
+                        <img src="{{ asset('uploads/siteplans/siteplan-grand-harmony.jpg') }}"
                              alt="Siteplan Preview"
                              loading="lazy"
                              decoding="async"
@@ -299,7 +292,7 @@
 
                         <!-- Interactive POV Card Pop-up Simulation -->
                         <div class="absolute bottom-3 left-3 right-3 bg-white text-slate-800 rounded-2xl p-3.5 shadow-2xl flex items-center gap-3">
-                            <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=150&q=75&fm=webp"
+                            <img src="{{ asset('uploads/units/pov-kavling-a01.jpg') }}"
                                  alt="POV Kavling"
                                  loading="lazy"
                                  decoding="async"
@@ -459,13 +452,6 @@
                 <article class="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col">
                     @php
                         $thumbUrl = $article->thumbnail_url;
-                        if (str_contains($thumbUrl, 'images.unsplash.com')) {
-                            $thumbUrl = preg_replace('/w=\d+/', 'w=500', $thumbUrl);
-                            $thumbUrl = preg_replace('/q=\d+/', 'q=75', $thumbUrl);
-                            if (!str_contains($thumbUrl, 'fm=webp')) {
-                                $thumbUrl .= '&fm=webp';
-                            }
-                        }
                     @endphp
                     <a href="{{ route('blog.show', $article->slug) }}" class="h-48 overflow-hidden bg-slate-100 block">
                         <img src="{{ $thumbUrl }}"

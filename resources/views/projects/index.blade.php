@@ -91,14 +91,7 @@
                                 <!-- Image with Badge -->
                                 <div class="relative h-56 bg-slate-100 overflow-hidden">
                                     @php
-                                        $imgUrl = $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=75&fm=webp';
-                                        if (str_contains($imgUrl, 'images.unsplash.com')) {
-                                            $imgUrl = preg_replace('/w=\d+/', 'w=600', $imgUrl);
-                                            $imgUrl = preg_replace('/q=\d+/', 'q=75', $imgUrl);
-                                            if (!str_contains($imgUrl, 'fm=webp')) {
-                                                $imgUrl .= '&fm=webp';
-                                            }
-                                        }
+                                        $imgUrl = $p->primaryImage ? $p->primaryImage->url : asset('images/default-project.jpg');
                                     @endphp
                                     <img src="{{ $imgUrl }}"
                                          alt="{{ $p->name }}"

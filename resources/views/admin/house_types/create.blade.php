@@ -58,11 +58,15 @@
                 <input type="number" name="floors" value="1" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
-            <!-- Floor Plan Image -->
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Gambar Denah</label>
-                <input type="text" name="floor_plan_image" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <!-- Floor Plan Image (File Manager) -->
+            <x-file-picker
+                name="floor_plan_image"
+                label="Gambar Denah / Layout Ruang"
+                value="{{ old('floor_plan_image') }}"
+                folder="house_types"
+                placeholder="uploads/house_types/denah.jpg"
+                help="Pilih denah layout dari public/uploads/house_types."
+            />
 
             <!-- Deskripsi Singkat -->
             <div class="sm:col-span-2">

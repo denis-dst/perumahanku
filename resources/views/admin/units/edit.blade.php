@@ -96,10 +96,14 @@
                 </div>
 
                 @php $currentPov = $unit->povImages->first(); @endphp
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">URL Foto Pemandangan Nyata (POV)</label>
-                    <input type="text" name="pov_photo_url" value="{{ old('pov_photo_url', $currentPov ? $currentPov->path : '') }}" class="w-full bg-white border border-nature-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none">
-                </div>
+                <x-file-picker
+                    name="pov_photo_url"
+                    label="Foto Pemandangan Nyata (POV)"
+                    value="{{ old('pov_photo_url', $currentPov ? $currentPov->path : '') }}"
+                    folder="units"
+                    placeholder="uploads/units/pov-kavling.jpg"
+                    help="Foto asli sudut pandang menghadap luar dari kavling ini."
+                />
 
                 <div>
                     <label class="block text-[11px] font-semibold text-slate-600 mb-1">Deskripsi POV / Keistimewaan Sudut Pandang</label>

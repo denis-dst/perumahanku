@@ -39,10 +39,14 @@ class SiteplanMapperController extends Controller
 
         $file = $request->file('siteplan_file');
         $filename = 'siteplan_'.$project->slug.'_'.time().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('siteplans', $filename, 'public');
+        $targetDir = public_path('uploads/siteplans');
+        if (! file_exists($targetDir)) {
+            mkdir($targetDir, 0755, true);
+        }
+        $file->move($targetDir, $filename);
 
         $project->update([
-            'siteplan_image' => 'storage/'.$path,
+            'siteplan_image' => 'uploads/siteplans/'.$filename,
         ]);
 
         return redirect()->back()->with('success', 'Gambar siteplan berhasil diunggah! Silakan lakukan slice kavling.');

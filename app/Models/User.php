@@ -40,6 +40,14 @@ class User extends Authenticatable
             return $this->avatar;
         }
 
+        if (str_starts_with($this->avatar, 'uploads/') || str_starts_with($this->avatar, '/uploads/')) {
+            return asset(ltrim($this->avatar, '/'));
+        }
+
+        if (str_starts_with($this->avatar, 'images/') || str_starts_with($this->avatar, '/images/')) {
+            return asset(ltrim($this->avatar, '/'));
+        }
+
         return asset('storage/'.$this->avatar);
     }
 

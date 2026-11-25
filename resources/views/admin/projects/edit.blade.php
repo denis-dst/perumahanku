@@ -78,15 +78,23 @@
                 <textarea name="facilities" rows="3" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">{{ old('facilities', is_array($project->facilities) ? implode("\n", $project->facilities) : '') }}</textarea>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Foto Utama URL</label>
-                <input type="text" name="primary_photo_url" value="{{ old('primary_photo_url', $project->primaryImage ? $project->primaryImage->path : '') }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <x-file-picker
+                name="primary_photo_url"
+                label="Foto Fasad Utama Perumahan"
+                value="{{ old('primary_photo_url', $project->primaryImage ? $project->primaryImage->path : '') }}"
+                folder="projects"
+                placeholder="uploads/projects/fasad-utama.jpg"
+                help="Gunakan foto dari galeri folder public atau unggah langsung."
+            />
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Gambar Siteplan URL</label>
-                <input type="text" name="siteplan_image" value="{{ old('siteplan_image', $project->siteplan_image) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <x-file-picker
+                name="siteplan_image"
+                label="Gambar Peta Siteplan"
+                value="{{ old('siteplan_image', $project->siteplan_image) }}"
+                folder="siteplans"
+                placeholder="uploads/siteplans/siteplan-perumahan.jpg"
+                help="Pilih denah kawasan untuk mapper kavling interaktif."
+            />
         </div>
 
         <div class="pt-4 border-t border-slate-100 flex items-center justify-between">

@@ -37,7 +37,6 @@
     <!-- JSON-LD Structured Data: RealEstateAgent & Organization -->
     <script type="application/ld+json">
     {
-      "@context": "https://schema.org",
       "@@context": "https://schema.org",
       "@type": "RealEstateAgent",
       "name": "{{ \App\Models\Setting::get('company_name', 'PT Alam Damai Property') }}",
@@ -73,7 +72,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 
     <!-- Google Fonts (Non-Render-Blocking with font-display: swap) -->

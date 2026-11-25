@@ -233,8 +233,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[380px] sm:h-[460px]">
                 <!-- Main Big Photo (LCP Optimized) -->
                 <div class="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
-                     @click="lightboxImg = '{{ $project->primaryImage ? $project->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80' }}'; lightboxOpen = true">
-                    <img src="{{ $project->primaryImage ? $project->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80' }}"
+                     @click="lightboxImg = '{{ $project->primaryImage ? $project->primaryImage->url : asset('images/default-project.jpg') }}'; lightboxOpen = true">
+                    <img src="{{ $project->primaryImage ? $project->primaryImage->url : asset('images/default-project.jpg') }}"
                          alt="{{ $project->name }}"
                          fetchpriority="high"
                          decoding="async"
@@ -375,7 +375,7 @@
                                         $floorPlanSlides = [];
 
                                         // Slide 1: Denah Tata Ruang 2D
-                                        $mainPlanImg = $ht->floor_plan_image ?? 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=1200&q=80';
+                                        $mainPlanImg = $ht->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
                                         $floorPlanSlides[] = [
                                             'title' => 'Denah Tata Ruang Arsitektur (2D)',
                                             'caption' => 'Ukuran & dimensi kamar, pembagian ruang tamu, dapur, carport dan sirkulasi',
@@ -389,14 +389,14 @@
                                                 'title' => 'Denah Ruang Lantai 2 (Area Privat)',
                                                 'caption' => 'Kamar tidur anak/tamu, kamar mandi atas, void tangga dan balkon',
                                                 'badge' => 'Lantai 2',
-                                                'url' => 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
+                                                'url' => asset('uploads/siteplans/siteplan-grand-harmony.jpg'),
                                             ];
                                         } else {
                                             $floorPlanSlides[] = [
                                                 'title' => 'Visualisasi 3D Tata Letak Ruangan',
                                                 'caption' => 'Konsep penataan furniture, ventilasi silang & pencahayaan alami',
                                                 'badge' => '3D Layout',
-                                                'url' => 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
+                                                'url' => asset('uploads/projects/living-room.jpg'),
                                             ];
                                         }
 
@@ -415,13 +415,13 @@
                                                 'title' => 'Ruang Keluarga & Ruang Tamu Sejuk',
                                                 'caption' => 'Langit-langit tinggi menghadirkan kesan luas dan sirkulasi udara optimal',
                                                 'badge' => 'Interior',
-                                                'url' => 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
+                                                'url' => asset('uploads/projects/project-grand-harmony.jpg'),
                                             ];
                                             $floorPlanSlides[] = [
                                                 'title' => 'Kamar Tidur Utama Nyaman',
                                                 'caption' => 'Pencahayaan jendela maksimal menghadap taman cluster asri',
                                                 'badge' => 'Kamar Tidur',
-                                                'url' => 'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=1200&q=80',
+                                                'url' => asset('uploads/projects/master-bedroom.jpg'),
                                             ];
                                         }
                                     @endphp
@@ -573,7 +573,7 @@
                             @foreach($project->units as $unit)
                                 @php
                                     $firstPov = $unit->povImages->first();
-                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80');
+                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : asset('images/default-pov.jpg'));
 
                                     $wPct = $unit->width_pct ?: 5.5;
                                     $hPct = $unit->height_pct ?: 6.0;
@@ -661,7 +661,7 @@
                             @foreach($project->units as $u)
                                 @php
                                     $firstPov = $u->povImages->first();
-                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($u->images->first() ? $u->images->first()->url : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80');
+                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($u->images->first() ? $u->images->first()->url : asset('images/default-pov.jpg'));
                                     $uPayload = [
                                         'id' => $u->id,
                                         'block' => $u->block,

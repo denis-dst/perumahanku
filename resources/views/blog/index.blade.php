@@ -33,13 +33,6 @@
                     <div>
                         @php
                             $thumbUrl = $post->thumbnail_url;
-                            if (str_contains($thumbUrl, 'images.unsplash.com')) {
-                                $thumbUrl = preg_replace('/w=\d+/', 'w=500', $thumbUrl);
-                                $thumbUrl = preg_replace('/q=\d+/', 'q=75', $thumbUrl);
-                                if (!str_contains($thumbUrl, 'fm=webp')) {
-                                    $thumbUrl .= '&fm=webp';
-                                }
-                            }
                         @endphp
                         <a href="{{ route('blog.show', $post->slug) }}" class="h-48 overflow-hidden bg-slate-100 block">
                             <img src="{{ $thumbUrl }}"

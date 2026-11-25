@@ -35,10 +35,18 @@ class BlogPost extends Model
     public function getThumbnailUrlAttribute(): string
     {
         if (! $this->thumbnail) {
-            return 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800&q=80';
+            return asset('images/default-blog.jpg');
         }
         if (str_starts_with($this->thumbnail, 'http://') || str_starts_with($this->thumbnail, 'https://')) {
             return $this->thumbnail;
+        }
+
+        if (str_starts_with($this->thumbnail, 'uploads/') || str_starts_with($this->thumbnail, '/uploads/')) {
+            return asset(ltrim($this->thumbnail, '/'));
+        }
+
+        if (str_starts_with($this->thumbnail, 'images/') || str_starts_with($this->thumbnail, '/images/')) {
+            return asset(ltrim($this->thumbnail, '/'));
         }
 
         return asset('storage/'.$this->thumbnail);

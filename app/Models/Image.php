@@ -32,8 +32,20 @@ class Image extends Model
 
     public function getUrlAttribute(): string
     {
+        if (empty($this->path)) {
+            return asset('images/default-project.jpg');
+        }
+
         if (str_starts_with($this->path, 'http://') || str_starts_with($this->path, 'https://')) {
             return $this->path;
+        }
+
+        if (str_starts_with($this->path, 'uploads/') || str_starts_with($this->path, '/uploads/')) {
+            return asset(ltrim($this->path, '/'));
+        }
+
+        if (str_starts_with($this->path, 'images/') || str_starts_with($this->path, '/images/')) {
+            return asset(ltrim($this->path, '/'));
         }
 
         return asset('storage/'.$this->path);

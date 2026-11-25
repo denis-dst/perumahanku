@@ -29,10 +29,14 @@
                     <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Kategori</label>
                     <input type="text" name="category" value="{{ old('category', $post->category) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
                 </div>
-                <div>
-                    <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Gambar Thumbnail</label>
-                    <input type="text" name="thumbnail" value="{{ old('thumbnail', $post->thumbnail) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-                </div>
+                <x-file-picker
+                    name="thumbnail"
+                    label="Gambar Utama / Thumbnail Artikel"
+                    value="{{ old('thumbnail', $post->thumbnail) }}"
+                    folder="blog"
+                    placeholder="uploads/blog/cover-artikel.jpg"
+                    help="Pilih gambar dari galeri public/uploads/blog."
+                />
             </div>
 
             <div>

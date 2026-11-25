@@ -34,7 +34,7 @@
                         <tr class="hover:bg-slate-50/80 transition">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <img src="{{ $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=150&q=80' }}" class="w-12 h-12 rounded-xl object-cover shrink-0 border border-slate-200">
+                                    <img src="{{ $p->primaryImage ? $p->primaryImage->url : asset('images/default-project.jpg') }}" class="w-12 h-12 rounded-xl object-cover shrink-0 border border-slate-200">
                                     <div>
                                         <span class="font-bold text-slate-900 text-sm block">{{ $p->name }}</span>
                                         <span class="text-[11px] text-slate-400 block">{{ $p->slug }}</span>

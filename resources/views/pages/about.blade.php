@@ -28,7 +28,7 @@
                 </p>
             </div>
             <div class="rounded-3xl overflow-hidden shadow-xl aspect-4/3 bg-slate-100">
-                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" alt="About Us" class="w-full h-full object-cover">
+                <img src="{{ asset('images/about-us.jpg') }}" alt="About Us" class="w-full h-full object-cover">
             </div>
         </div>
 

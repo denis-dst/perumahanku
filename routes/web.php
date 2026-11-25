@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\BlogPostController as AdminBlogPostController;
 use App\Http\Controllers\Admin\BookingController as AdminBookingController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\FileManagerController as AdminFileManagerController;
 use App\Http\Controllers\Admin\HouseTypeController as AdminHouseTypeController;
 use App\Http\Controllers\Admin\KprBankController as AdminKprBankController;
 use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
@@ -86,6 +87,12 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Bookings / Survey Leads
     Route::resource('bookings', AdminBookingController::class)->only(['index', 'show', 'update', 'destroy']);
+
+    // File Manager (Media Library Stored in Public Folder)
+    Route::get('/file-manager', [AdminFileManagerController::class, 'index'])->name('file-manager.index');
+    Route::get('/file-manager/files', [AdminFileManagerController::class, 'getFiles'])->name('file-manager.files');
+    Route::post('/file-manager/upload', [AdminFileManagerController::class, 'upload'])->name('file-manager.upload');
+    Route::post('/file-manager/delete', [AdminFileManagerController::class, 'delete'])->name('file-manager.delete');
 
     // Settings & Profile Admin
     Route::get('/settings', [AdminSettingController::class, 'index'])->name('settings.index');

@@ -54,10 +54,14 @@
                 <input type="number" name="floors" value="{{ old('floors', $houseType->floors) }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Gambar Denah</label>
-                <input type="text" name="floor_plan_image" value="{{ old('floor_plan_image', $houseType->floor_plan_image) }}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <x-file-picker
+                name="floor_plan_image"
+                label="Gambar Denah / Layout Ruang"
+                value="{{ old('floor_plan_image', $houseType->floor_plan_image) }}"
+                folder="house_types"
+                placeholder="uploads/house_types/denah.jpg"
+                help="Pilih denah layout dari public/uploads/house_types."
+            />
 
             <div class="sm:col-span-2">
                 <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Deskripsi</label>

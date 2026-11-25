@@ -324,8 +324,13 @@
                         <i class="fa-solid fa-street-view mr-1"></i> Data POV (Point of View) Nyata
                     </span>
                     <div>
-                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">URL Foto POV Nyata</label>
-                        <input type="text" x-model="form.pov_photo_url" placeholder="https://images.unsplash.com/..." class="w-full bg-white border border-nature-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none">
+                        <label class="block text-[10px] font-semibold text-slate-600 mb-1">Foto POV Nyata (File Manager)</label>
+                        <div class="flex items-center gap-1.5">
+                            <input type="text" id="mapper_pov_photo_url" x-model="form.pov_photo_url" placeholder="uploads/units/pov-kavling.jpg" class="flex-1 bg-white border border-nature-200 rounded-xl px-2.5 py-1.5 text-xs text-slate-800 font-mono focus:outline-none">
+                            <button type="button" @click="$dispatch('open-file-picker', { targetInputId: 'mapper_pov_photo_url', folder: 'units' })" class="px-2.5 py-1.5 bg-nature-600 hover:bg-nature-700 text-white rounded-xl text-[10px] font-bold shrink-0 transition cursor-pointer">
+                                <i class="fa-solid fa-folder-open"></i> Pilih
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-[10px] font-semibold text-slate-600 mb-1">Deskripsi Pemandangan POV</label>
@@ -408,7 +413,7 @@ function siteplanMapper(config) {
             slice_preview: '',
             slice_data_base64: '',
             pov_description: '',
-            pov_photo_url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1000&q=80',
+            pov_photo_url: 'uploads/units/pov-kavling-a01.jpg',
         },
 
         init() {

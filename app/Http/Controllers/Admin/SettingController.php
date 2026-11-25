@@ -54,11 +54,19 @@ class SettingController extends Controller
             }
             $user->avatar = null;
         } elseif ($request->hasFile('avatar')) {
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
+            if ($user->avatar && str_starts_with($user->avatar, 'uploads/') && file_exists(public_path($user->avatar))) {
+                @unlink(public_path($user->avatar));
+            } elseif ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
                 Storage::disk('public')->delete($user->avatar);
             }
-            $path = $request->file('avatar')->store('avatars', 'public');
-            $user->avatar = $path;
+            $file = $request->file('avatar');
+            $filename = 'avatar_' . $user->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $targetDir = public_path('uploads/avatars');
+            if (! file_exists($targetDir)) {
+                mkdir($targetDir, 0755, true);
+            }
+            $file->move($targetDir, $filename);
+            $user->avatar = 'uploads/avatars/' . $filename;
         }
 
         $user->name = $validated['name'];

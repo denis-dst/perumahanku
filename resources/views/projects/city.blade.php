@@ -97,7 +97,7 @@
                 <div class="group bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
                     <div>
                         <div class="relative h-60 bg-slate-100 overflow-hidden">
-                            <img src="{{ $p->primaryImage ? $p->primaryImage->url : 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $p->primaryImage ? $p->primaryImage->url : asset('images/default-project.jpg') }}" alt="{{ $p->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                             <div class="absolute top-3 left-3">
                                 <span class="px-3 py-1 rounded-full text-xs font-bold bg-white/95 text-brand-700 shadow-sm">
                                     {{ $p->city }}

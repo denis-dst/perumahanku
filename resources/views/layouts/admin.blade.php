@@ -99,6 +99,11 @@
                         <span>Artikel & Tips SEO</span>
                     </a>
 
+                    <a href="{{ route('admin.file-manager.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {{ request()->routeIs('admin.file-manager.*') ? 'bg-brand-600 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                        <i class="fa-solid fa-folder-open w-5 text-center"></i>
+                        <span>File Manager (Media)</span>
+                    </a>
+
                     <a href="{{ route('admin.settings.index') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl transition {{ request()->routeIs('admin.settings.*') ? 'bg-brand-600 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                         <i class="fa-solid fa-sliders w-5 text-center"></i>
                         <span>Pengaturan & Profil</span>
@@ -190,6 +195,8 @@
             </main>
         </div>
     </div>
+
+    @include('admin.components.file-manager-modal')
 
     @stack('scripts')
 </body>

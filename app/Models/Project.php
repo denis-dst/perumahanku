@@ -98,6 +98,27 @@ class Project extends Model
         return $this->units()->where('status', 'available')->count();
     }
 
+    public function getSiteplanImageUrlAttribute(): string
+    {
+        if (empty($this->siteplan_image)) {
+            return asset('images/default-siteplan.jpg');
+        }
+
+        if (str_starts_with($this->siteplan_image, 'http://') || str_starts_with($this->siteplan_image, 'https://')) {
+            return $this->siteplan_image;
+        }
+
+        if (str_starts_with($this->siteplan_image, 'uploads/') || str_starts_with($this->siteplan_image, '/uploads/')) {
+            return asset(ltrim($this->siteplan_image, '/'));
+        }
+
+        if (str_starts_with($this->siteplan_image, 'images/') || str_starts_with($this->siteplan_image, '/images/')) {
+            return asset(ltrim($this->siteplan_image, '/'));
+        }
+
+        return asset('storage/'.$this->siteplan_image);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', 'active');

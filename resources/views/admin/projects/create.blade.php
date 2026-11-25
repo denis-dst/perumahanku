@@ -87,17 +87,24 @@
                 <textarea name="facilities" rows="3" placeholder="Security 24 Jam & One Gate System&#10;Masjid Cluster&#10;Taman Bermain Anak&#10;Clubhouse & Kolam Renang" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">{{ old('facilities') }}</textarea>
             </div>
 
-            <!-- Foto Utama URL -->
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Foto Fasad Utama</label>
-                <input type="text" name="primary_photo_url" value="{{ old('primary_photo_url') }}" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <!-- Foto Utama & Siteplan Image (File Manager) -->
+            <x-file-picker
+                name="primary_photo_url"
+                label="Foto Fasad Utama Perumahan"
+                value="{{ old('primary_photo_url') }}"
+                folder="projects"
+                placeholder="uploads/projects/fasad-utama.jpg"
+                help="Gunakan foto dari galeri folder public atau unggah langsung."
+            />
 
-            <!-- Siteplan Image URL -->
-            <div>
-                <label class="block text-xs font-bold uppercase text-slate-600 mb-1">URL Gambar Peta Siteplan</label>
-                <input type="text" name="siteplan_image" value="{{ old('siteplan_image') }}" placeholder="https://images.unsplash.com/..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+            <x-file-picker
+                name="siteplan_image"
+                label="Gambar Peta Siteplan"
+                value="{{ old('siteplan_image') }}"
+                folder="siteplans"
+                placeholder="uploads/siteplans/siteplan-perumahan.jpg"
+                help="Pilih denah kawasan untuk mapper kavling interaktif."
+            />
         </div>
 
         <div class="pt-4 border-t border-slate-100 flex items-center justify-between">

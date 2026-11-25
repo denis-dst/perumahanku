@@ -59,4 +59,25 @@ class HouseType extends Model
     {
         return 'Rp '.number_format($this->price, 0, ',', '.');
     }
+
+    public function getFloorPlanImageUrlAttribute(): string
+    {
+        if (empty($this->floor_plan_image)) {
+            return asset('images/default-floorplan.jpg');
+        }
+
+        if (str_starts_with($this->floor_plan_image, 'http://') || str_starts_with($this->floor_plan_image, 'https://')) {
+            return $this->floor_plan_image;
+        }
+
+        if (str_starts_with($this->floor_plan_image, 'uploads/') || str_starts_with($this->floor_plan_image, '/uploads/')) {
+            return asset(ltrim($this->floor_plan_image, '/'));
+        }
+
+        if (str_starts_with($this->floor_plan_image, 'images/') || str_starts_with($this->floor_plan_image, '/images/')) {
+            return asset(ltrim($this->floor_plan_image, '/'));
+        }
+
+        return asset('storage/'.$this->floor_plan_image);
+    }
 }
