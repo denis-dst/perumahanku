@@ -92,10 +92,18 @@ class SiteplanMapperController extends Controller
         $units = $project->units()->with('povImages')->get();
 
         foreach ($units as $unit) {
-            // Delete slice image file from storage if exists
+            // Delete slice image file from public/uploads or storage if exists
             if ($unit->slice_image) {
                 $cleaned = preg_replace('#^/?storage/#', '', $unit->slice_image);
                 Storage::disk('public')->delete($cleaned);
+                $publicFile = public_path($unit->slice_image);
+                if (file_exists($publicFile)) {
+                    @unlink($publicFile);
+                }
+                $slicesFile = public_path('uploads/slices/'.basename($unit->slice_image));
+                if (file_exists($slicesFile)) {
+                    @unlink($slicesFile);
+                }
             }
             // Delete POV images associated with unit
             $unit->images()->delete();
@@ -145,8 +153,13 @@ class SiteplanMapperController extends Controller
             $base64 = preg_replace('#^data:image/\w+;base64,#i', '', $validated['slice_data_base64']);
             $decoded = base64_decode($base64);
             $sliceName = 'slice_'.$project->slug.'_'.Str::slug($validated['block'].'-'.$validated['number']).'_'.time().'.jpg';
-            Storage::disk('public')->put('slices/'.$sliceName, $decoded);
-            $slicePath = 'slices/'.$sliceName;
+            
+            $slicesDir = public_path('uploads/slices');
+            if (! file_exists($slicesDir)) {
+                mkdir($slicesDir, 0755, true);
+            }
+            file_put_contents($slicesDir.'/'.$sliceName, $decoded);
+            $slicePath = 'uploads/slices/'.$sliceName;
         }
 
         $unitData = [

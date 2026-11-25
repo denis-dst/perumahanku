@@ -68,7 +68,7 @@ class ProjectController extends Controller
         $project = Project::with([
             'houseTypes.images',
             'units' => function ($q) {
-                $q->with(['houseType', 'images', 'povImages']);
+                $q->with(['houseType.images', 'images', 'povImages']);
             },
             'images',
         ])

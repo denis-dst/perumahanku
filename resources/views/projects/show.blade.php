@@ -41,6 +41,9 @@
     activeTab: 'tipe-0',
     selectedUnit: null,
     povModalOpen: false,
+    unitModalTab: 'foto',
+    selectedBlockFilter: 'all',
+    hoveredUnit: null,
     lightboxOpen: false,
     lightboxImg: '',
     floorPlanModalOpen: false,
@@ -143,7 +146,18 @@
     },
     openPov(unit) {
         this.selectedUnit = unit;
+        this.unitModalTab = 'foto';
         this.povModalOpen = true;
+    },
+    calculateUnitKpr(price) {
+        if (price > 0) {
+            this.kprPrice = price;
+        }
+        this.povModalOpen = false;
+        const target = document.getElementById('kpr-calculator');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 }">
 
@@ -515,11 +529,7 @@
                 </div>
 
                 <!-- 3. FEATURE KILLER: SITEPLAN INTERAKTIF + POV UNIT MODAL -->
-                <div id="siteplan" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md"
-                     x-data="{
-                         selectedBlockFilter: 'all',
-                         hoveredUnit: null
-                     }">
+                <div id="siteplan" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-nature-100 text-nature-700 text-xs font-bold mb-1">
@@ -575,10 +585,17 @@
                                     $firstPov = $unit->povImages->first();
                                     $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : asset('images/default-pov.jpg'));
 
+                                    $houseType = $unit->houseType;
+                                    $housePhoto = $houseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
+                                    $floorPlanPhoto = $houseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $slicePhoto = $unit->slice_image_url ?: asset('images/default-slice.jpg');
+
                                     $wPct = $unit->width_pct ?: 5.5;
                                     $hPct = $unit->height_pct ?: 6.0;
                                     $xPct = $unit->position_x - ($wPct / 2);
                                     $yPct = $unit->position_y - ($hPct / 2);
+
+                                    $unitPriceRaw = (float) ($unit->price > 0 ? $unit->price : ($houseType ? $houseType->price : 0));
 
                                     $unitPayload = [
                                         'id' => $unit->id,
@@ -588,12 +605,18 @@
                                         'status_label' => $unit->status_label,
                                         'status_color' => $unit->status_color,
                                         'facing' => $unit->facing ?? 'Bebas Hambatan',
-                                        'type_name' => $unit->houseType ? $unit->houseType->name : 'Standar',
+                                        'type_name' => $houseType ? $houseType->name : 'Standar',
+                                        'price' => $unitPriceRaw,
                                         'price_formatted' => $unit->formatted_price,
-                                        'land_area' => $unit->land_area ?? ($unit->houseType ? $unit->houseType->land_area : '-'),
-                                        'slice_image' => $unit->slice_image_url,
-                                        'pov_description' => $unit->pov_description ?? 'Unit menghadap jalan cluster yang asri dan tenang.',
+                                        'land_area' => $unit->land_area ?? ($houseType ? $houseType->land_area : '-'),
+                                        'building_area' => $houseType ? $houseType->building_area : '-',
+                                        'bedrooms' => $houseType ? $houseType->bedrooms : '-',
+                                        'bathrooms' => $houseType ? $houseType->bathrooms : '-',
+                                        'house_photo' => $housePhoto,
+                                        'slice_image' => $slicePhoto,
                                         'pov_photo' => $povPhotoUrl,
+                                        'floor_plan' => $floorPlanPhoto,
+                                        'pov_description' => $unit->pov_description ?: 'Unit strategis di kawasan cluster yang asri, nyaman, dan bebas banjir dengan sirkulasi udara optimal.',
                                     ];
                                 @endphp
 
@@ -660,8 +683,14 @@
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
                             @foreach($project->units as $u)
                                 @php
-                                    $firstPov = $u->povImages->first();
-                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($u->images->first() ? $u->images->first()->url : asset('images/default-pov.jpg'));
+                                    $uFirstPov = $u->povImages->first();
+                                    $uPovPhotoUrl = $uFirstPov ? $uFirstPov->url : ($u->images->first() ? $u->images->first()->url : asset('images/default-pov.jpg'));
+                                    $uHouseType = $u->houseType;
+                                    $uHousePhoto = $uHouseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
+                                    $uFloorPlanPhoto = $uHouseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $uSlicePhoto = $u->slice_image_url ?: asset('images/default-slice.jpg');
+                                    $uPriceRaw = (float) ($u->price > 0 ? $u->price : ($uHouseType ? $uHouseType->price : 0));
+
                                     $uPayload = [
                                         'id' => $u->id,
                                         'block' => $u->block,
@@ -670,11 +699,18 @@
                                         'status_label' => $u->status_label,
                                         'status_color' => $u->status_color,
                                         'facing' => $u->facing ?? 'Bebas Hambatan',
-                                        'type_name' => $u->houseType ? $u->houseType->name : 'Standar',
+                                        'type_name' => $uHouseType ? $uHouseType->name : 'Standar',
+                                        'price' => $uPriceRaw,
                                         'price_formatted' => $u->formatted_price,
-                                        'land_area' => $u->land_area ?? ($u->houseType ? $u->houseType->land_area : '-'),
-                                        'pov_description' => $u->pov_description ?? 'Unit dengan pemandangan terbuka yang nyaman.',
-                                        'pov_photo' => $povPhotoUrl,
+                                        'land_area' => $u->land_area ?? ($uHouseType ? $uHouseType->land_area : '-'),
+                                        'building_area' => $uHouseType ? $uHouseType->building_area : '-',
+                                        'bedrooms' => $uHouseType ? $uHouseType->bedrooms : '-',
+                                        'bathrooms' => $uHouseType ? $uHouseType->bathrooms : '-',
+                                        'house_photo' => $uHousePhoto,
+                                        'slice_image' => $uSlicePhoto,
+                                        'pov_photo' => $uPovPhotoUrl,
+                                        'floor_plan' => $uFloorPlanPhoto,
+                                        'pov_description' => $u->pov_description ?: 'Unit strategis di kawasan cluster yang asri, nyaman, dan bebas banjir dengan sirkulasi udara optimal.',
                                     ];
                                 @endphp
                                 <div @click="openPov({{ json_encode($uPayload) }})"
@@ -693,7 +729,7 @@
                 </div>
 
                 <!-- 4. KALKULATOR SIMULASI KPR INTERAKTIF UNTUK PROYEK INI -->
-                <div class="bg-gradient-to-br from-brand-50 to-nature-50 rounded-3xl p-6 sm:p-8 border border-brand-100">
+                <div id="kpr-calculator" class="bg-gradient-to-br from-brand-50 to-nature-50 rounded-3xl p-6 sm:p-8 border border-brand-100">
                     <div class="max-w-xl mb-6">
                         <span class="text-xs font-bold uppercase tracking-wider text-brand-700">Rencana Angsuran</span>
                         <h2 class="text-xl font-bold text-slate-900 mt-0.5">Simulasi KPR {{ $project->name }}</h2>
@@ -747,11 +783,8 @@
                                 <span>Konsultasi Syarat KPR via WA</span>
                             </a>
                         </div>
-                            </a>
-                        </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Right 4 Cols: Sticky Form Booking & Contact -->
@@ -839,68 +872,159 @@
         </div>
     </div>
 
-    <!-- POV UNIT MODAL (Interactive Popup when siteplan pin is clicked) -->
-    <div x-show="povModalOpen" x-cloak class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!-- POPUP DETAIL UNIT & FOTO PERUMAHAN MODAL (Interactive Popup when siteplan slice or lot is clicked) -->
+    <div x-show="povModalOpen"
+         x-cloak
+         class="fixed inset-0 z-50 overflow-y-auto"
+         aria-labelledby="modal-title"
+         role="dialog"
+         aria-modal="true"
+         @keydown.escape.window="povModalOpen = false">
         <!-- Backdrop -->
-        <div class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" @click="povModalOpen = false"></div>
+        <div class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity" @click="povModalOpen = false"></div>
 
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-2xl border border-slate-200"
+        <div class="flex min-h-full items-center justify-center p-3 sm:p-4 text-center">
+            <div class="relative transform overflow-hidden rounded-3xl bg-white text-left shadow-2xl transition-all w-full max-w-3xl border border-slate-200"
                  @click.away="povModalOpen = false">
 
                 <template x-if="selectedUnit">
                     <div>
-                        <!-- Header with Status -->
-                        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                            <div class="flex items-center gap-2.5">
-                                <span class="w-8 h-8 rounded-full bg-brand-500 text-white font-extrabold text-xs flex items-center justify-center">
-                                    <span x-text="selectedUnit.block + selectedUnit.number"></span>
-                                </span>
+                        <!-- Header with Status & Close -->
+                        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-2xl bg-brand-600 text-white font-black text-sm flex items-center justify-center shadow-xs">
+                                    <span x-text="selectedUnit.block + '-' + selectedUnit.number"></span>
+                                </div>
                                 <div>
-                                    <h3 class="font-extrabold text-slate-900 text-base" x-text="'Kavling ' + selectedUnit.block + '-' + selectedUnit.number"></h3>
-                                    <p class="text-xs text-slate-500 font-medium" x-text="selectedUnit.type_name + ' • Luas Tanah: ' + selectedUnit.land_area + ' m²'"></p>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-black text-slate-900 text-base sm:text-lg" x-text="'Kavling ' + selectedUnit.block + '-' + selectedUnit.number"></h3>
+                                        <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full" :class="selectedUnit.status_color" x-text="selectedUnit.status_label"></span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">
+                                        <span class="font-semibold text-slate-700" x-text="selectedUnit.type_name"></span> • 
+                                        <span>LT: <strong x-text="selectedUnit.land_area"></strong> m²</span> • 
+                                        <span>LB: <strong x-text="selectedUnit.building_area"></strong> m²</span>
+                                    </p>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-bold px-3 py-1 rounded-full" :class="selectedUnit.status_color" x-text="selectedUnit.status_label"></span>
-                                <button @click="povModalOpen = false" aria-label="Tutup modal sudut pandang kavling" class="text-slate-500 hover:text-slate-700 p-1">
-                                    <i class="fa-solid fa-xmark text-lg"></i>
+                            <button @click="povModalOpen = false" aria-label="Tutup detail kavling" class="w-9 h-9 rounded-full bg-white hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition flex items-center justify-center shadow-xs border border-slate-200">
+                                <i class="fa-solid fa-xmark text-base"></i>
+                            </button>
+                        </div>
+
+                        <!-- Media Display Tabs (Foto Rumah / Hasil Slice / POV Lingkungan / Denah) -->
+                        <div class="bg-slate-900 px-4 pt-3 pb-2 border-b border-slate-800">
+                            <div class="flex items-center gap-2 overflow-x-auto text-xs font-bold scrollbar-none">
+                                <button type="button"
+                                        @click="unitModalTab = 'foto'"
+                                        :class="unitModalTab === 'foto' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                    <i class="fa-solid fa-house"></i>
+                                    <span>Foto Rumah / Fasad</span>
+                                </button>
+                                <button type="button"
+                                        @click="unitModalTab = 'slice'"
+                                        :class="unitModalTab === 'slice' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                    <i class="fa-solid fa-crop-simple"></i>
+                                    <span>Hasil Potongan Siteplan (Slice)</span>
+                                </button>
+                                <button type="button"
+                                        @click="unitModalTab = 'pov'"
+                                        :class="unitModalTab === 'pov' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                    <i class="fa-solid fa-street-view"></i>
+                                    <span>POV Lingkungan Nyata</span>
+                                </button>
+                                <button type="button"
+                                        @click="unitModalTab = 'denah'"
+                                        :class="unitModalTab === 'denah' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                    <i class="fa-solid fa-compass-drafting"></i>
+                                    <span>Denah Ruangan</span>
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Media Showcase: Real POV Photo + Sliced Lot Blueprint -->
-                        <div class="grid grid-cols-1 md:grid-cols-12 bg-slate-950">
-                            <!-- Left: Real Photo POV (8 cols) -->
-                            <div class="md:col-span-8 relative h-64 sm:h-80 bg-slate-900 overflow-hidden">
-                                <img :src="selectedUnit.pov_photo" :alt="'POV Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
-                                <!-- Overlay Badge POV -->
-                                <div class="absolute bottom-3 left-3 bg-black/80 backdrop-blur-xs text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
-                                    <i class="fa-solid fa-street-view text-emerald-400 text-sm"></i>
+                        <!-- Main Media Showcase Viewer -->
+                        <div class="relative h-64 sm:h-80 md:h-96 bg-slate-950 overflow-hidden flex items-center justify-center">
+                            <!-- View 1: Foto Rumah / Fasad -->
+                            <div x-show="unitModalTab === 'foto'" class="w-full h-full relative">
+                                <img :src="selectedUnit.house_photo" :alt="'Foto Rumah Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
+                                <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-house text-brand-400"></i>
+                                    <span>Tampak Depan (Fasad) <span x-text="selectedUnit.type_name"></span></span>
+                                </div>
+                            </div>
+
+                            <!-- View 2: Hasil Potongan Siteplan (Slice) -->
+                            <div x-show="unitModalTab === 'slice'" class="w-full h-full relative flex items-center justify-center bg-slate-950">
+                                <template x-if="selectedUnit.slice_image">
+                                    <img :src="selectedUnit.slice_image" :alt="'Potongan Siteplan Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-contain p-2">
+                                </template>
+                                <template x-if="!selectedUnit.slice_image">
+                                    <div class="text-center p-6 text-slate-400">
+                                        <i class="fa-solid fa-crop-simple text-4xl mb-2 text-slate-600"></i>
+                                        <p class="text-xs font-semibold">Potongan siteplan belum tersedia untuk kavling ini</p>
+                                    </div>
+                                </template>
+                                <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-crop-simple text-emerald-400"></i>
+                                    <span>Potongan Arsiran Masterplan Kavling <span x-text="selectedUnit.block + '-' + selectedUnit.number"></span></span>
+                                </div>
+                            </div>
+
+                            <!-- View 3: POV Lingkungan Nyata -->
+                            <div x-show="unitModalTab === 'pov'" class="w-full h-full relative">
+                                <img :src="selectedUnit.pov_photo" :alt="'POV Nyata Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
+                                <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-street-view text-emerald-400"></i>
                                     <span>Sudut Pandang (POV) Nyata dari Teras Kavling</span>
                                 </div>
                             </div>
 
-                            <!-- Right: Sliced Lot Blueprint Cutout (4 cols) -->
-                            <div class="md:col-span-4 p-4 bg-slate-900 flex flex-col justify-center items-center text-center border-t md:border-t-0 md:border-l border-slate-800">
-                                <span class="text-[10px] uppercase font-bold text-brand-400 tracking-wider mb-2 block">
-                                    <i class="fa-solid fa-crop-simple mr-1"></i> Potongan Arsiran Siteplan
-                                </span>
-                                <div class="w-28 h-28 rounded-2xl overflow-hidden bg-slate-950 border border-slate-700 shadow-inner flex items-center justify-center relative">
-                                    <template x-if="selectedUnit.slice_image">
-                                        <img :src="selectedUnit.slice_image" class="w-full h-full object-cover">
-                                    </template>
-                                    <template x-if="!selectedUnit.slice_image">
-                                        <div class="text-[10px] text-slate-500 font-bold p-2">Kavling <span x-text="selectedUnit.block + selectedUnit.number"></span></div>
-                                    </template>
+                            <!-- View 4: Denah Layout Ruangan -->
+                            <div x-show="unitModalTab === 'denah'" class="w-full h-full relative flex items-center justify-center bg-slate-950">
+                                <img :src="selectedUnit.floor_plan" :alt="'Denah Layout ' + selectedUnit.type_name" class="w-full h-full object-contain p-2">
+                                <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
+                                    <i class="fa-solid fa-compass-drafting text-sky-400"></i>
+                                    <span>Denah Ruangan <span x-text="selectedUnit.type_name"></span></span>
                                 </div>
-                                <span class="text-[10px] text-slate-300 mt-2">Posisi tepat di masterplan</span>
                             </div>
+
+                            <!-- Floating Magnify Button (Opens Lightbox) -->
+                            <button type="button"
+                                    @click="lightboxImg = (unitModalTab === 'foto' ? selectedUnit.house_photo : (unitModalTab === 'slice' ? selectedUnit.slice_image : (unitModalTab === 'pov' ? selectedUnit.pov_photo : selectedUnit.floor_plan))); lightboxOpen = true"
+                                    title="Perbesar Foto"
+                                    class="absolute top-3 right-3 w-9 h-9 rounded-xl bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-xs transition text-sm">
+                                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                            </button>
                         </div>
 
-                        <!-- POV Description & Details -->
-                        <div class="p-6 space-y-4">
+                        <!-- Specifications Grid & Description -->
+                        <div class="p-6 space-y-5">
+                            <!-- Specifications Grid -->
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                    <span class="block text-[10px] uppercase font-bold text-slate-400">Luas Bangunan</span>
+                                    <span class="text-sm font-extrabold text-slate-800" x-text="selectedUnit.building_area + ' m²'"></span>
+                                </div>
+                                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                    <span class="block text-[10px] uppercase font-bold text-slate-400">Luas Tanah</span>
+                                    <span class="text-sm font-extrabold text-slate-800" x-text="selectedUnit.land_area + ' m²'"></span>
+                                </div>
+                                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                    <span class="block text-[10px] uppercase font-bold text-slate-400">Kamar Tidur</span>
+                                    <span class="text-sm font-extrabold text-slate-800" x-text="selectedUnit.bedrooms + ' Ruang'"></span>
+                                </div>
+                                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                    <span class="block text-[10px] uppercase font-bold text-slate-400">Kamar Mandi</span>
+                                    <span class="text-sm font-extrabold text-slate-800" x-text="selectedUnit.bathrooms + ' Ruang'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Notes / POV Description Box -->
                             <div class="p-4 rounded-2xl bg-brand-50/70 border border-brand-100 text-xs text-slate-700 leading-relaxed">
                                 <div class="flex items-center gap-2 font-bold text-brand-800 mb-1">
                                     <i class="fa-solid fa-compass text-brand-600"></i>
@@ -909,18 +1033,25 @@
                                 <p x-text="selectedUnit.pov_description"></p>
                             </div>
 
-                            <div class="flex items-center justify-between pt-2">
+                            <!-- Footer Price & CTAs -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2 border-t border-slate-100">
                                 <div>
-                                    <span class="text-[11px] text-slate-500 uppercase font-semibold block">Harga Unit Kavling</span>
-                                    <span class="text-xl font-extrabold text-nature-600" x-text="selectedUnit.price_formatted"></span>
+                                    <span class="text-[11px] text-slate-500 uppercase font-bold block">Harga Unit Kavling</span>
+                                    <span class="text-2xl font-black text-nature-600" x-text="selectedUnit.price_formatted"></span>
                                 </div>
 
-                                <div class="flex items-center gap-2">
-                                    <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya sangat tertarik dengan Kavling ' + selectedUnit.block + '-' + selectedUnit.number + ' di {{ $project->name }}. Apakah unit ini masih tersedia?')"
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <button type="button"
+                                            @click="calculateUnitKpr(selectedUnit.price)"
+                                            class="px-4 py-2.5 rounded-xl border border-brand-200 bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-xs transition flex items-center gap-2">
+                                        <i class="fa-solid fa-calculator"></i>
+                                        <span>Simulasikan KPR</span>
+                                    </button>
+                                    <a :href="'https://wa.me/{{ $waClean }}?text=' + encodeURIComponent('Halo Sales {{ $siteName }}, saya ingin menanyakan Kavling ' + selectedUnit.block + '-' + selectedUnit.number + ' (Tipe ' + selectedUnit.type_name + ') seharga ' + selectedUnit.price_formatted + ' di {{ $project->name }}. Apakah unit ini masih bisa dibooking?')"
                                        target="_blank"
-                                       class="px-4 py-2.5 rounded-xl bg-nature-500 hover:bg-nature-600 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
+                                       class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-nature-600 to-emerald-600 hover:from-nature-700 hover:to-emerald-700 text-white font-bold text-xs shadow-md transition flex items-center gap-2">
                                         <i class="fa-brands fa-whatsapp text-base"></i>
-                                        <span>Tanya Unit Ini</span>
+                                        <span>Tanya Unit via WhatsApp</span>
                                     </a>
                                 </div>
                             </div>

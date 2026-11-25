@@ -121,13 +121,42 @@ class Unit extends Model
 
     public function getSliceImageUrlAttribute(): ?string
     {
-        if (! $this->slice_image) {
-            return null;
+        if (empty($this->slice_image)) {
+            return asset('images/default-siteplan.jpg');
         }
+
         if (str_starts_with($this->slice_image, 'http://') || str_starts_with($this->slice_image, 'https://')) {
             return $this->slice_image;
         }
 
-        return asset('storage/'.$this->slice_image);
+        $clean = ltrim($this->slice_image, '/');
+
+        // Check if exists in public/
+        if (file_exists(public_path($clean))) {
+            return asset($clean);
+        }
+
+        // Check if exists in public/uploads/
+        if (file_exists(public_path('uploads/'.$clean))) {
+            return asset('uploads/'.$clean);
+        }
+
+        // Check if basename exists in public/uploads/slices/
+        $baseName = basename($clean);
+        if (file_exists(public_path('uploads/slices/'.$baseName))) {
+            return asset('uploads/slices/'.$baseName);
+        }
+
+        // Check in public/storage/
+        if (file_exists(public_path('storage/'.$clean))) {
+            return asset('storage/'.$clean);
+        }
+
+        // Check in public/images/
+        if (file_exists(public_path('images/'.$baseName))) {
+            return asset('images/'.$baseName);
+        }
+
+        return asset('images/default-siteplan.jpg');
     }
 }
