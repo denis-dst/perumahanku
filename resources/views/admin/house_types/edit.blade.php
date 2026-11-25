@@ -54,9 +54,21 @@
                 <input type="number" name="floors" value="{{ old('floors', $houseType->floors) }}" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">
             </div>
 
+            @php $currentPhoto = $houseType->images->first(); @endphp
+            <!-- Foto Fasad Tipe Rumah (File Manager) -->
+            <x-file-picker
+                name="photo_url"
+                label="Foto Rumah / Fasad Tampak Depan"
+                value="{{ old('photo_url', $currentPhoto ? $currentPhoto->path : '') }}"
+                folder="house_types"
+                placeholder="uploads/house_types/fasad.jpg"
+                help="Pilih foto fasad rumah dari public/uploads/house_types."
+            />
+
+            <!-- Floor Plan Image (File Manager) -->
             <x-file-picker
                 name="floor_plan_image"
-                label="Gambar Denah / Layout Ruang"
+                label="Gambar Denah / Layout Ruangan"
                 value="{{ old('floor_plan_image', $houseType->floor_plan_image) }}"
                 folder="house_types"
                 placeholder="uploads/house_types/denah.jpg"
