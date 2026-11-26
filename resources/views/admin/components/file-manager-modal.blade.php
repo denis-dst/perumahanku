@@ -43,8 +43,18 @@
              x-transition
              class="p-4 bg-brand-50/50 border-b border-brand-100 space-y-3">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <span class="text-xs font-bold text-brand-900">Unggah Foto Baru ke public/uploads/<span x-text="currentFolder"></span></span>
-                <span class="text-[11px] text-slate-500">JPG, PNG, WEBP, GIF, SVG (Maks 10MB)</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-brand-900">Pilih Folder Tujuan Unggah:</span>
+                    <select x-model="uploadTargetFolder" class="bg-white border border-brand-200 rounded-xl px-2.5 py-1 text-xs text-brand-800 font-bold focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="units">public/uploads/units (Kavling & POV)</option>
+                        <option value="house_types">public/uploads/house_types (Tipe & Denah)</option>
+                        <option value="projects">public/uploads/projects (Perumahan & Fasad)</option>
+                        <option value="siteplans">public/uploads/siteplans (Peta Masterplan)</option>
+                        <option value="blog">public/uploads/blog (Artikel)</option>
+                        <option value="general">public/uploads/general (Umum)</option>
+                    </select>
+                </div>
+                <span class="text-[11px] text-slate-500">JPG, PNG, WEBP, GIF (Maks 10MB)</span>
             </div>
 
             <div @dragover.prevent="isDragging = true"
@@ -62,7 +72,7 @@
                 <i class="fa-solid fa-cloud-arrow-up text-brand-600 text-xl"></i>
                 <div class="text-left">
                     <p class="text-xs font-bold text-slate-800">Klik di sini atau tarik file ke area ini</p>
-                    <p class="text-[10px] text-slate-400">File langsung tersimpan di folder public</p>
+                    <p class="text-[10px] text-slate-400">File langsung tersimpan ke folder yang Anda pilih</p>
                 </div>
             </div>
 
@@ -116,8 +126,10 @@
             <div x-show="!loading && displayedFiles.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
                 <template x-for="file in displayedFiles" :key="file.path">
                     <div @click="selectFile(file)"
+                         @dblclick="selectFile(file); applySelection();"
+                         :title="'Klik untuk memilih, klik 2x untuk langsung gunakan: ' + file.name"
                          :class="selectedFile?.path === file.path ? 'ring-3 ring-brand-500 border-brand-500 shadow-md bg-brand-50/30' : 'border-slate-200 hover:border-brand-300 hover:shadow-xs bg-white'"
-                         class="border rounded-2xl p-2 cursor-pointer transition flex flex-col justify-between group relative">
+                         class="border rounded-2xl p-2 cursor-pointer transition flex flex-col justify-between group relative select-none">
 
                         <!-- Checkmark if selected -->
                         <div x-show="selectedFile?.path === file.path" class="absolute top-3 right-3 z-10 w-6 h-6 rounded-full bg-brand-600 text-white flex items-center justify-center text-xs shadow-md">
@@ -199,6 +211,7 @@ function globalFilePicker() {
         showUpload: false,
         isDragging: false,
         uploading: false,
+        uploadTargetFolder: 'units',
         selectedFile: null,
 
         openPicker(detail) {
@@ -206,6 +219,7 @@ function globalFilePicker() {
             this.targetPreviewId = detail?.targetPreviewId || null;
             const folder = detail?.folder || 'all';
             this.currentFolder = (folder in this.folders) ? folder : 'all';
+            this.uploadTargetFolder = (folder !== 'all' && folder in this.folders) ? folder : 'units';
             this.selectedFile = null;
             this.showUpload = false;
             this.isOpen = true;
@@ -235,7 +249,10 @@ function globalFilePicker() {
 
         selectFolder(folderKey) {
             this.currentFolder = folderKey;
-            this.filterFiles();
+            if (folderKey !== 'all') {
+                this.uploadTargetFolder = folderKey;
+            }
+            this.loadFiles();
         },
 
         filterFiles() {
@@ -309,7 +326,7 @@ function globalFilePicker() {
 
         async uploadFiles(fileList) {
             this.uploading = true;
-            const target = this.currentFolder === 'all' ? 'general' : this.currentFolder;
+            const target = this.uploadTargetFolder || (this.currentFolder === 'all' ? 'units' : this.currentFolder);
             const formData = new FormData();
             formData.append('folder', target);
             for (let i = 0; i < fileList.length; i++) {
@@ -327,6 +344,7 @@ function globalFilePicker() {
                 });
                 const data = await res.json();
                 if (res.ok && data.status === 'success') {
+                    this.currentFolder = target;
                     await this.loadFiles();
                     if (data.files && data.files.length > 0) {
                         this.selectedFile = data.files[0];

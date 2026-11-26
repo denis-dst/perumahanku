@@ -52,13 +52,33 @@ class UnitController extends Controller
             ]);
         }
 
+        if ($request->filled('facade_photo_url')) {
+            $unit->images()->create([
+                'path' => $request->facade_photo_url,
+                'caption' => 'Fasad Rumah Kavling '.$unit->block.'-'.$unit->number,
+                'is_primary' => true,
+                'category' => 'facade',
+                'sort_order' => 1,
+            ]);
+        }
+
+        if ($request->filled('floor_plan_photo_url')) {
+            $unit->images()->create([
+                'path' => $request->floor_plan_photo_url,
+                'caption' => 'Denah Ruangan Kavling '.$unit->block.'-'.$unit->number,
+                'is_primary' => true,
+                'category' => 'floor_plan',
+                'sort_order' => 1,
+            ]);
+        }
+
         return redirect()->route('admin.projects.units.index', $project)->with('success', 'Kavling berhasil ditambahkan!');
     }
 
     public function edit(Project $project, Unit $unit)
     {
         $houseTypes = $project->houseTypes;
-        $unit->load('povImages');
+        $unit->load(['povImages', 'facadeImages', 'floorPlanImages']);
 
         return view('admin.units.edit', compact('project', 'unit', 'houseTypes'));
     }
@@ -80,15 +100,43 @@ class UnitController extends Controller
 
         $unit->update($validated);
 
-        if ($request->filled('pov_photo_url')) {
+        if ($request->has('pov_photo_url')) {
             $unit->images()->where('category', 'pov')->delete();
-            $unit->images()->create([
-                'path' => $request->pov_photo_url,
-                'caption' => 'POV dari Kavling '.$unit->block.'-'.$unit->number,
-                'is_primary' => true,
-                'category' => 'pov',
-                'sort_order' => 1,
-            ]);
+            if ($request->filled('pov_photo_url')) {
+                $unit->images()->create([
+                    'path' => $request->pov_photo_url,
+                    'caption' => 'POV dari Kavling '.$unit->block.'-'.$unit->number,
+                    'is_primary' => true,
+                    'category' => 'pov',
+                    'sort_order' => 1,
+                ]);
+            }
+        }
+
+        if ($request->has('facade_photo_url')) {
+            $unit->images()->where('category', 'facade')->delete();
+            if ($request->filled('facade_photo_url')) {
+                $unit->images()->create([
+                    'path' => $request->facade_photo_url,
+                    'caption' => 'Fasad Rumah Kavling '.$unit->block.'-'.$unit->number,
+                    'is_primary' => true,
+                    'category' => 'facade',
+                    'sort_order' => 1,
+                ]);
+            }
+        }
+
+        if ($request->has('floor_plan_photo_url')) {
+            $unit->images()->where('category', 'floor_plan')->delete();
+            if ($request->filled('floor_plan_photo_url')) {
+                $unit->images()->create([
+                    'path' => $request->floor_plan_photo_url,
+                    'caption' => 'Denah Ruangan Kavling '.$unit->block.'-'.$unit->number,
+                    'is_primary' => true,
+                    'category' => 'floor_plan',
+                    'sort_order' => 1,
+                ]);
+            }
         }
 
         return redirect()->route('admin.projects.units.index', $project)->with('success', 'Kavling berhasil diperbarui!');

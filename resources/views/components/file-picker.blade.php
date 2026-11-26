@@ -1,6 +1,6 @@
 @props([
     'name',
-    'label' => 'Pilih Foto',
+    'label' => null,
     'value' => '',
     'folder' => 'general',
     'placeholder' => 'uploads/projects/foto.jpg',
@@ -58,55 +58,73 @@
     }
 }" @file-picked.window="if ($event.detail.targetInputId === '{{ $inputId }}') { updatePreview($event.detail.file.path); }">
     @if($label)
-        <label for="{{ $inputId }}" class="block text-xs font-bold uppercase text-slate-600 mb-1">
+        <label for="{{ $inputId }}" class="block text-xs font-bold uppercase text-slate-700 mb-1">
             {{ $label }} @if($required)<span class="text-rose-500">*</span>@endif
         </label>
     @endif
 
-    <div class="space-y-2">
-        <div class="flex items-center gap-2">
-            <div class="relative flex-1">
-                <input type="text"
-                       name="{{ $name }}"
-                       id="{{ $inputId }}"
-                       x-model="imageValue"
-                       @input="updatePreview($event.target.value)"
-                       placeholder="{{ $placeholder }}"
-                       @if($required) required @endif
-                       class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-xs text-slate-800 font-mono focus:outline-none focus:ring-2 focus:ring-brand-500">
-            </div>
+    <!-- Hidden input to store value for standard form POST -->
+    <input type="hidden"
+           name="{{ $name }}"
+           id="{{ $inputId }}"
+           x-model="imageValue"
+           @input="updatePreview($event.target.value)"
+           @if($required) required @endif>
 
-            <!-- Open File Manager Modal Button -->
-            <button type="button"
-                    @click="$dispatch('open-file-picker', { targetInputId: '{{ $inputId }}', targetPreviewId: '{{ $previewId }}', folder: '{{ $folder }}' })"
-                    class="px-3.5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-xs transition flex items-center gap-1.5 shrink-0 cursor-pointer">
-                <i class="fa-solid fa-folder-open text-xs"></i>
-                <span class="hidden sm:inline">Pilih Foto</span>
-            </button>
-
-            <!-- Clear Button -->
-            <button type="button"
-                    x-show="imageValue"
-                    @click="clearImage()"
-                    title="Kosongkan Foto"
-                    class="p-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-400 hover:text-rose-600 text-xs transition cursor-pointer shrink-0">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+    <!-- State 1: Kosong (Klik langsung masuk File Manager) -->
+    <div x-show="!imageValue"
+         @click="$dispatch('open-file-picker', { targetInputId: '{{ $inputId }}', targetPreviewId: '{{ $previewId }}', folder: '{{ $folder }}' })"
+         class="group border-2 border-dashed border-slate-300 hover:border-brand-500 bg-slate-50 hover:bg-brand-50/40 rounded-2xl p-5 text-center cursor-pointer transition-all duration-200 flex flex-col items-center justify-center min-h-[140px]">
+        <div class="w-12 h-12 rounded-2xl bg-white border border-slate-200 group-hover:border-brand-200 group-hover:bg-brand-50 text-slate-400 group-hover:text-brand-600 flex items-center justify-center text-lg shadow-xs transition-colors mb-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
         </div>
-
-        <!-- Preview Thumbnail Box -->
-        <div x-show="previewSrc" id="{{ $previewId }}_wrapper" class="flex items-center gap-3 p-2.5 bg-slate-50 rounded-2xl border border-slate-200/80">
-            <div class="w-16 h-14 rounded-xl overflow-hidden bg-slate-200 shrink-0 border border-slate-200">
-                <img :src="previewSrc" id="{{ $previewId }}" alt="Preview" class="w-full h-full object-cover">
-            </div>
-            <div class="min-w-0 flex-1 text-[11px] text-slate-500">
-                <span class="font-bold text-slate-700 block">Preview Foto Terpilih</span>
-                <span class="truncate block font-mono text-[10px] text-brand-600" x-text="imageValue"></span>
-            </div>
-        </div>
-
-        @if($help)
-            <p class="text-[11px] text-slate-400">{{ $help }}</p>
-        @endif
+        <span class="text-xs font-bold text-slate-700 group-hover:text-brand-700 transition-colors">
+            Klik untuk Ambil Gambar
+        </span>
+        <span class="text-[11px] text-slate-400 mt-0.5">
+            Langsung masuk File Manager untuk memilih atau unggah baru
+        </span>
     </div>
+
+    <!-- State 2: Gambar Terpasang (Visual Preview Card + Tombol Ganti / Hapus) -->
+    <div x-show="imageValue" class="relative rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 group shadow-xs">
+        <!-- Image Container (Klik langsung buka File Manager untuk ganti) -->
+        <div @click="$dispatch('open-file-picker', { targetInputId: '{{ $inputId }}', targetPreviewId: '{{ $previewId }}', folder: '{{ $folder }}' })"
+             class="relative h-40 sm:h-44 w-full cursor-pointer overflow-hidden flex items-center justify-center bg-slate-950">
+            <img :src="previewSrc" id="{{ $previewId }}" alt="Preview" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+
+            <!-- Hover Overlay -->
+            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                <span class="px-3.5 py-1.5 rounded-xl bg-black/75 backdrop-blur-xs text-xs font-bold flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-arrows-rotate"></i> Klik untuk Ganti Gambar
+                </span>
+            </div>
+        </div>
+
+        <!-- Footer Info & Actions -->
+        <div class="p-2.5 bg-white border-t border-slate-100 flex items-center justify-between gap-2">
+            <div class="min-w-0 flex-1">
+                <span class="text-[10px] font-mono text-slate-500 truncate block" x-text="imageValue"></span>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button type="button"
+                        @click="$dispatch('open-file-picker', { targetInputId: '{{ $inputId }}', targetPreviewId: '{{ $previewId }}', folder: '{{ $folder }}' })"
+                        title="Ganti Gambar dari File Manager"
+                        class="px-2.5 py-1 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 text-[11px] font-bold transition flex items-center gap-1 cursor-pointer">
+                    <i class="fa-solid fa-folder-open text-xs"></i>
+                    <span>Ganti</span>
+                </button>
+                <button type="button"
+                        @click="clearImage()"
+                        title="Hapus / Kosongkan Gambar"
+                        class="p-1 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 text-xs transition cursor-pointer">
+                    <i class="fa-solid fa-trash-can"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    @if($help)
+        <p class="text-[11px] text-slate-400 leading-normal">{{ $help }}</p>
+    @endif
 </div>

@@ -586,8 +586,8 @@
                                     $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : asset('images/default-pov.jpg'));
 
                                     $houseType = $unit->houseType;
-                                    $housePhoto = $houseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
-                                    $floorPlanPhoto = $houseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $housePhoto = $unit->facadeImages->first()?->url ?? $houseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
+                                    $floorPlanPhoto = $unit->floorPlanImages->first()?->url ?? $houseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
                                     $slicePhoto = $unit->slice_image_url ?: asset('images/default-slice.jpg');
 
                                     $wPct = $unit->width_pct ?: 5.5;
@@ -686,8 +686,8 @@
                                     $uFirstPov = $u->povImages->first();
                                     $uPovPhotoUrl = $uFirstPov ? $uFirstPov->url : ($u->images->first() ? $u->images->first()->url : asset('images/default-pov.jpg'));
                                     $uHouseType = $u->houseType;
-                                    $uHousePhoto = $uHouseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
-                                    $uFloorPlanPhoto = $uHouseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $uHousePhoto = $u->facadeImages->first()?->url ?? $uHouseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
+                                    $uFloorPlanPhoto = $u->floorPlanImages->first()?->url ?? $uHouseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
                                     $uSlicePhoto = $u->slice_image_url ?: asset('images/default-slice.jpg');
                                     $uPriceRaw = (float) ($u->price > 0 ? $u->price : ($uHouseType ? $uHouseType->price : 0));
 

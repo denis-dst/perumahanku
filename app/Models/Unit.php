@@ -59,6 +59,16 @@ class Unit extends Model
         return $this->morphMany(Image::class, 'imageable')->where('category', 'pov')->orderBy('sort_order');
     }
 
+    public function facadeImages(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable')->where('category', 'facade')->orderBy('sort_order');
+    }
+
+    public function floorPlanImages(): MorphMany
+    {
+        return $this->morphMany(Image::class, 'imageable')->where('category', 'floor_plan')->orderBy('sort_order');
+    }
+
     public function getFormattedPriceAttribute(): string
     {
         $amount = $this->price > 0 ? $this->price : ($this->houseType ? $this->houseType->price : 0);

@@ -88,26 +88,89 @@
                 </div>
             </div>
 
-            <!-- Fitur POV (Point of View) Unit -->
-            <div class="sm:col-span-2 p-4 rounded-2xl bg-nature-50/70 border border-nature-100 space-y-4">
-                <div class="flex items-center gap-2">
-                    <i class="fa-solid fa-street-view text-nature-600"></i>
-                    <span class="text-xs font-bold text-nature-900 uppercase">Foto & Informasi Sudut Pandang (POV) Kavling</span>
+            <!-- Fitur Media & Foto Kavling (3 Pilihan Slot Foto) -->
+            <div class="sm:col-span-2 p-5 sm:p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-6">
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-bold mb-1.5">
+                        <i class="fa-solid fa-images"></i>
+                        <span>Media & Foto Kavling</span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Pilihan Penempatan Foto Kavling</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">
+                        Klik langsung kotak gambar di bawah untuk membuka File Manager dan mengambil atau mengunggah foto.
+                    </p>
                 </div>
 
-                @php $currentPov = $unit->povImages->first(); @endphp
-                <x-file-picker
-                    name="pov_photo_url"
-                    label="Foto Pemandangan Nyata (POV)"
-                    value="{{ old('pov_photo_url', $currentPov ? $currentPov->path : '') }}"
-                    folder="units"
-                    placeholder="uploads/units/pov-kavling.jpg"
-                    help="Foto asli sudut pandang menghadap luar dari kavling ini."
-                />
+                @php
+                    $currentPov = $unit->povImages->first();
+                    $currentFacade = $unit->images->where('category', 'facade')->first();
+                    $currentFloorPlan = $unit->images->where('category', 'floor_plan')->first();
+                @endphp
 
-                <div>
-                    <label class="block text-[11px] font-semibold text-slate-600 mb-1">Deskripsi POV / Keistimewaan Sudut Pandang</label>
-                    <textarea name="pov_description" rows="2" class="w-full bg-white border border-nature-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none">{{ old('pov_description', $unit->pov_description) }}</textarea>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                    <!-- 1. Foto Rumah / Fasad -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i class="fa-solid fa-house text-brand-600"></i> Foto Rumah / Fasad
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-semibold">(Opsional)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-snug">
+                            Tampak depan rumah unit ini. Jika kosong, otomatis memakai foto tipe rumah.
+                        </p>
+                        <x-file-picker
+                            name="facade_photo_url"
+                            value="{{ old('facade_photo_url', $currentFacade ? $currentFacade->path : '') }}"
+                            folder="house_types"
+                            placeholder="uploads/house_types/fasad.jpg"
+                        />
+                    </div>
+
+                    <!-- 2. Foto POV Lingkungan Nyata -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i class="fa-solid fa-street-view text-emerald-600"></i> POV Lingkungan Nyata
+                            </span>
+                            <span class="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded-full">Kavling</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-snug">
+                            Pemandangan nyata dari depan kavling menghadap luar cluster/taman.
+                        </p>
+                        <x-file-picker
+                            name="pov_photo_url"
+                            value="{{ old('pov_photo_url', $currentPov ? $currentPov->path : '') }}"
+                            folder="units"
+                            placeholder="uploads/units/pov-kavling.jpg"
+                        />
+                    </div>
+
+                    <!-- 3. Denah Ruangan -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center gap-1.5">
+                                <i class="fa-solid fa-compass-drafting text-sky-600"></i> Denah Ruangan
+                            </span>
+                            <span class="text-[10px] text-slate-400 font-semibold">(Opsional)</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 leading-snug">
+                            Denah ruangan unit ini. Jika kosong, otomatis memakai denah tipe rumah.
+                        </p>
+                        <x-file-picker
+                            name="floor_plan_photo_url"
+                            value="{{ old('floor_plan_photo_url', $currentFloorPlan ? $currentFloorPlan->path : '') }}"
+                            folder="house_types"
+                            placeholder="uploads/house_types/denah.jpg"
+                        />
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-200/80">
+                    <label class="block text-[11px] font-bold uppercase text-slate-700 mb-1">
+                        <i class="fa-solid fa-pen-to-square text-slate-400 mr-1"></i> Catatan Deskripsi POV / Keistimewaan Lingkungan
+                    </label>
+                    <textarea name="pov_description" rows="2" placeholder="Contoh: Menghadap taman tematik cluster, suasana asri dan bebas polusi..." class="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500">{{ old('pov_description', $unit->pov_description) }}</textarea>
                 </div>
             </div>
         </div>
