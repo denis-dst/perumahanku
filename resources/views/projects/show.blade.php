@@ -35,6 +35,54 @@
     $waNum = \App\Models\Setting::get('whatsapp_number', '6281234567890');
     $waClean = preg_replace('/[^0-9]/', '', $waNum);
     if (str_starts_with($waClean, '0')) $waClean = '62' . substr($waClean, 1);
+
+    // Resolusi foto dinamis sesuai dengan inputan yang tersedia
+    $mainHeroImg = $project->primaryImage?->url
+        ?? $project->houseTypes->first()?->images->first()?->url
+        ?? $project->units->map->facadeImages->flatten()->first()?->url
+        ?? asset('images/default-project.jpg');
+
+    $galleryImages = collect();
+    // 1. Foto sekunder proyek (jika ada diinput di admin)
+    foreach ($project->images->where('is_primary', false) as $pImg) {
+        $galleryImages->push(['url' => $pImg->url, 'caption' => $pImg->caption ?: 'Lingkungan ' . $project->name]);
+    }
+    // 2. Foto fasad & denah dari tipe rumah yang diinput
+    foreach ($project->houseTypes as $ht) {
+        $htFacade = $ht->images->first()?->url;
+        if ($htFacade && ! $galleryImages->pluck('url')->contains($htFacade) && $htFacade !== $mainHeroImg) {
+            $galleryImages->push(['url' => $htFacade, 'caption' => 'Fasad ' . $ht->name]);
+        }
+        if (!empty($ht->floor_plan_image) && ! $galleryImages->pluck('url')->contains($ht->floor_plan_image_url)) {
+            $galleryImages->push(['url' => $ht->floor_plan_image_url, 'caption' => 'Denah ' . $ht->name]);
+        }
+    }
+    // 3. Foto POV & Fasad dari kavling / unit yang diinput
+    foreach ($project->units as $u) {
+        $pov = $u->povImages->first();
+        if ($pov && ! $galleryImages->pluck('url')->contains($pov->url)) {
+            $galleryImages->push(['url' => $pov->url, 'caption' => 'POV Nyata Kav. ' . $u->block . '-' . $u->number]);
+        }
+        $facade = $u->facadeImages->first();
+        if ($facade && ! $galleryImages->pluck('url')->contains($facade->url) && $facade->url !== $mainHeroImg) {
+            $galleryImages->push(['url' => $facade->url, 'caption' => 'Fasad Kav. ' . $u->block . '-' . $u->number]);
+        }
+    }
+    // 4. Gambar peta siteplan proyek
+    if ($project->siteplan_image && ! $galleryImages->pluck('url')->contains(asset($project->siteplan_image))) {
+        $galleryImages->push(['url' => asset($project->siteplan_image), 'caption' => 'Peta Siteplan ' . $project->name]);
+    }
+
+    // Default fallbacks jika foto inputan masih kurang dari 3
+    if ($galleryImages->count() < 1) {
+        $galleryImages->push(['url' => asset('images/default-project.jpg'), 'caption' => 'Desain Eksterior']);
+    }
+    if ($galleryImages->count() < 2) {
+        $galleryImages->push(['url' => asset('images/default-floorplan.jpg'), 'caption' => 'Tata Ruang Arsitektur']);
+    }
+    if ($galleryImages->count() < 3) {
+        $galleryImages->push(['url' => asset('images/default-pov.jpg'), 'caption' => 'Suasana Lingkungan Asri']);
+    }
 @endphp
 
 <div x-data="{
@@ -146,7 +194,11 @@
     },
     openPov(unit) {
         this.selectedUnit = unit;
-        this.unitModalTab = 'foto';
+        if (unit.has_custom_pov && !unit.has_custom_facade) {
+            this.unitModalTab = 'pov';
+        } else {
+            this.unitModalTab = 'foto';
+        }
         this.povModalOpen = true;
     },
     calculateUnitKpr(price) {
@@ -247,8 +299,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 h-[380px] sm:h-[460px]">
                 <!-- Main Big Photo (LCP Optimized) -->
                 <div class="md:col-span-2 md:row-span-2 relative rounded-2xl overflow-hidden cursor-pointer group"
-                     @click="lightboxImg = '{{ $project->primaryImage ? $project->primaryImage->url : asset('images/default-project.jpg') }}'; lightboxOpen = true">
-                    <img src="{{ $project->primaryImage ? $project->primaryImage->url : asset('images/default-project.jpg') }}"
+                     @click="lightboxImg = '{{ $mainHeroImg }}'; lightboxOpen = true">
+                    <img src="{{ $mainHeroImg }}"
                          alt="{{ $project->name }}"
                          fetchpriority="high"
                          decoding="async"
@@ -261,31 +313,21 @@
                 </div>
 
                 <!-- Secondary Images (Lazy Loaded) -->
-                @forelse($project->images->where('is_primary', false)->take(3) as $subImg)
+                @foreach($galleryImages->take(3) as $subImg)
                     <div class="relative rounded-2xl overflow-hidden cursor-pointer group h-full"
-                         @click="lightboxImg = '{{ $subImg->url }}'; lightboxOpen = true">
-                        <img src="{{ $subImg->url }}"
-                             alt="{{ $subImg->caption ?? $project->name }}"
+                         @click="lightboxImg = '{{ $subImg['url'] }}'; lightboxOpen = true">
+                        <img src="{{ $subImg['url'] }}"
+                             alt="{{ $subImg['caption'] ?? $project->name }}"
                              loading="lazy"
                              decoding="async"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        @if($subImg->caption)
+                        @if(!empty($subImg['caption']))
                             <div class="absolute bottom-2 left-2 right-2 bg-black/60 text-white text-[11px] px-2.5 py-1 rounded-md truncate backdrop-blur-xs">
-                                {{ $subImg->caption }}
+                                {{ $subImg['caption'] }}
                             </div>
                         @endif
                     </div>
-                @empty
-                    <div class="rounded-2xl overflow-hidden bg-slate-800 flex items-center justify-center text-slate-500 text-xs">
-                        Foto Interior
-                    </div>
-                    <div class="rounded-2xl overflow-hidden bg-slate-800 flex items-center justify-center text-slate-500 text-xs">
-                        Foto Lingkungan
-                    </div>
-                    <div class="rounded-2xl overflow-hidden bg-slate-800 flex items-center justify-center text-slate-500 text-xs">
-                        Fasilitas Cluster
-                    </div>
-                @endforelse
+                @endforeach
             </div>
         </div>
     </section>
@@ -350,125 +392,187 @@
                     <!-- Tab Contents -->
                     <div class="mt-6">
                         @foreach($project->houseTypes as $idx => $ht)
+                            @php
+                                $htFacadeImg = $ht->images->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
+                                $mainPlanImg = $ht->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+
+                                $floorPlanSlides = [];
+
+                                // Slide 1: Fasad Tampak Depan
+                                if ($ht->images->isNotEmpty()) {
+                                    $floorPlanSlides[] = [
+                                        'title' => 'Tampak Depan (Fasad) ' . $ht->name,
+                                        'caption' => 'Desain arsitektur eksterior tampak depan ' . $ht->name,
+                                        'badge' => 'Fasad Utama',
+                                        'url' => $ht->images->first()->url,
+                                    ];
+                                } elseif ($project->primaryImage) {
+                                    $floorPlanSlides[] = [
+                                        'title' => 'Fasad Perumahan ' . $project->name,
+                                        'caption' => 'Konsep fasad arsitektur perumahan',
+                                        'badge' => 'Fasad Utama',
+                                        'url' => $project->primaryImage->url,
+                                    ];
+                                }
+
+                                // Slide 2: Denah Tata Ruang Arsitektur 2D
+                                if (!empty($ht->floor_plan_image)) {
+                                    $floorPlanSlides[] = [
+                                        'title' => 'Denah Tata Ruang Arsitektur (2D)',
+                                        'caption' => 'Ukuran & dimensi kamar, pembagian ruang tamu, dapur, carport dan sirkulasi',
+                                        'badge' => 'Denah Utama',
+                                        'url' => $mainPlanImg,
+                                    ];
+                                }
+
+                                // Slide 3+: Foto tambahan tipe rumah
+                                foreach ($ht->images->slice(1) as $img) {
+                                    $floorPlanSlides[] = [
+                                        'title' => $img->caption ?: 'Detail ' . $ht->name,
+                                        'caption' => 'Spesifikasi visual ' . $ht->name,
+                                        'badge' => 'Foto Unit',
+                                        'url' => $img->url,
+                                    ];
+                                }
+
+                                // Slide 4+: Foto kawasan dari proyek
+                                foreach ($project->images->where('is_primary', false) as $pImg) {
+                                    if (!collect($floorPlanSlides)->pluck('url')->contains($pImg->url)) {
+                                        $floorPlanSlides[] = [
+                                            'title' => $pImg->caption ?: 'Lingkungan ' . $project->name,
+                                            'caption' => 'Fasilitas & suasana kawasan ' . $project->name,
+                                            'badge' => 'Kawasan',
+                                            'url' => $pImg->url,
+                                        ];
+                                    }
+                                }
+
+                                // Fallback jika masih kosong
+                                if (empty($floorPlanSlides)) {
+                                    $floorPlanSlides[] = [
+                                        'title' => 'Tampak Depan ' . $ht->name,
+                                        'caption' => 'Visual arsitektur ' . $ht->name,
+                                        'badge' => 'Fasad',
+                                        'url' => asset('images/default-project.jpg'),
+                                    ];
+                                    $floorPlanSlides[] = [
+                                        'title' => 'Denah Tata Ruang ' . $ht->name,
+                                        'caption' => 'Ukuran & tata ruang ' . $ht->name,
+                                        'badge' => 'Denah',
+                                        'url' => asset('images/default-floorplan.jpg'),
+                                    ];
+                                }
+
+                                $hasFacadePhoto = $ht->images->isNotEmpty();
+                                $hasFloorPlan = !empty($ht->floor_plan_image);
+                            @endphp
+
                             <div x-show="activeTab === 'tipe-{{ $idx }}'" x-cloak class="space-y-6">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                                    <div class="md:col-span-2 space-y-4">
-                                        <div class="flex items-baseline justify-between">
+                                <!-- Info & Specs -->
+                                <div class="space-y-4">
+                                    <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+                                        <div>
                                             <h3 class="text-2xl font-extrabold text-slate-900">{{ $ht->name }}</h3>
-                                            <span class="text-xl font-extrabold text-nature-600">{{ $ht->formatted_price }}</span>
+                                            <p class="text-xs text-slate-500 mt-0.5">Tipe hunian favorit dengan pencahayaan & sirkulasi udara optimal</p>
                                         </div>
-
-                                        <p class="text-xs text-slate-600 leading-relaxed">{{ $ht->description }}</p>
-
-                                        <!-- Spec Mini Grid -->
-                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-                                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                                                <i class="fa-solid fa-bed text-brand-500 text-lg mb-1 block"></i>
-                                                <span class="text-xs font-bold text-slate-800">{{ $ht->bedrooms }} Kamar</span>
-                                                <span class="text-[10px] text-slate-500 font-medium block">Tidur</span>
-                                            </div>
-                                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                                                <i class="fa-solid fa-bath text-brand-500 text-lg mb-1 block"></i>
-                                                <span class="text-xs font-bold text-slate-800">{{ $ht->bathrooms }} Kamar</span>
-                                                <span class="text-[10px] text-slate-500 font-medium block">Mandi</span>
-                                            </div>
-                                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                                                <i class="fa-solid fa-ruler-combined text-brand-500 text-lg mb-1 block"></i>
-                                                <span class="text-xs font-bold text-slate-800">{{ $ht->building_area }} m² / {{ $ht->land_area }} m²</span>
-                                                <span class="text-[10px] text-slate-500 font-medium block">LB / LT</span>
-                                            </div>
-                                            <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 text-center">
-                                                <i class="fa-solid fa-layer-group text-brand-500 text-lg mb-1 block"></i>
-                                                <span class="text-xs font-bold text-slate-800">{{ $ht->floors }} Lantai</span>
-                                                <span class="text-[10px] text-slate-500 font-medium block">Tingkat</span>
-                                            </div>
-                                        </div>
+                                        <span class="text-2xl font-extrabold text-nature-600">{{ $ht->formatted_price }}</span>
                                     </div>
 
-                                    @php
-                                        $floorPlanSlides = [];
+                                    @if($ht->description)
+                                        <p class="text-xs text-slate-600 leading-relaxed">{{ $ht->description }}</p>
+                                    @endif
 
-                                        // Slide 1: Denah Tata Ruang 2D
-                                        $mainPlanImg = $ht->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
-                                        $floorPlanSlides[] = [
-                                            'title' => 'Denah Tata Ruang Arsitektur (2D)',
-                                            'caption' => 'Ukuran & dimensi kamar, pembagian ruang tamu, dapur, carport dan sirkulasi',
-                                            'badge' => 'Denah Utama',
-                                            'url' => $mainPlanImg,
-                                        ];
+                                    <!-- Spec Mini Grid -->
+                                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                            <i class="fa-solid fa-bed text-brand-500 text-lg mb-1 block"></i>
+                                            <span class="text-xs font-bold text-slate-800">{{ $ht->bedrooms }} Kamar</span>
+                                            <span class="text-[10px] text-slate-500 font-medium block">Tidur</span>
+                                        </div>
+                                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                            <i class="fa-solid fa-bath text-brand-500 text-lg mb-1 block"></i>
+                                            <span class="text-xs font-bold text-slate-800">{{ $ht->bathrooms }} Kamar</span>
+                                            <span class="text-[10px] text-slate-500 font-medium block">Mandi</span>
+                                        </div>
+                                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                            <i class="fa-solid fa-ruler-combined text-brand-500 text-lg mb-1 block"></i>
+                                            <span class="text-xs font-bold text-slate-800">{{ $ht->building_area }} m² / {{ $ht->land_area }} m²</span>
+                                            <span class="text-[10px] text-slate-500 font-medium block">LB / LT</span>
+                                        </div>
+                                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-center">
+                                            <i class="fa-solid fa-layer-group text-brand-500 text-lg mb-1 block"></i>
+                                            <span class="text-xs font-bold text-slate-800">{{ $ht->floors }} Lantai</span>
+                                            <span class="text-[10px] text-slate-500 font-medium block">Tingkat</span>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                        // Slide 2: Denah Lantai 2 / 3D Isometric View
-                                        if ($ht->floors > 1) {
-                                            $floorPlanSlides[] = [
-                                                'title' => 'Denah Ruang Lantai 2 (Area Privat)',
-                                                'caption' => 'Kamar tidur anak/tamu, kamar mandi atas, void tangga dan balkon',
-                                                'badge' => 'Lantai 2',
-                                                'url' => asset('uploads/siteplans/siteplan-grand-harmony.jpg'),
-                                            ];
-                                        } else {
-                                            $floorPlanSlides[] = [
-                                                'title' => 'Visualisasi 3D Tata Letak Ruangan',
-                                                'caption' => 'Konsep penataan furniture, ventilasi silang & pencahayaan alami',
-                                                'badge' => '3D Layout',
-                                                'url' => asset('uploads/projects/living-room.jpg'),
-                                            ];
-                                        }
-
-                                        // Slide 3 & 4: Galeri Foto Interior / Fasad Unit
-                                        if ($ht->images && $ht->images->isNotEmpty()) {
-                                            foreach ($ht->images as $img) {
-                                                $floorPlanSlides[] = [
-                                                    'title' => $img->caption ?: 'Detail Interior ' . $ht->name,
-                                                    'caption' => 'Spesifikasi visual nyata ' . $ht->name,
-                                                    'badge' => 'Foto Unit',
-                                                    'url' => $img->url,
-                                                ];
-                                            }
-                                        } else {
-                                            $floorPlanSlides[] = [
-                                                'title' => 'Ruang Keluarga & Ruang Tamu Sejuk',
-                                                'caption' => 'Langit-langit tinggi menghadirkan kesan luas dan sirkulasi udara optimal',
-                                                'badge' => 'Interior',
-                                                'url' => asset('uploads/projects/project-grand-harmony.jpg'),
-                                            ];
-                                            $floorPlanSlides[] = [
-                                                'title' => 'Kamar Tidur Utama Nyaman',
-                                                'caption' => 'Pencahayaan jendela maksimal menghadap taman cluster asri',
-                                                'badge' => 'Kamar Tidur',
-                                                'url' => asset('uploads/projects/master-bedroom.jpg'),
-                                            ];
-                                        }
-                                    @endphp
-
-                                    <!-- Floor Plan Denah Thumbnail Card with Slide Counter & Interaction -->
-                                    <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-center flex flex-col justify-between">
+                                <!-- Dual Media Cards: Foto Rumah (Fasad) & Denah Ruangan -->
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+                                    <!-- Card 1: Foto Rumah / Fasad Tampak Depan -->
+                                    <div class="bg-slate-50 p-4 rounded-3xl border border-slate-200/90 flex flex-col justify-between space-y-3">
                                         <div>
                                             <div class="flex items-center justify-between mb-2">
-                                                <span class="text-[11px] font-bold text-slate-700 uppercase">Denah & Ruangan</span>
-                                                <span class="text-[10px] text-brand-700 font-extrabold bg-brand-100/80 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
-                                                    <i class="fa-solid fa-images text-[9px]"></i> {{ count($floorPlanSlides) }} Slide
+                                                <span class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+                                                    <i class="fa-solid fa-house text-brand-600"></i> Foto Rumah / Fasad
+                                                </span>
+                                                <span class="text-[10px] text-brand-700 font-extrabold bg-brand-100/80 px-2 py-0.5 rounded-full">
+                                                    {{ $hasFacadePhoto ? 'Tampak Depan' : 'Ilustrasi' }}
                                                 </span>
                                             </div>
 
-                                            <div class="h-44 rounded-xl overflow-hidden bg-white cursor-pointer group relative shadow-2xs border border-slate-100"
+                                            <div class="h-48 rounded-2xl overflow-hidden bg-slate-900 cursor-pointer group relative shadow-2xs border border-slate-200"
                                                  @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, 0)">
-                                                <img src="{{ $mainPlanImg }}" alt="Denah {{ $ht->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                <img src="{{ $htFacadeImg }}" alt="Fasad {{ $ht->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                                                 <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-[2px]">
                                                     <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-lg mb-1 shadow-lg group-hover:scale-110 transition-transform">
                                                         <i class="fa-solid fa-expand"></i>
                                                     </div>
-                                                    <span class="text-xs font-bold drop-shadow">Klik untuk Zoom & Slide</span>
-                                                    <span class="text-[10px] text-white/80 mt-0.5 drop-shadow">Bisa di-slide detail ruangan</span>
+                                                    <span class="text-xs font-bold drop-shadow">Klik untuk Perbesar Fasad</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <button type="button"
                                                 @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, 0)"
-                                                aria-label="Buka denah dan detail ruangan tipe {{ $ht->name }}"
-                                                class="mt-2.5 w-full py-2 px-3 rounded-xl bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-300 text-brand-600 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs group/btn">
+                                                aria-label="Perbesar foto tampak depan tipe {{ $ht->name }}"
+                                                class="w-full py-2 px-3 rounded-xl bg-white hover:bg-brand-50 border border-slate-200 hover:border-brand-300 text-brand-700 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs group/btn">
                                             <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover/btn:scale-110 transition-transform"></i>
-                                            <span>Buka & Slide Detail Denah</span>
+                                            <span>Lihat Foto Rumah (Fasad)</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Card 2: Denah & Tata Letak Ruangan -->
+                                    <div class="bg-slate-50 p-4 rounded-3xl border border-slate-200/90 flex flex-col justify-between space-y-3">
+                                        <div>
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="text-xs font-bold text-slate-800 uppercase flex items-center gap-1.5">
+                                                    <i class="fa-solid fa-compass-drafting text-sky-600"></i> Denah Ruangan
+                                                </span>
+                                                <span class="text-[10px] text-sky-700 font-extrabold bg-sky-100/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+                                                    <i class="fa-solid fa-images text-[9px]"></i> {{ count($floorPlanSlides) }} Slide
+                                                </span>
+                                            </div>
+
+                                            <div class="h-48 rounded-2xl overflow-hidden bg-white cursor-pointer group relative shadow-2xs border border-slate-200 flex items-center justify-center p-2"
+                                                 @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, {{ $hasFacadePhoto ? 1 : 0 }})">
+                                                <img src="{{ $mainPlanImg }}" alt="Denah {{ $ht->name }}" class="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300">
+                                                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white backdrop-blur-[2px]">
+                                                    <div class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-lg mb-1 shadow-lg group-hover:scale-110 transition-transform">
+                                                        <i class="fa-solid fa-expand"></i>
+                                                    </div>
+                                                    <span class="text-xs font-bold drop-shadow">Klik untuk Zoom & Slide Denah</span>
+                                                    <span class="text-[10px] text-white/80 mt-0.5 drop-shadow">Ukuran & dimensi tata ruang</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button"
+                                                @click="openFloorPlanModal('{{ $ht->name }}', '{{ $ht->building_area }} m² / {{ $ht->land_area }} m² • {{ $ht->bedrooms }} Kamar Tidur • {{ $ht->bathrooms }} Kamar Mandi', {{ json_encode($floorPlanSlides) }}, {{ $hasFacadePhoto ? 1 : 0 }})"
+                                                aria-label="Buka denah dan detail ruangan tipe {{ $ht->name }}"
+                                                class="w-full py-2 px-3 rounded-xl bg-white hover:bg-sky-50 border border-slate-200 hover:border-sky-300 text-sky-700 font-bold text-xs transition flex items-center justify-center gap-1.5 shadow-2xs group/btn">
+                                            <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover/btn:scale-110 transition-transform"></i>
+                                            <span>Buka & Zoom Detail Denah</span>
                                         </button>
                                     </div>
                                 </div>
@@ -583,11 +687,18 @@
                             @foreach($project->units as $unit)
                                 @php
                                     $firstPov = $unit->povImages->first();
-                                    $povPhotoUrl = $firstPov ? $firstPov->url : ($unit->images->first() ? $unit->images->first()->url : asset('images/default-pov.jpg'));
+                                    $povPhotoUrl = $firstPov ? $firstPov->url : asset('images/default-pov.jpg');
 
                                     $houseType = $unit->houseType;
-                                    $housePhoto = $unit->facadeImages->first()?->url ?? $houseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
-                                    $floorPlanPhoto = $unit->floorPlanImages->first()?->url ?? $houseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $housePhoto = $unit->facadeImages->first()?->url
+                                        ?? $houseType?->images?->first()?->url
+                                        ?? $project->primaryImage?->url
+                                        ?? asset('images/default-project.jpg');
+
+                                    $floorPlanPhoto = $unit->floorPlanImages->first()?->url
+                                        ?? $houseType?->floor_plan_image_url
+                                        ?? asset('images/default-floorplan.jpg');
+
                                     $slicePhoto = $unit->slice_image_url ?: asset('images/default-slice.jpg');
 
                                     $wPct = $unit->width_pct ?: 5.5;
@@ -616,6 +727,9 @@
                                         'slice_image' => $slicePhoto,
                                         'pov_photo' => $povPhotoUrl,
                                         'floor_plan' => $floorPlanPhoto,
+                                        'has_custom_facade' => $unit->facadeImages->isNotEmpty(),
+                                        'has_custom_pov' => $unit->povImages->isNotEmpty(),
+                                        'has_custom_floor_plan' => $unit->floorPlanImages->isNotEmpty(),
                                         'pov_description' => $unit->pov_description ?: 'Unit strategis di kawasan cluster yang asri, nyaman, dan bebas banjir dengan sirkulasi udara optimal.',
                                     ];
                                 @endphp
@@ -684,10 +798,15 @@
                             @foreach($project->units as $u)
                                 @php
                                     $uFirstPov = $u->povImages->first();
-                                    $uPovPhotoUrl = $uFirstPov ? $uFirstPov->url : ($u->images->first() ? $u->images->first()->url : asset('images/default-pov.jpg'));
+                                    $uPovPhotoUrl = $uFirstPov ? $uFirstPov->url : asset('images/default-pov.jpg');
                                     $uHouseType = $u->houseType;
-                                    $uHousePhoto = $u->facadeImages->first()?->url ?? $uHouseType?->images?->first()?->url ?? $project->primaryImage?->url ?? asset('images/default-project.jpg');
-                                    $uFloorPlanPhoto = $u->floorPlanImages->first()?->url ?? $uHouseType?->floor_plan_image_url ?? asset('images/default-floorplan.jpg');
+                                    $uHousePhoto = $u->facadeImages->first()?->url
+                                        ?? $uHouseType?->images?->first()?->url
+                                        ?? $project->primaryImage?->url
+                                        ?? asset('images/default-project.jpg');
+                                    $uFloorPlanPhoto = $u->floorPlanImages->first()?->url
+                                        ?? $uHouseType?->floor_plan_image_url
+                                        ?? asset('images/default-floorplan.jpg');
                                     $uSlicePhoto = $u->slice_image_url ?: asset('images/default-slice.jpg');
                                     $uPriceRaw = (float) ($u->price > 0 ? $u->price : ($uHouseType ? $uHouseType->price : 0));
 
@@ -710,6 +829,9 @@
                                         'slice_image' => $uSlicePhoto,
                                         'pov_photo' => $uPovPhotoUrl,
                                         'floor_plan' => $uFloorPlanPhoto,
+                                        'has_custom_facade' => $u->facadeImages->isNotEmpty(),
+                                        'has_custom_pov' => $u->povImages->isNotEmpty(),
+                                        'has_custom_floor_plan' => $u->floorPlanImages->isNotEmpty(),
                                         'pov_description' => $u->pov_description ?: 'Unit strategis di kawasan cluster yang asri, nyaman, dan bebas banjir dengan sirkulasi udara optimal.',
                                     ];
                                 @endphp
@@ -919,23 +1041,32 @@
                                 <button type="button"
                                         @click="unitModalTab = 'foto'"
                                         :class="unitModalTab === 'foto' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
-                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
                                     <i class="fa-solid fa-house"></i>
                                     <span>Foto Rumah / Fasad</span>
+                                    <template x-if="selectedUnit.has_custom_facade">
+                                        <span class="text-[9px] bg-white/20 text-white px-1.5 py-0.5 rounded-md font-bold">Kavling</span>
+                                    </template>
                                 </button>
                                 <button type="button"
                                         @click="unitModalTab = 'pov'"
-                                        :class="unitModalTab === 'pov' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
-                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                        :class="unitModalTab === 'pov' ? 'bg-emerald-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
                                     <i class="fa-solid fa-street-view"></i>
                                     <span>POV Lingkungan Nyata</span>
+                                    <template x-if="selectedUnit.has_custom_pov">
+                                        <span class="text-[9px] bg-white/20 text-white px-1.5 py-0.5 rounded-md font-bold">Asli</span>
+                                    </template>
                                 </button>
                                 <button type="button"
                                         @click="unitModalTab = 'denah'"
-                                        :class="unitModalTab === 'denah' ? 'bg-brand-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
-                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-2 shrink-0">
+                                        :class="unitModalTab === 'denah' ? 'bg-sky-600 text-white shadow-sm ring-1 ring-white/20' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'"
+                                        class="px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
                                     <i class="fa-solid fa-compass-drafting"></i>
                                     <span>Denah Ruangan</span>
+                                    <template x-if="selectedUnit.has_custom_floor_plan">
+                                        <span class="text-[9px] bg-white/20 text-white px-1.5 py-0.5 rounded-md font-bold">Kavling</span>
+                                    </template>
                                 </button>
                             </div>
                         </div>
@@ -948,6 +1079,9 @@
                                 <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
                                     <i class="fa-solid fa-house text-brand-400"></i>
                                     <span>Tampak Depan (Fasad) <span x-text="selectedUnit.type_name"></span></span>
+                                    <template x-if="selectedUnit.has_custom_facade">
+                                        <span class="text-[10px] text-brand-300 font-bold bg-brand-900/70 px-2 py-0.5 rounded-md">(Foto Kustom Kavling)</span>
+                                    </template>
                                 </div>
                             </div>
 
@@ -956,7 +1090,7 @@
                                 <img :src="selectedUnit.pov_photo" :alt="'POV Nyata Kavling ' + selectedUnit.block + '-' + selectedUnit.number" class="w-full h-full object-cover">
                                 <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
                                     <i class="fa-solid fa-street-view text-emerald-400"></i>
-                                    <span>Sudut Pandang (POV) Nyata dari Teras Kavling</span>
+                                    <span>Sudut Pandang (POV) Nyata dari Teras Kavling <span x-text="selectedUnit.block + '-' + selectedUnit.number"></span></span>
                                 </div>
                             </div>
 
@@ -966,6 +1100,9 @@
                                 <div class="absolute bottom-3 left-3 bg-black/75 backdrop-blur-xs text-white px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-2">
                                     <i class="fa-solid fa-compass-drafting text-sky-400"></i>
                                     <span>Denah Ruangan <span x-text="selectedUnit.type_name"></span></span>
+                                    <template x-if="selectedUnit.has_custom_floor_plan">
+                                        <span class="text-[10px] text-sky-300 font-bold bg-sky-900/70 px-2 py-0.5 rounded-md">(Denah Kustom Kavling)</span>
+                                    </template>
                                 </div>
                             </div>
 

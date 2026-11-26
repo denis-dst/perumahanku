@@ -71,6 +71,25 @@ class ProjectController extends Controller
             ]);
         }
 
+        // Secondary gallery photos
+        $galleryFields = [
+            'gallery_photo_1' => 'Fasilitas & Kawasan ' . $project->name,
+            'gallery_photo_2' => 'Gerbang & Lingkungan ' . $project->name,
+            'gallery_photo_3' => 'Area Komunal ' . $project->name,
+        ];
+        $order = 2;
+        foreach ($galleryFields as $field => $caption) {
+            if ($request->filled($field)) {
+                $project->images()->create([
+                    'path' => $request->input($field),
+                    'caption' => $caption,
+                    'is_primary' => false,
+                    'category' => 'exterior',
+                    'sort_order' => $order++,
+                ]);
+            }
+        }
+
         return redirect()->route('admin.projects.index')->with('success', 'Proyek perumahan berhasil ditambahkan!');
     }
 
@@ -110,15 +129,39 @@ class ProjectController extends Controller
 
         $project->update($validated);
 
-        if ($request->filled('primary_photo_url')) {
+        if ($request->has('primary_photo_url')) {
             $project->images()->where('is_primary', true)->delete();
-            $project->images()->create([
-                'path' => $request->primary_photo_url,
-                'caption' => 'Foto Utama '.$project->name,
-                'is_primary' => true,
-                'category' => 'exterior',
-                'sort_order' => 1,
-            ]);
+            if ($request->filled('primary_photo_url')) {
+                $project->images()->create([
+                    'path' => $request->primary_photo_url,
+                    'caption' => 'Foto Utama '.$project->name,
+                    'is_primary' => true,
+                    'category' => 'exterior',
+                    'sort_order' => 1,
+                ]);
+            }
+        }
+
+        // Secondary gallery photos
+        if ($request->hasAny(['gallery_photo_1', 'gallery_photo_2', 'gallery_photo_3'])) {
+            $project->images()->where('is_primary', false)->delete();
+            $galleryFields = [
+                'gallery_photo_1' => 'Fasilitas & Kawasan ' . $project->name,
+                'gallery_photo_2' => 'Gerbang & Lingkungan ' . $project->name,
+                'gallery_photo_3' => 'Area Komunal ' . $project->name,
+            ];
+            $order = 2;
+            foreach ($galleryFields as $field => $defaultCaption) {
+                if ($request->filled($field)) {
+                    $project->images()->create([
+                        'path' => $request->input($field),
+                        'caption' => $defaultCaption,
+                        'is_primary' => false,
+                        'category' => 'exterior',
+                        'sort_order' => $order++,
+                    ]);
+                }
+            }
         }
 
         return redirect()->route('admin.projects.index')->with('success', 'Perumahan berhasil diperbarui!');

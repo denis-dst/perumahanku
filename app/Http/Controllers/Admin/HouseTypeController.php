@@ -102,15 +102,17 @@ class HouseTypeController extends Controller
 
         $houseType->update($validated);
 
-        if ($request->filled('photo_url')) {
+        if ($request->has('photo_url')) {
             $houseType->images()->delete();
-            $houseType->images()->create([
-                'path' => $request->photo_url,
-                'caption' => 'Fasad ' . $houseType->name,
-                'is_primary' => true,
-                'category' => 'facade',
-                'sort_order' => 1,
-            ]);
+            if ($request->filled('photo_url')) {
+                $houseType->images()->create([
+                    'path' => $request->photo_url,
+                    'caption' => 'Fasad ' . $houseType->name,
+                    'is_primary' => true,
+                    'category' => 'facade',
+                    'sort_order' => 1,
+                ]);
+            }
         }
 
         return redirect()->route('admin.projects.house-types.index', $project)->with('success', 'Tipe rumah berhasil diperbarui!');

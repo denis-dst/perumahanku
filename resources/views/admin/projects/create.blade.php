@@ -105,6 +105,38 @@
                 placeholder="uploads/siteplans/siteplan-perumahan.jpg"
                 help="Pilih denah kawasan untuk mapper kavling interaktif."
             />
+
+            <div class="sm:col-span-2 pt-4 border-t border-slate-100">
+                <div class="mb-3">
+                    <label class="block text-xs font-bold uppercase text-slate-800">
+                        <i class="fa-solid fa-images text-brand-600 mr-1"></i> Foto Galeri Kawasan / Fasilitas (Opsional - Maks. 3 Foto)
+                    </label>
+                    <p class="text-[11px] text-slate-500">Foto pendukung untuk galeri header perumahan (interior, gerbang cluster, fasilitas taman).</p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <x-file-picker
+                        name="gallery_photo_1"
+                        label="Galeri 1 (Fasilitas / Lingkungan)"
+                        value="{{ old('gallery_photo_1') }}"
+                        folder="projects"
+                        placeholder="uploads/projects/fasilitas.jpg"
+                    />
+                    <x-file-picker
+                        name="gallery_photo_2"
+                        label="Galeri 2 (Interior / Gerbang)"
+                        value="{{ old('gallery_photo_2') }}"
+                        folder="projects"
+                        placeholder="uploads/projects/gerbang.jpg"
+                    />
+                    <x-file-picker
+                        name="gallery_photo_3"
+                        label="Galeri 3 (Taman / Club House)"
+                        value="{{ old('gallery_photo_3') }}"
+                        folder="projects"
+                        placeholder="uploads/projects/taman.jpg"
+                    />
+                </div>
+            </div>
         </div>
 
         <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
